@@ -1,3 +1,7 @@
+/**
+ * @author Ian Paterson
+ */
+
 package bteam.capstone.risk;
 public class AliensFaction extends Faction {
 

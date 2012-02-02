@@ -1,7 +1,6 @@
-/*
+/**
  * @Author Ian Paterson 
  * @Author Austin Langhorne
- * @Author Nick Solberg
  */
 package bteam.capstone.risk;
 public class StandardFaction extends Faction{

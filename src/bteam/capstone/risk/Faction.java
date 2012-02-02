@@ -1,4 +1,4 @@
-/*
+/**
  * @Author Ian Paterson
  * Faction class
  * 

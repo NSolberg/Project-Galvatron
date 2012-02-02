@@ -1,3 +1,8 @@
+/**
+ * @author Ian Paterson
+ * @author Austin Langhorn
+ */
+
 package bteam.capstone.risk;
 public class MutantFaction extends Faction {
 
