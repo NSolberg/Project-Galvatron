@@ -1,3 +1,6 @@
+/**
+ *@Author Ian Paterson 
+ */
 package pcs.cnu.git.risk;
 public class MutantFaction extends Faction {
 
