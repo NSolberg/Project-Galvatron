@@ -3,7 +3,7 @@
  * Faction class
  * 
  */
-package pcs.cnu.git.risk;
+package bteam.capstone.risk;
 public class Faction {
 	private String PlayerName;
 	private String startingTerritory;

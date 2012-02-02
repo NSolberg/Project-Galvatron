@@ -3,7 +3,7 @@
  * @Author Austin Langhorne
  * @Author Nick Solberg
  */
-package pcs.cnu.git.risk;
+package bteam.capstone.risk;
 public class StandardFaction extends Faction{
 private int[] PowerList;
 private int count;

@@ -1,4 +1,4 @@
-package pcs.cnu.git.risk;
+package bteam.capstone.risk;
 import java.util.ArrayList;
 import java.util.Scanner;
 

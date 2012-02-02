@@ -1,4 +1,4 @@
-package pcs.cnu.git.risk;
+package bteam.capstone.risk;
 
 public class GitTest {
 	public static void main(String[] args) {

@@ -1,4 +1,4 @@
-package pcs.cnu.git.risk;
+package bteam.capstone.risk;
 /**
  * 
  * @author Nick
