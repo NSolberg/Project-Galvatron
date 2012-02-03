@@ -49,21 +49,54 @@ public class Map {
 	}
 	
 	/*
-	 * To be used when expanding/fortifying to an adjacent country.
+	 * To be used when expanding/fortifying/post-attack to an adjacent country.
+	 * warning uses both placeTroops and removeTroops method see them
+	 * for further information on the use of this method.
 	 * 
+	 * note: for post-attack call the remove method on the remaining defeated
+	 * defending troops before use of moveTroops into that country.
 	 */
 	public boolean moveToops(int countryOne, int countryTwo, int troopQuantity){
 		boolean out = false;
 		if(countryOne != countryTwo){
 			Country temp = cunttrees.get(countryTwo);
 			if(temp.getControllingFaction().equals("\\NONE")){
-				temp.setControllingFaction(cunttrees.get(countryOne).getControllingFaction());
-				placeTroops(countryTwo, troopQuantity);
+				placeTroops(countryTwo, troopQuantity, temp.getControllingFaction());
 				removeTroops(countryOne, troopQuantity);
+				out = true;
 			}
 		}
 		return out;
 	}
+	
+	/*
+	 * To be used for initial game setup, adding additional troops to a country
+	 * 
+	 * places the specified number of troops into the specified country
+	 * country is now under control of the specified faction. Faction cannot be
+	 * \NONE. This increments the number of troops in the specified country as
+	 * well. 
+	 */
+	public void placeTroops(int country, int troopQuantity, String Faction){
+		Country temp = cunttrees.get(country);
+		temp.setControllingFaction(Faction);
+		temp.setTroopQuantity(temp.getTroopQuantity()+troopQuantity);
+	}
+	/*
+	 * To be used for removing a specified number of troops from a specified
+	 * country. Only affects troop quantity in the country.
+	 */
+	public void removeTroops(int country,int troopQuantity){
+		Country temp = cunttrees.get(country);
+		temp.setTroopQuantity(temp.getTroopQuantity()-troopQuantity);
+	}
+	
+	/*TODO
+	 * placeHQ
+	 * removeHQ
+	 * placeCity
+	 * placeScar
+	 * */
 
 	/*
 	 * Given an array list of integers representing controlled countries
