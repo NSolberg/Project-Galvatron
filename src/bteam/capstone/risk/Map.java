@@ -19,6 +19,12 @@ public class Map {
 
 	public Map(String data){
 		Scanner scan = new Scanner(data);
+		int numCont = scan.nextInt();
+		scan.nextLine();
+		for(int i=0;i<numCont;i++){
+			String dataLine = scan.nextLine();
+			continent.add(new Continent(dataLine));
+		}
 		while(scan.hasNextLine()){
 			String dataLine = scan.nextLine();
 			cunttrees.add(new Country(dataLine));
@@ -32,18 +38,44 @@ public class Map {
 	@Override
 	public String toString() {
 		String data = "";
+		data += continent.size() +"\n";
+		for(Continent co: continent){
+			data += co.toString() +"\n";
+		}
 		for(Country c:cunttrees){
 			data += c.toString() + "\n";
 		}
 		return data;
+	}
+	
+	/*
+	 * To be used when expanding/fortifying to an adjacent country.
+	 * 
+	 */
+	public boolean moveToops(int countryOne, int countryTwo, int troopQuantity){
+		boolean out = false;
+		if(countryOne != countryTwo){
+			Country temp = cunttrees.get(countryTwo);
+			if(temp.getControllingFaction().equals("\\NONE")){
+				temp.setControllingFaction(cunttrees.get(countryOne).getControllingFaction());
+				placeTroops(countryTwo, troopQuantity);
+				removeTroops(countryOne, troopQuantity);
+			}
+		}
+		return out;
 	}
 
 	/*
 	 * Given an array list of integers representing controlled countries
 	 * by a player returns an integer representing the number of troops
 	 * that player gets for reinforcements.
+	 * 
+	 * revision:added continent bonus for owning all the countries in that
+	 * continent and if the owning player also named the country they get
+	 * a bonus one troop; 
+	 * 
 	 */
-	public int recruitTroops(ArrayList<Integer> controlledCountries){
+	public int recruitTroops(ArrayList<Integer> controlledCountries, String playerName){
 		int out = 0;
 		Country temp;
 		for(int i: controlledCountries){
@@ -59,6 +91,14 @@ public class Map {
 		}
 		if(controlledCountries.size() >0){
 			out /=controlledCountries.size();
+		}
+		for(Continent c: continent){
+			if(c.allContries(controlledCountries)){
+				out += c.getValue()+c.getBonus();
+				if(!c.getTitle().equals("\\NONE") && c.getNamer().equals(playerName)){
+					out ++;
+				}
+			}
 		}
 		return  out;
 	}
