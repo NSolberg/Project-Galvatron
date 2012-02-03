@@ -5,10 +5,10 @@
  */
 package bteam.capstone.risk;
 public class Faction {
-	private String PlayerName;
-	private String startingTerritory;
-	private Boolean isWinner;
-	private Boolean wasEliminated;
+	protected String PlayerName;
+	protected String startingTerritory;
+	protected Boolean isWinner;
+	protected Boolean wasEliminated;
 	/**
 	 * @param name the name to set
 	 */
