@@ -1,4 +1,7 @@
 package bteam.capstone.risk;
+
+import java.util.ArrayList;
+
 /**
  * 
  * @author Nick
@@ -14,12 +17,24 @@ public class player {
 	private int 	missles, redstar, coin, resource;
 	private String 	name;
 	private Faction faction;
+	private ArrayList<Integer> countrys = new ArrayList<Integer>(); 
 	//private Faction faction;
 	
 	//Constructor for creating a new player given a name
 	// and a faction.
 	public player(String name){
 		this.name = name;
+		this.missles = 0;
+		this.redstar = 0;
+		this.coin = 0;
+		this.resource = 0;
+		
+	}
+	
+	public 
+	
+	public void addCountry(Integer a){
+		
 	}
 	
 	public String getName(){
@@ -50,7 +65,7 @@ public class player {
 		return resource;
 	}
 
-	public void setFaction(Faction faction) {
+	public void setFaction(StandardFaction faction) {
 		this.faction = faction;
 	}
 
