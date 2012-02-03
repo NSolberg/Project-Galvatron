@@ -7,6 +7,7 @@ public class Country {
 	// country variables
 	private String countryName;
 	private ArrayList<Integer> countryBorders;
+	private boolean island;
 
 	// city variables
 	private String cityName;
@@ -23,19 +24,6 @@ public class Country {
 	// scars variable
 	private int scarType;
 
-	public Country(String Name, ArrayList<Integer> Borders) {
-		this.countryName = Name;
-		this.countryBorders = Borders;
-		this.cityName = "\\UNAMED";
-		this.cityType = 0;
-		this.cityFortified = false;
-		this.fortifyEnergy = 0;
-		this.controllingFaction = "NONE";
-		this.troopQuantity = 0;
-		this.factionHQ = "NONE";
-		this.scarType = 0;
-	}
-
 	public Country(String data) {
 		Scanner scan = new Scanner(data);
 		this.countryName = scan.next();
@@ -48,6 +36,7 @@ public class Country {
 		this.factionHQ = scan.next();
 		this.scarType = scan.nextInt();
 		this.countryBorders = new ArrayList<Integer>();
+		this.island = scan.nextBoolean();
 		while (scan.hasNext()) {
 			int temp = scan.nextInt();
 			this.countryBorders.add(temp);
@@ -66,6 +55,7 @@ public class Country {
 		out += this.troopQuantity + " ";
 		out += this.factionHQ + " ";
 		out += this.scarType + " ";
+		out += this.island+" ";
 		for (Integer b : this.countryBorders) {
 			out += b + " ";
 		}
