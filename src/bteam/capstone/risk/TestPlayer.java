@@ -30,7 +30,7 @@ public class TestPlayer {
 	}
 
 	public void testPlayerCountrys() {
-		playerA.
+	
 	}
 	
 	@Test

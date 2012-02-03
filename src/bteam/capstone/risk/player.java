@@ -1,6 +1,7 @@
 package bteam.capstone.risk;
 
 import java.util.ArrayList;
+import java.util.Scanner;
 
 /**
  * 
@@ -22,20 +23,17 @@ public class player {
 	
 	//Constructor for creating a new player given a name
 	// and a faction.
-	public player(String name){
-		this.name = name;
-		this.missles = 0;
-		this.redstar = 0;
-		this.coin = 0;
-		this.resource = 0;
+	public player(String data){
+		Scanner scan = new Scanner(data);
+		this.name = scan.next();
+		this.missles = scan.nextInt();
+		this.redstar = scan.nextInt();
+		this.coin = scan.nextInt();
+		this.resource = scan.nextInt();
 		
 	}
 	
-	public 
 	
-	public void addCountry(Integer a){
-		
-	}
 	
 	public String getName(){
 		return name;
