@@ -27,66 +27,10 @@ public class TestPlayer {
 	}
 
 	@Test
-	public void testGetName() {
-		assertEquals("PlayerA", playerA.getName()); 
-		assertEquals("PlayerB", playerB.getName());
-		assertEquals("PlayerC", playerC.getName());
-		assertEquals("PlayerD", playerD.getName());
-		assertEquals("PlayerE", playerE.getName());
-	}
-
 	public void testPlayerCountrys() {
+		fail("Not yet implemented");
+	}
 	
-	}
 	
-	@Test
-	public void testSetMissles() {
-		fail("Not yet implemented");
-	}
-
-	@Test
-	public void testGetMissles() {
-		fail("Not yet implemented");
-	}
-
-	@Test
-	public void testSetRedstar() {
-		fail("Not yet implemented");
-	}
-
-	@Test
-	public void testGetRedstar() {
-		fail("Not yet implemented");
-	}
-
-	@Test
-	public void testSetCoin() {
-		fail("Not yet implemented");
-	}
-
-	@Test
-	public void testGetCoin() {
-		fail("Not yet implemented");
-	}
-
-	@Test
-	public void testSetResource() {
-		fail("Not yet implemented");
-	}
-
-	@Test
-	public void testGetResource() {
-		fail("Not yet implemented");
-	}
-
-	@Test
-	public void testSetFaction() {
-		fail("Not yet implemented");
-	}
-
-	@Test
-	public void testGetFaction() {
-		fail("Not yet implemented");
-	}
 
 }

@@ -25,7 +25,7 @@ public class Continent {
 
 	private int value;
 	private int bonus;
-	private ArrayList<Integer> countries;
+	private ArrayList<Integer> countries = new ArrayList<Integer>();
 
 	public Continent(String data) {
 		Scanner scan = new Scanner(data);
@@ -35,8 +35,10 @@ public class Continent {
 		value = scan.nextInt();
 		bonus = scan.nextInt();
 		while (scan.hasNextInt()) {
-			int temp = scan.nextInt();
+			
+			Integer temp = scan.nextInt();
 			countries.add(temp);
+			
 		}
 	}
 

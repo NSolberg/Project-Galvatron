@@ -23,7 +23,8 @@ public class Map {
 		scan.nextLine();
 		for(int i=0;i<numCont;i++){
 			String dataLine = scan.nextLine();
-			continent.add(new Continent(dataLine));
+			Continent temp = new Continent(dataLine);
+			continent.add(temp);
 		}
 		while(scan.hasNextLine()){
 			String dataLine = scan.nextLine();
