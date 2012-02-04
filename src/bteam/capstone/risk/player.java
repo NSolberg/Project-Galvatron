@@ -30,10 +30,25 @@ public class player {
 		this.redstar = scan.nextInt();
 		this.coin = scan.nextInt();
 		this.resource = scan.nextInt();
-		
+		scan.close();
 	}
 	
+	@Override
+	public String toString() {
+		String out = "";
+		
+		out += this.name + " ";
+		out += this.missles + " ";
+		out += this.redstar + " ";
+		out += this.coin + " ";
+		out += this.resource;
+		return out;
+	}
 	
+
+	public void addCountry(Integer country){
+		countrys.add(country);
+	}
 	
 	public String getName(){
 		return name;
