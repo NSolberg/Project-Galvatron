@@ -17,4 +17,9 @@ public class TestContinent {
 		assertEquals(cont1, one.toString());
 		assertEquals(cont2, two.toString());
 	}
+	
+	@Test
+	public void testContainsAll(){
+		
+	}
 }

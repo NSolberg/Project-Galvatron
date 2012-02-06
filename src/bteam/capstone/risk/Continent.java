@@ -1,13 +1,13 @@
 package bteam.capstone.risk;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Scanner;
 
 public class Continent {
 	private String name;
 	private String title;
 	private String namer;
-
 	/**
 	 * @return the namer
 	 */
@@ -78,6 +78,10 @@ public class Continent {
 		}
 		return out;
 	}
+	
+	
+	
+	
 
 	/**
 	 * @return the name

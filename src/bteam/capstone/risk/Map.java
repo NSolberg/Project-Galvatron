@@ -14,7 +14,7 @@ import java.util.Scanner;
  */
 public class Map {
 	//                        Change this later
-	public ArrayList<Country> cunttrees = new ArrayList<Country>();
+	public ArrayList<Country> countrys = new ArrayList<Country>();
 	public ArrayList<Continent> continent = new ArrayList<Continent>();
 
 	public Map(String data){
@@ -28,7 +28,7 @@ public class Map {
 		}
 		while(scan.hasNextLine()){
 			String dataLine = scan.nextLine();
-			cunttrees.add(new Country(dataLine));
+			countrys.add(new Country(dataLine));
 		}
 	}
 	
@@ -43,7 +43,7 @@ public class Map {
 		for(Continent co: continent){
 			data += co.toString() +"\n";
 		}
-		for(Country c:cunttrees){
+		for(Country c:countrys){
 			data += c.toString() + "\n";
 		}
 		return data;
@@ -60,7 +60,7 @@ public class Map {
 	public boolean moveToops(int countryOne, int countryTwo, int troopQuantity){
 		boolean out = false;
 		if(countryOne != countryTwo){
-			Country temp = cunttrees.get(countryTwo);
+			Country temp = countrys.get(countryTwo);
 			if(temp.getControllingFaction().equals("\\NONE")){
 				placeTroops(countryTwo, troopQuantity, temp.getControllingFaction());
 				removeTroops(countryOne, troopQuantity);
@@ -79,7 +79,7 @@ public class Map {
 	 * well. 
 	 */
 	public void placeTroops(int country, int troopQuantity, String Faction){
-		Country temp = cunttrees.get(country);
+		Country temp = countrys.get(country);
 		temp.setControllingFaction(Faction);
 		temp.setTroopQuantity(temp.getTroopQuantity()+troopQuantity);
 	}
@@ -88,7 +88,7 @@ public class Map {
 	 * country. Only affects troop quantity in the country.
 	 */
 	public void removeTroops(int country,int troopQuantity){
-		Country temp = cunttrees.get(country);
+		Country temp = countrys.get(country);
 		temp.setTroopQuantity(temp.getTroopQuantity()-troopQuantity);
 	}
 	
@@ -114,7 +114,7 @@ public class Map {
 		Country temp;
 		for(int i: controlledCountries){
 			out++;
-			temp = cunttrees.get(i);
+			temp = countrys.get(i);
 			if(temp.getCityType() == 1){
 				out++;
 			}else if(temp.getCityType() ==2){
@@ -143,8 +143,8 @@ public class Map {
 	 * this country. 
 	 */
 	public void fortifyCountry(int countryFrom, int countryTo, int troopQuantity) {
-		Country one = cunttrees.get(countryFrom);
-		Country two = cunttrees.get(countryTo);
+		Country one = countrys.get(countryFrom);
+		Country two = countrys.get(countryTo);
 		one.setTroopQuantity(one.getTroopQuantity() - troopQuantity);
 		two.setTroopQuantity(two.getTroopQuantity() + troopQuantity);
 	}
@@ -159,10 +159,10 @@ public class Map {
 			Country temp;
 			// as long as the stack is not empty, contiune the loop
 			while (!stack.isEmpty()) {
-				temp = cunttrees.get(stack.remove(0));
+				temp = countrys.get(stack.remove(0));
 				if (!temp.getControllingFaction().equals("NONE")) {
 					if (temp.getControllingFaction()
-							.equals((cunttrees).get(countryTwo)
+							.equals((countrys).get(countryTwo)
 									.getControllingFaction())) {
 						// if above is true contry is fortifiable
 						out = true;

@@ -15,17 +15,17 @@ public class testCountry {
 	String countryF = "5Alberta cityName 1 true 1 faction 50 factionHQ 50 false 1 0 6 3 ";
 	String countryG = "6WesternUS cityName 1 true 1 faction 50 factionHQ 50 false 5 4 8 7 ";
 	String countryH = "7EasternUS cityName 1 true 1 faction 50 factionHQ 50 false 3 4 6 8 ";
-	
+	Country one 	= new Country(countryA);
+	Country two 	= new Country(countryB);
+	Country three 	= new Country(countryC);
+	Country four	= new Country(countryD);
+	Country five	= new Country(countryE);
+	Country six 	= new Country(countryF);
+	Country seven	= new Country(countryG);
+	Country eight	= new Country(countryH);
 	@Test
 	public void testCountrySaveLoad() {
-		Country one 	= new Country(countryA);
-		Country two 	= new Country(countryB);
-		Country three 	= new Country(countryC);
-		Country four	= new Country(countryD);
-		Country five	= new Country(countryE);
-		Country six 	= new Country(countryF);
-		Country seven	= new Country(countryG);
-		Country eight	= new Country(countryH);
+		
 		assertEquals(countryA, one.toString());
 		assertEquals(countryB, two.toString());
 		assertEquals(countryC, three.toString());
@@ -39,14 +39,6 @@ public class testCountry {
 
 	@Test
 	public void testGetCountryName() {
-		Country one 	= new Country(countryA);
-		Country two 	= new Country(countryB);
-		Country three 	= new Country(countryC);
-		Country four	= new Country(countryD);
-		Country five	= new Country(countryE);
-		Country six 	= new Country(countryF);
-		Country seven	= new Country(countryG);
-		Country eight	= new Country(countryH);
 		assertEquals("0Alaska", one.getCountryName());
 		assertEquals("1NorthwestTerritory", two.getCountryName());
 		assertEquals("2GreenLand", three.getCountryName());
@@ -59,8 +51,6 @@ public class testCountry {
 
 	@Test
 	public void testSetCountryName() {
-		Country one 	= new Country(countryA);
-		Country two 	= new Country(countryB);
 		one.setCityName("NewAlaska");
 		two.setCityName("NewNorthwest");
 		
@@ -70,12 +60,20 @@ public class testCountry {
 
 	@Test
 	public void testAddCountryBorders() {
-		fail("Not yet implemented");
+		ArrayList<Integer> temp = new ArrayList<Integer>();
+		temp.add(1);
+		temp.add(34);
+		temp.add(5);
+		temp.add(14);
+		one.addCountryBorders(14);
+		one.getCountryBorders();
+		assertEquals(true, temp.containsAll(one.getCountryBorders()));
 	}
 	
 	@Test
 	public void testIsCityFortified() {
-		fail("Not yet implemented");
+		one.setCityFortified(true);
+		assertEquals(true, one.isCityFortified());
 	}
 
 	
