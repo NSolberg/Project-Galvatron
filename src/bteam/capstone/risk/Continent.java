@@ -1,32 +1,35 @@
 package bteam.capstone.risk;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Scanner;
 
+/**
+ * Class representing a single continent containing the following information:
+ * The name of the continent, the title of the continent if given one if not to
+ * be represented by the String \NONE, the name of the player that gave the
+ * continent its title, the value or worth of the continent and a bonus which
+ * can be either: +1 or -1
+ * 
+ * @author Austin Langhorne
+ * 
+ */
 public class Continent {
 	private String name;
 	private String title;
 	private String namer;
-	/**
-	 * @return the namer
-	 */
-	public String getNamer() {
-		return namer;
-	}
-
-	/**
-	 * @param namer
-	 *            the namer to set
-	 */
-	public void setNamer(String namer) {
-		this.namer = namer;
-	}
-
 	private int value;
 	private int bonus;
 	private ArrayList<Integer> countries = new ArrayList<Integer>();
 
+	/**
+	 * Constructor for the class accepting a String to be parsed.
+	 * 
+	 * @param data
+	 *            String to be parsed that must follow the following format
+	 *            (where underscores represent spaces, all one line, and x
+	 *            represents an arbitrary number of integers separated by a
+	 *            space): name_title_namer_value_bonus_x
+	 */
 	public Continent(String data) {
 		Scanner scan = new Scanner(data);
 		name = scan.next();
@@ -35,17 +38,18 @@ public class Continent {
 		value = scan.nextInt();
 		bonus = scan.nextInt();
 		while (scan.hasNextInt()) {
-			
+
 			Integer temp = scan.nextInt();
 			countries.add(temp);
-			
+
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#toString()
+	/**
+	 * Creates String representing the class in the following following format
+	 * (where underscores represent spaces, all one line, and x represents an
+	 * arbitrary number of integers separated by a space):
+	 * name_title_namer_value_bonus_x
 	 */
 	@Override
 	public String toString() {
@@ -61,27 +65,42 @@ public class Continent {
 		return data;
 	}
 
-	/*
-	 * given a list of integers representing countries see if it contains all
-	 * the countries that make up the continent and if it does return true;
+	/**
+	 * Method accepting a list of integers representing countries, and if the
+	 * array contains all the counties in this continent it returns true.
+	 * 
+	 * @param inCountries
+	 *            list of integers representing countries to be tested to see if
+	 *            it contains all the countries in the class
+	 * @return true if inCountries contain all the countries in this continent
+	 *         else false
 	 */
 	public boolean allContries(ArrayList<Integer> inCountries) {
-		boolean out = false;
-		int num = 0;
-		for (int i : inCountries) {
-			if (countries.contains(i)) {
-				num++;
+		if (countries.size() < inCountries.size()) {
+			for (int c : countries) {
+				if (!inCountries.contains(c)) {
+					return false;
+				}
 			}
+			return true;
 		}
-		if (num == countries.size()) {
-			out = true;
-		}
-		return out;
+		return false;
 	}
-	
-	
-	
-	
+
+	/**
+	 * @return the namer
+	 */
+	public String getNamer() {
+		return namer;
+	}
+
+	/**
+	 * @param namer
+	 *            the namer to set
+	 */
+	public void setNamer(String namer) {
+		this.namer = namer;
+	}
 
 	/**
 	 * @return the name
