@@ -1,5 +1,7 @@
 package bteam.capstone.risk;
 
+import static org.junit.Assert.*;
+
 import java.io.File;
 import java.io.FileReader;
 
@@ -12,23 +14,23 @@ public class TestMap {
 	//String data = file.toString();
 	String data2 = "6";
 	String data = "6" + "\n" + 
-	"NorthAmerica title namer 50 502 0 1 2 3 4 5 6 7 8" + "\n" +
-	"SouthAmerica title namer 50 502 9 10 11 12" + "\n" +
-	"Africa title namer 50 502 13 14 15 16 17 18 19" + "\n" +
-	"Europe title namer 50 502 20 21 22 23 24 25" + "\n" +
-	"Asia title namer 50 502 26 27 28 29 30 31 32 33 34 35 36 37" + "\n" +
-	"Australia title namer 50 502 38 39 40 41" + "\n" +
-	"0Alaska cityName 1 true 1 faction 50 factionHQ 50 false 34 1 5 " + "\n" +
-	"1NorthwestTerritory cityName 1 true 1 faction 50 factionHQ 50 false 0 2 4 5" + "\n" +
-	"2GreenLand cityName 1 true 1 faction 50 factionHQ 50 false  1 4 3 22" + "\n" +
-	"3EasternCanada cityName 1 true 1 faction 50 factionHQ 50 false  2 4 7" + "\n" +
-	"4Ontario cityName 1 true 1 faction 50 factionHQ 50 false  1 5 6 7 3 2" + "\n" +
-	"5Alberta cityName 1 true 1 faction 50 factionHQ 50 false  1 0 6 3" + "\n" +
-	"6WesternUS cityName 1 true 1 faction 50 factionHQ 50 false  5 4 8 7" + "\n" +
-	"7EasternUS cityName 1 true 1 faction 50 factionHQ 50 false  3 4 6 8" + "\n" +
-	"8CentralAmerica cityName 1 true 1 faction 50 factionHQ 50 false  7 6 9" + "\n" +
-	"9Venezuala cityName 1 true 1 faction 50 factionHQ 50 false  8 12 10" + "\n" +
-	"10Peru cityName 1 true 1 faction 50 factionHQ 50 false  9 11 12" + "\n" +
+	"NorthAmerica 	title NONE 5 0	 0 1 2 3 4 5 6 7 8" + "\n" +
+	"SouthAmerica 	title NONE 5 0	 9 10 11 12" + "\n" +
+	"Africa 		title NONE 5 0	 13 14 15 16 17 18 19" + "\n" +
+	"Europe 	 	title NONE 5 0	 20 21 22 23 24 25" + "\n" +
+	"Asia 			title NONE 5 0	 26 27 28 29 30 31 32 33 34 35 36 37" + "\n" +
+	"Australia 		title NONE 5 0	 38 39 40 41" + "\n" +
+	"0Alaska 				cityName 0 true 0 faction 50 factionHQ 50 false  34 1 5 " + "\n" +
+	"1NorthwestTerritory 	cityName 0 true 0 faction 50 factionHQ 50 false  0 2 4 5" + "\n" +
+	"2GreenLand 			cityName 0 true 0 faction 50 factionHQ 50 false  1 4 3 22" + "\n" +
+	"3EasternCanada 		cityName 0 true 0 faction 50 factionHQ 50 false  2 4 7" + "\n" +
+	"4Ontario 				cityName 0 true 0 faction 50 factionHQ 50 false  1 5 6 7 3 2" + "\n" +
+	"5Alberta 				cityName 0 true 0 faction 50 factionHQ 50 false  1 0 6 3" + "\n" +
+	"6WesternUS 			cityName 0 true 0 faction 50 factionHQ 50 false  5 4 8 7" + "\n" +
+	"7EasternUS 			cityName 0 true 0 faction 50 factionHQ 50 false  3 4 6 8" + "\n" +
+	"8CentralAmerica 		cityName 0 true 0 faction 50 factionHQ 50 false  7 6 9" + "\n" +
+	"9Venezuala				cityName 0 true 0 faction 50 factionHQ 50 false  8 12 10" + "\n" +
+	"10Peru 				cityName 0 true 0 faction 50 factionHQ 50 false  9 11 12" + "\n" +
 	"11Argentina cityName 1 true 1 faction 50 factionHQ 50 false  10 12" + "\n" +
 	"12Brazil cityName 1 true 1 faction 50 factionHQ 50 false  9 10 11 13" + "\n" +
 	"13NorthAfrica cityName 1 true 1 faction 50 factionHQ 50 false  12 14 17 18 19 20" + "\n" +
@@ -64,6 +66,26 @@ public class TestMap {
 	@Test
 	public void testMap(){
 		Map map = new Map(data);
+		
+	}
+	/* tests that a player that controls all of northamerica gets
+	 * the correct bonus
+	 */
+	@Test
+	public void testPlayerBonusCont(){
+		Map testMap = new Map(data);
+		player PlayerOne = new player("One  0 0 0 0");
+		PlayerOne.addCountry(0);
+		PlayerOne.addCountry(1);
+		PlayerOne.addCountry(2);
+		PlayerOne.addCountry(3);
+		PlayerOne.addCountry(4);
+		PlayerOne.addCountry(5);
+		PlayerOne.addCountry(6);
+		PlayerOne.addCountry(7);
+		PlayerOne.addCountry(8);
+		
+		assertEquals(8, testMap.recruitTroops(PlayerOne.getCountrys(), PlayerOne.getName()));
 		
 	}
 }

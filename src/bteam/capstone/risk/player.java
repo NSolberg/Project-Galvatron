@@ -46,34 +46,6 @@ public class player {
 		countrys.clear();
 	}
 	
-	public boolean allContriesV2(ArrayList<Integer> inCountries) {
-		boolean out = false;
-		if(inCountries.containsAll(NA)){
-			out = true;
-		
-		}
-		if(inCountries.containsAll(SA)){
-			out = true;
-		
-		}
-		if(inCountries.containsAll(EU)){
-			out = true;
-		
-		}
-		if(inCountries.containsAll(AF)){
-			out = true;
-		
-		}
-		if(inCountries.containsAll(AU)){
-			out = true;
-		
-		}
-		if(inCountries.containsAll(AS)){
-			out = true;
-		
-		}
-		return out;
-	}
 	
 	@Override
 	public String toString() {
