@@ -46,6 +46,34 @@ public class player {
 		countrys.clear();
 	}
 	
+	public boolean allContriesV2(ArrayList<Integer> inCountries) {
+		boolean out = false;
+		if(inCountries.containsAll(NA)){
+			out = true;
+		
+		}
+		if(inCountries.containsAll(SA)){
+			out = true;
+		
+		}
+		if(inCountries.containsAll(EU)){
+			out = true;
+		
+		}
+		if(inCountries.containsAll(AF)){
+			out = true;
+		
+		}
+		if(inCountries.containsAll(AU)){
+			out = true;
+		
+		}
+		if(inCountries.containsAll(AS)){
+			out = true;
+		
+		}
+		return out;
+	}
 	
 	@Override
 	public String toString() {
@@ -99,6 +127,13 @@ public class player {
 	public Faction getFaction() {
 		return faction;
 	}
+	
+	private ArrayList<Integer> NA = new ArrayList<Integer>(Arrays.asList(0,1,2,3,4,5,6,7,8));
+	private ArrayList<Integer> SA = new ArrayList<Integer>(Arrays.asList(9,10,11,12));
+	private ArrayList<Integer> AF = new ArrayList<Integer>(Arrays.asList(13,14,15,16,17,18,19));
+	private ArrayList<Integer> EU = new ArrayList<Integer>(Arrays.asList(20,21,22,23,24,25));
+	private ArrayList<Integer> AS = new ArrayList<Integer>(Arrays.asList(26,27,28,28,29,30,31,32,33,34,35,36,37));
+	private ArrayList<Integer> AU = new ArrayList<Integer>(Arrays.asList(38,39,40,41));
 	
 	
 }
