@@ -98,17 +98,6 @@ public class Map {
 	 * placeCity
 	 * placeScar
 	 * */
-
-	/*
-	 * Given an array list of integers representing controlled countries
-	 * by a player returns an integer representing the number of troops
-	 * that player gets for reinforcements.
-	 * 
-	 * revision:added continent bonus for owning all the countries in that
-	 * continent and if the owning player also named the country they get
-	 * a bonus one troop; 
-	 * 
-	 */
 	public int recruitTroops(ArrayList<Integer> controlledCountries, String playerName){
 		int out = 0;
 		Country temp;
@@ -125,6 +114,7 @@ public class Map {
 		}
 		if(controlledCountries.size() >0){
 			out /=controlledCountries.size();
+			
 		}
 		for(Continent c: continent){
 			if(c.allContries(controlledCountries)){
@@ -136,9 +126,10 @@ public class Map {
 		}
 		return  out;
 	}
+	
 	/*
 	 * moves troops from one country to another. Subtracts from one and adds
-	 * to the other. Note that user must make sure player can only choose at
+	 * to the other. Note that the method must make sure player can only choose at
 	 * max n-1 troops from the first country where n is the total troops in 
 	 * this country. 
 	 */

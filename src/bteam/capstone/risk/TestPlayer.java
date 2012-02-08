@@ -39,39 +39,4 @@ public class TestPlayer {
 		
 		assertEquals(true, playerA.getCountrys().containsAll(temp) );
 	}
-	
-	@Test
-	public void testPlayerGetContBonus(){
-		playerB.addCountry(0);
-		playerB.addCountry(1);
-		playerB.addCountry(2);
-		playerB.addCountry(3);
-		playerB.addCountry(4);
-		playerB.addCountry(5);
-		playerB.addCountry(6);
-		playerB.addCountry(7);
-		playerB.addCountry(8);
-		assertEquals(true, playerB.allContriesV2(playerB.getCountrys()));
-	}
-	
-	@Test
-	public void testPlayerDoesntGetContBonus(){
-		ArrayList<Integer> temp = new ArrayList<Integer>(Arrays.asList(0,1,2,3,4,5,6,7));
-		playerB.removeAllCountrys();
-		playerB.addCountry(0);
-		playerB.addCountry(1);
-		playerB.addCountry(2);
-		playerB.addCountry(3);
-		playerB.addCountry(4);
-		playerB.addCountry(5);
-		playerB.addCountry(6);
-		playerB.addCountry(7);
-		playerB.addCountry(8);
-		playerB.removeCountrys(8);
-		assertEquals(false, playerB.allContriesV2(playerB.getCountrys()));
-		assertEquals(playerB.getCountrys(), temp );
-	}
-	
-	
-
 }
