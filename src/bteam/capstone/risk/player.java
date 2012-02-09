@@ -22,8 +22,13 @@ public class player {
 	private ArrayList<Integer> countrys = new ArrayList<Integer>(); 
 	//private Faction faction;
 	
-	//Constructor for creating a new player given a name
-	// and a faction.
+	/**Constructor for creating a new player given a name
+	 *  and a faction.
+	 * 
+	 * @Param Data is string formatted to hold all the
+	 *  necessary data
+	 */
+
 	public player(String data){
 		Scanner scan = new Scanner(data);
 		this.name = scan.next();
@@ -36,6 +41,10 @@ public class player {
 	
 	public ArrayList<Integer> getCountrys() {
 		return countrys;
+	}
+	
+	public int getCountryAt(int index){
+		return getCountrys().get(index);
 	}
 	
 	public void removeCountrys(int i) {

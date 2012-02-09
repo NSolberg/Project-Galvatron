@@ -76,7 +76,7 @@ public class Continent {
 	 *         else false
 	 */
 	public boolean allContries(ArrayList<Integer> inCountries) {
-		if (countries.size() < inCountries.size()) {
+		if (countries.size() <= inCountries.size()) {
 			for (int c : countries) {
 				if (!inCountries.contains(c)) {
 					return false;

@@ -130,7 +130,7 @@ public class Map {
 	}
 
 	/**
-	 * Returns the specified country asked for. Will through and out of bound
+	 * Returns the specified country asked for. Will throw and out of bound
 	 * exception if specified country is outside the bounds of the array.
 	 * 
 	 * @param country
@@ -139,6 +139,18 @@ public class Map {
 	 */
 	public Country getCountry(int country) {
 		return countrys.get(country);
+	}
+	
+	/**
+	 * Returns the specified continent asked for. Will throw and out of bound
+	 * exception if specified country is outside the bounds of the array.
+	 * 
+	 * @param country
+	 *            to be returned
+	 * @return country being asked for.
+	 */
+	public Continent getContinent(int index) {
+		return continent.get(index);
 	}
 
 	/**
