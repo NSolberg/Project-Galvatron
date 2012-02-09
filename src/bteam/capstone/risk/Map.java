@@ -1,15 +1,12 @@
-/**
- * @author Ian Paterson
- * @author Austin Langhorne
- * @author Nick Solberg
- */
 package bteam.capstone.risk;
 
 import java.util.ArrayList;
 import java.util.Scanner;
 
 /**
- * @author pcse_user
+ * @author Ian Paterson
+ * @author Austin Langhorne
+ * @author Nick Solberg
  * 
  */
 public class Map {
@@ -17,6 +14,17 @@ public class Map {
 	public ArrayList<Country> countrys = new ArrayList<Country>();
 	public ArrayList<Continent> continent = new ArrayList<Continent>();
 
+	/**
+	 * Receives a string representation of the structure of the class for its
+	 * initialization.
+	 * 
+	 * @param data
+	 *            string representing the structure of the class in the
+	 *            following format: integer representing number of continents
+	 *            followed by newline, toString representation for each
+	 *            continent separated by newlines, toString representation for
+	 *            each country separated by newlines.
+	 */
 	public Map(String data) {
 		Scanner scan = new Scanner(data);
 		int numCont = scan.nextInt();
@@ -32,10 +40,11 @@ public class Map {
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#toString()
+	/**
+	 * Returns a string representing the structure of the class in the following
+	 * format: integer representing number of continents followed by newline,
+	 * toString representation for each continent separated by newlines,
+	 * toString representation for each country separated by newlines.
 	 */
 	@Override
 	public String toString() {
@@ -50,26 +59,26 @@ public class Map {
 		return data;
 	}
 
-	/*
-	 * To be used when expanding/fortifying/post-attack to an adjacent country.
-	 * warning uses both placeTroops and removeTroops method see them for
-	 * further information on the use of this method.
+	/**
+	 * To be used for fortification of territories, expanding into new
+	 * territories, and for post attack phase when all troops have been removed
+	 * from defending country and attacking troops move in. This method removes
+	 * the specified number of troops from the first country and adds it to the
+	 * next. Also the second country's controlling faction is overridden to be
+	 * the same as country one's controlling faction.
 	 * 
-	 * note: for post-attack call the remove method on the remaining defeated
-	 * defending troops before use of moveTroops into that country.
+	 * @param countryOne
+	 *            country where troops are coming from
+	 * @param countryTwo
+	 *            country where troops are going to
+	 * @param troopQuantity
+	 *            number of troops
+	 * @return
 	 */
-	public boolean moveToops(int countryOne, int countryTwo, int troopQuantity) {
-		boolean out = false;
-		if (countryOne != countryTwo) {
-			Country temp = countrys.get(countryTwo);
-			if (temp.getControllingFaction().equals("\\NONE")) {
-				placeTroops(countryTwo, troopQuantity,
-						temp.getControllingFaction());
-				removeTroops(countryOne, troopQuantity);
-				out = true;
-			}
-		}
-		return out;
+	public void moveToops(int countryOne, int countryTwo, int troopQuantity) {
+		Country temp = countrys.get(countryOne);
+		placeTroops(countryTwo, troopQuantity, temp.getControllingFaction());
+		removeTroops(countryOne, troopQuantity);
 	}
 
 	/**
@@ -120,9 +129,76 @@ public class Map {
 		temp.setTroopQuantity(temp.getTroopQuantity() - troopQuantity);
 	}
 
-	/*
-	 * TODO placeHQ removeHQ placeCity placeScar
+	/**
+	 * Returns the specified country asked for. Will through and out of bound
+	 * exception if specified country is outside the bounds of the array.
+	 * 
+	 * @param country
+	 *            to be returned
+	 * @return country being asked for.
 	 */
+	public Country getCountry(int country) {
+		return countrys.get(country);
+	}
+
+	/**
+	 * Places an HQ of the specified faction into the specified country
+	 * 
+	 * @param country
+	 *            country to place HQ
+	 * @param Faction
+	 *            of the HQ to be placed
+	 */
+	public void placeHQ(int country, String Faction) {
+		Country temp = countrys.get(country);
+		temp.setFactionHQ(Faction);
+		countrys.set(country, temp);
+	}
+
+	/**
+	 * Removes an HQ in a specified country.
+	 * 
+	 * @param country
+	 *            country to remove a HQ from
+	 */
+	public void removeHQ(int country) {
+		Country temp = countrys.get(country);
+		temp.setFactionHQ("\\NONE");
+		countrys.set(country, temp);
+	}
+
+	/**
+	 * Places a city of specified type and name into specified country, if type
+	 * is 4 then the name variable is ignored.
+	 * 
+	 * @param country
+	 *            to place city
+	 * @param type
+	 *            of city
+	 * @param name
+	 *            of city
+	 */
+	public void placeCity(int country, int type, String name) {
+		Country temp = countrys.get(country);
+		temp.setCityType(type);
+		if (type == 4)
+			temp.setCityName(name);
+		countrys.set(country, temp);
+	}
+
+	/**
+	 * places the specified scar in the specified city
+	 * 
+	 * @param country
+	 *            to place scar
+	 * @param type
+	 *            of scar
+	 */
+	public void placeScar(int country, int type) {
+		Country temp = countrys.get(country);
+		temp.setScarType(type);
+		countrys.set(country, temp);
+	}
 
 	/**
 	 * To be used for getting the number of troops to be recrutied
@@ -180,33 +256,12 @@ public class Map {
 	}
 
 	/**
-	 * To be used to move troops from one country to another.
-	 * 
-	 * Given two integers representing countries and an integer representing
-	 * troop quantity move those troops from the first country to the second
-	 * one.
-	 * 
-	 * @param countryFrom
-	 *            country troops are being removed from
-	 * @param countryTo
-	 *            country troops are being moved to
-	 * @param troopQuantity
-	 *            number of troops to move
-	 */
-	public void fortifyCountry(int countryFrom, int countryTo, int troopQuantity) {
-		Country one = countrys.get(countryFrom);
-		Country two = countrys.get(countryTo);
-		one.setTroopQuantity(one.getTroopQuantity() - troopQuantity);
-		two.setTroopQuantity(two.getTroopQuantity() + troopQuantity);
-	}
-
-	/**
-	 * Determains if a country can be fortied to given two integers representing
-	 * the countries If the two countries are connected in that they share a
-	 * border or can be connected to each other through other countries they
-	 * share boarders with and those countries and so on as long as the two
-	 * specified countries and the connection between them share the same
-	 * controlling faction.
+	 * Determines if a country can be fortified to given two integers
+	 * representing the countries If the two countries are connected in that
+	 * they share a border or can be connected to each other through other
+	 * countries they share boarders with and those countries and so on as long
+	 * as the two specified countries and the connection between them share the
+	 * same controlling faction.
 	 * 
 	 * @param countryOne
 	 *            first country
