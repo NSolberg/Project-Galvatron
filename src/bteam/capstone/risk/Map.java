@@ -262,7 +262,7 @@ public class Map {
 				}
 			}
 		}
-		if (out == 0)
+		if (out < 3)
 			return 3;
 		return out;
 	}
