@@ -15,17 +15,18 @@ public class testCountry {
 	String countryF = "5Alberta cityName 1 true 1 faction 50 factionHQ 50 false 1 0 6 3 ";
 	String countryG = "6WesternUS cityName 1 true 1 faction 50 factionHQ 50 false 5 4 8 7 ";
 	String countryH = "7EasternUS cityName 1 true 1 faction 50 factionHQ 50 false 3 4 6 8 ";
-	Country one 	= new Country(countryA);
-	Country two 	= new Country(countryB);
-	Country three 	= new Country(countryC);
-	Country four	= new Country(countryD);
-	Country five	= new Country(countryE);
-	Country six 	= new Country(countryF);
-	Country seven	= new Country(countryG);
-	Country eight	= new Country(countryH);
+	Country one = new Country(countryA);
+	Country two = new Country(countryB);
+	Country three = new Country(countryC);
+	Country four = new Country(countryD);
+	Country five = new Country(countryE);
+	Country six = new Country(countryF);
+	Country seven = new Country(countryG);
+	Country eight = new Country(countryH);
+
 	@Test
 	public void testCountrySaveLoad() {
-		
+
 		assertEquals(countryA, one.toString());
 		assertEquals(countryB, two.toString());
 		assertEquals(countryC, three.toString());
@@ -34,7 +35,7 @@ public class testCountry {
 		assertEquals(countryF, six.toString());
 		assertEquals(countryG, seven.toString());
 		assertEquals(countryH, eight.toString());
-		
+
 	}
 
 	@Test
@@ -53,7 +54,7 @@ public class testCountry {
 	public void testSetCountryName() {
 		one.setCityName("NewAlaska");
 		two.setCityName("NewNorthwest");
-		
+
 		assertEquals("NewAlaska", one.getCityName());
 		assertEquals("NewNorthwest", two.getCityName());
 	}
@@ -69,12 +70,11 @@ public class testCountry {
 		one.getCountryBorders();
 		assertEquals(true, temp.containsAll(one.getCountryBorders()));
 	}
-	
+
 	@Test
 	public void testIsCityFortified() {
 		one.setCityFortified(true);
 		assertEquals(true, one.isCityFortified());
 	}
 
-	
 }
