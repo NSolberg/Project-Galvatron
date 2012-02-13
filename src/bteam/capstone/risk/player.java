@@ -13,7 +13,6 @@ import java.util.Scanner;
  */
 public class player {
 
-	// private variables storing data class wide
 	private int missles, redstar, coin, resource;
 	private String name;
 	private Faction faction;
@@ -22,9 +21,9 @@ public class player {
 	// private Faction faction;
 
 	/**
-	 * Constructor for creating a new player given a name and a faction.
+	 * Constructor for creating a new player given a string of data.
 	 * 
-	 * @Param Data is string formatted to hold all the necessary data
+	 * @Param Data is string formatted to hold all the necessary information
 	 */
 
 	public player(String data) {
@@ -41,18 +40,42 @@ public class player {
 		return countrys;
 	}
 
-	public int getCountryAt(int index) {
+	/**
+	 * Returns the country from the array given a country
+	 * 
+	 * @Param country, the given country needed to be returned
+	 * 
+	 * @Return  returns the country given its int value.
+	 */
+	public int getCountryAt(int country) {
+		int index = getCountrys().indexOf(country);
 		return getCountrys().get(index);
 	}
 
-	public void removeCountrys(int i) {
-		countrys.remove(i);
+	/**
+	 * Removes the country at the index of the provided entry
+	 * 
+	 * @Param country, the given country needed to be removed from the array
+	 */
+	public void removeCountrys(int country) {
+		int index = getCountrys().indexOf(country);
+		countrys.remove(index);
 	}
 
+	/**
+	 * Removes all countrys from the array used only for testing methods
+	 * curently
+	 */
 	public void removeAllCountrys() {
 		countrys.clear();
 	}
 
+	/**
+	 * Overrided toString method used for saving all the player information in
+	 * the same format to which it is entered.
+	 * 
+	 * @Return out, returns the string representing a player.
+	 */
 	@Override
 	public String toString() {
 		String out = "";
@@ -65,65 +88,89 @@ public class player {
 		return out;
 	}
 
+	/**
+	 * adds a country to the end of the list
+	 */
 	public void addCountry(Integer country) {
 		countrys.add(country);
 	}
 
+	/*
+	 * returns the player name
+	 */
 	public String getName() {
 		return name;
 	}
 
+	/*
+	 * set the number of missles for the player
+	 */
 	public void setMissles(int missles) {
 		this.missles = missles;
 	}
 
+	/*
+	 * get the number of missles for a player
+	 */
 	public int getMissles() {
 		return missles;
 	}
 
+	/*
+	 * set the number of redstars a player has
+	 */
 	public void setRedstar(int redstar) {
 		this.redstar = redstar;
 	}
 
+	/*
+	 * returns the number of redstars can be used to determine if the player has
+	 * one the game (needs 2)
+	 */
 	public int getRedstar() {
 		return redstar;
 	}
 
+	/*
+	 * Set the number of coins the player currently owns
+	 */
 	public void setCoin(int coin) {
 		this.coin = coin;
 	}
 
+	/*
+	 * returns the number of coins the player owns/
+	 */
 	public int getCoin() {
 		return coin;
 	}
 
+	/*
+	 * sets the number of resources that the payer currently owns
+	 */
 	public void setResource(int resource) {
 		this.resource = resource;
 	}
 
+	/*
+	 * Gets the resources belonging to a player
+	 */
 	public int getResource() {
 		return resource;
 	}
 
+	/*
+	 * Sets the players faction not implemented.
+	 */
 	public void setFaction(StandardFaction faction) {
 		this.faction = faction;
 	}
 
+	/*
+	 * returns a faction
+	 */
 	public Faction getFaction() {
 		return faction;
 	}
-
-	private ArrayList<Integer> NA = new ArrayList<Integer>(Arrays.asList(0, 1,
-			2, 3, 4, 5, 6, 7, 8));
-	private ArrayList<Integer> SA = new ArrayList<Integer>(Arrays.asList(9, 10,
-			11, 12));
-	private ArrayList<Integer> AF = new ArrayList<Integer>(Arrays.asList(13,
-			14, 15, 16, 17, 18, 19));
-	private ArrayList<Integer> EU = new ArrayList<Integer>(Arrays.asList(20,
-			21, 22, 23, 24, 25));
-	private ArrayList<Integer> AS = new ArrayList<Integer>(Arrays.asList(26,
-			27, 28, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37));
-	private ArrayList<Integer> AU = new ArrayList<Integer>(Arrays.asList(38,
-			39, 40, 41));
 
 }

@@ -24,13 +24,9 @@ public class TestPlayer {
 	public void testPlayer() {
 		assertEquals(playerA.toString(), data1);
 		assertEquals(playerB.toString(), data2);
-		;
 		assertEquals(playerC.toString(), data3);
-		;
 		assertEquals(playerD.toString(), data4);
-		;
 		assertEquals(playerE.toString(), data5);
-		;
 	}
 
 	@Test
@@ -43,6 +39,24 @@ public class TestPlayer {
 		playerA.addCountry(3);
 
 		assertEquals(true, playerA.getCountrys().containsAll(temp));
+	}
+	
+	
+	@Test
+	public void testGetCountryAt() {
+		playerB.addCountry(0);
+		playerB.removeCountrys(0);
+		assertEquals(true,playerB.getCountrys().isEmpty());
+	}
+	
+	@Test
+	public void testRemoveAllCountrys(){
+		playerC.addCountry(0);
+		playerC.addCountry(1);
+		playerC.addCountry(2);
+		playerC.addCountry(3);
+		playerC.removeAllCountrys();
+		assertEquals(true,playerB.getCountrys().isEmpty());
 	}
 
 }

@@ -140,7 +140,7 @@ public class Map {
 	public Country getCountry(int country) {
 		return countrys.get(country);
 	}
-	
+
 	/**
 	 * Returns the specified continent asked for. Will throw and out of bound
 	 * exception if specified country is outside the bounds of the array.
