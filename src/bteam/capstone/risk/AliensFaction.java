@@ -1,7 +1,10 @@
 /**
  * @author Ian Paterson
  */
-
+/**
+ * @todo 
+ * REMAKE THESE AS SEPERATE CLASSES
+ */
 package bteam.capstone.risk;
 
 import java.util.Scanner;
