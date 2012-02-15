@@ -1,0 +1,238 @@
+/** 
+ * @author Nick Solberg
+ */
+
+package bteam.capstone.risk;
+
+import java.util.Arrays;
+import java.util.Random;
+import java.util.Scanner;
+import java.util.Stack;
+
+public class Play {
+	private static boolean isAttacking = true;
+
+	public static void attack(Country atkCountry, Country defCountry) {
+		int atcDiceOne;
+		int atcDiceTwo;
+		int atcDiceThree;
+
+		int defDiceOne;
+		int defDiceTwo;
+
+		if (atkCountry.getCountryBorders().contains(defCountry.id()) == false) {
+			System.out.println("This will be an invalid attack");
+			isAttacking = false;
+		} else if (isAttacking == true) {
+			while (isAttacking == true && defCountry.getTroopQuantity() > 0
+					&& atkCountry.getTroopQuantity() > 1) {
+				System.out.println("Attack continues, valid arguments");
+				int numAtcDice = 1;
+				int numDefDice = 1;
+				int switchVal = 0;
+				if (atkCountry.getTroopQuantity() >= 4) {
+					numAtcDice = 3;
+					switchVal += 10;
+				} else if (atkCountry.getTroopQuantity() == 3) {
+					numAtcDice = 2;
+					switchVal += 5;
+				}  else if (atkCountry.getTroopQuantity() == 2) {
+					numAtcDice = 2;
+					switchVal += 5;
+				}
+				if (atkCountry.getTroopQuantity() == 1) {
+					System.out
+							.println("Not enough troops to attack, must be greater than one");
+					break;
+				}
+
+				if (defCountry.getTroopQuantity() >= 2) {
+					numDefDice = 2;
+					switchVal += 2;
+				} else if (defCountry.hasHQ() == true) {
+					numDefDice = 2;
+					switchVal += 2;
+				}
+
+				// Resolve combat
+				/*
+				 * 2v1 2v2 3v1 3v2
+				 */
+				Stack<Integer> diceStackAtk = new Stack<Integer>();
+				Stack<Integer> diceStackDef = new Stack<Integer>();
+				
+				System.out.println(switchVal);
+				switch (switchVal) {
+				case 12:
+					System.out.println("3v2");
+					int[] attack6 = {randomDice(), randomDice(), randomDice()};
+					Arrays.sort(attack6);
+					int[] defense6 = {randomDice(), randomDice()};
+					Arrays.sort(defense6);
+					System.out.println();
+					System.out.print("attack die from lowest to highest ");
+					for(int i = 0; i < 3; i++){
+						System.out.print(attack6[i] + " ");
+					}
+					System.out.println();
+					System.out.print("defense die from lowest to highest ");
+					for(int i = 0; i < 2; i++){
+						System.out.print(defense6[i] +" ");
+					}
+					System.out.println();
+					
+					if(attack6[2] > defense6[1]){
+						defCountry.setTroopQuantity(defCountry.getTroopQuantity()-1);
+						System.out.println(attack6[2] +" is greater than "+ defense6[1]);
+					}
+					if(attack6[2] <= defense6[1]){
+						atkCountry.setTroopQuantity(atkCountry.getTroopQuantity()-1);
+						System.out.println(attack6[2] +" is less than or equal "+ defense6[1]);
+					}
+					if(attack6[1] > defense6[0]){
+						defCountry.setTroopQuantity(defCountry.getTroopQuantity()-1);
+						System.out.println(attack6[1] +" is greater than "+ defense6[0]);
+					} else {
+						atkCountry.setTroopQuantity(atkCountry.getTroopQuantity()-1);
+						System.out.println(attack6[1] +" is less than or equal "+ defense6[0]);
+					}
+					System.out.println("Attackers troops remaining: " + atkCountry.getTroopQuantity());
+					System.out.println("Defeners troops remaining: " + defCountry.getTroopQuantity());
+					switchVal = 0;
+					break;
+				case 10:
+					System.out.println("3v1");
+					int[] attack5 = {randomDice(), randomDice(), randomDice()};
+					Arrays.sort(attack5);
+					int[] defense5 = {randomDice()};
+					Arrays.sort(defense5);
+					System.out.println();
+					System.out.print("attack die from lowest to highest ");
+					for(int i = 0; i < 3; i++){
+						System.out.print(attack5[i] + " ");
+					}
+					System.out.println();
+					System.out.print("defense die from lowest to highest ");
+					System.out.print(defense5[0] +" ");
+					
+					if(attack5[2] > defense5[0]){
+						defCountry.setTroopQuantity(defCountry.getTroopQuantity()-1);
+						System.out.println(attack5[2] +" is greater than "+ defense5[0]);
+					}
+					if(attack5[2] <= defense5[0]){
+						atkCountry.setTroopQuantity(atkCountry.getTroopQuantity()-1);
+						System.out.println(attack5[2] +" is less than or equal "+ defense5[0]);
+					}
+					System.out.println("Attackers troops remaining: " + atkCountry.getTroopQuantity());
+					System.out.println("Defeners troops remaining: " + defCountry.getTroopQuantity());
+					switchVal = 0;
+					
+					
+					break;
+				case 7:
+					System.out.println("2v2");
+					int[] attack4 = {randomDice(), randomDice()};
+					Arrays.sort(attack4);
+					int[] defense4 = {randomDice(), randomDice()};
+					Arrays.sort(defense4);
+					System.out.println();
+					System.out.print("attack die from lowest to highest ");
+					for(int i = 0; i < 2; i++){
+						System.out.print(attack4[i] + " ");
+					}
+					System.out.println();
+					System.out.print("defense die from lowest to highest ");
+					for(int i = 0; i < 2; i++){
+						System.out.print(defense4[i] +" ");
+					}
+					System.out.println();
+					
+					if(attack4[1] > defense4[1]){
+						defCountry.setTroopQuantity(defCountry.getTroopQuantity()-1);
+						System.out.println(attack4[1] +" is greater than "+ defense4[1]);
+					}
+					if(attack4[1] <= defense4[1]){
+						atkCountry.setTroopQuantity(atkCountry.getTroopQuantity()-1);
+						System.out.println(attack4[1] +" is less than or equal "+ defense4[1]);
+					}
+					if(attack4[0] > defense4[0]){
+						defCountry.setTroopQuantity(defCountry.getTroopQuantity()-1);
+						System.out.println(attack4[0] +" is greater than "+ defense4[0]);
+					} else {
+						atkCountry.setTroopQuantity(atkCountry.getTroopQuantity()-1);
+						System.out.println(attack4[0] +" is less than or equal "+ defense4[0]);
+					}
+					System.out.println("Attackers troops remaining: " + atkCountry.getTroopQuantity());
+					System.out.println("Defeners troops remaining: " + defCountry.getTroopQuantity());
+					switchVal = 0;
+					
+					break;
+				case 5:
+					System.out.println("2v1");
+					int[] attack3 = {randomDice(), randomDice()};
+					Arrays.sort(attack3);
+					int[] defense3 = {randomDice()};
+					Arrays.sort(defense3);
+					System.out.println();
+					System.out.print("attack die from lowest to highest ");
+					for(int i = 0; i < 2; i++){
+						System.out.print(attack3[i] + " ");
+					}
+					System.out.println();
+					System.out.print("defense die from lowest to highest ");
+					
+					System.out.print(defense3[0] +" ");
+
+					System.out.println();
+					
+					if(attack3[0] > defense3[0]){
+						defCountry.setTroopQuantity(defCountry.getTroopQuantity()-1);
+						System.out.println(attack3[2] +" is greater than "+ defense3[1]);
+					}
+					else{
+						atkCountry.setTroopQuantity(atkCountry.getTroopQuantity()-1);
+						System.out.println(attack3[2] +" is less than or equal "+ defense3[1]);
+					}
+					System.out.println("Attackers troops remaining: " + atkCountry.getTroopQuantity());
+					System.out.println("Defeners troops remaining: " + defCountry.getTroopQuantity());
+					switchVal = 0;
+	
+					
+					break;
+				}
+
+				// ignore for now
+				Scanner in = new Scanner(System.in);
+				// isAttacking = false;
+				if (atkCountry.getTroopQuantity() > 1 && defCountry.getTroopQuantity() > 0) {
+					System.out
+							.println("Attacker! Do you wish to continue? type 'yes' to Continue");
+					String temp = in.next();
+					if (temp.equals("yes")) {
+						isAttacking = true;
+					} else {
+						isAttacking = false;
+						if (atkCountry.getTroopQuantity() == 1) {
+							System.out.println("Not enough troops");
+						} else {
+							System.out.println("Combat stopped");
+
+						}
+						break;
+					}
+
+				}
+				System.out.println("Victory, " + defCountry.getCountryName() +" is now yours");
+			}
+
+		}
+
+	}
+
+	public static int randomDice() {
+		int dice;
+		Random generator = new Random();
+		dice = generator.nextInt(6) + 1;
+		return dice;
+	}
+}

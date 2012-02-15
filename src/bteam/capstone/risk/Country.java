@@ -22,14 +22,16 @@ public class Country {
 	private String countryName;
 	private ArrayList<Integer> countryBorders;
 	private boolean island;
-
+	private int id = 0;
+	private boolean hasHQ = false;
+	
 	// city variables
 	private String cityName;
 	// 0 = NONE, 1 = MINOR, 2 = MAJOR, 3 = CAPITOL, 4 = Destroyed
 	private int cityType;
 	private boolean cityFortified;
 	private int fortifyEnergy;
-
+	
 	// faction variables
 	private String controllingFaction;
 	private int troopQuantity;
@@ -166,14 +168,27 @@ public class Country {
 
 	public void setFactionHQ(String factionHQ) {
 		this.factionHQ = factionHQ;
+		hasHQ = true;
 	}
 
+	public boolean hasHQ(){
+		return hasHQ;
+	}
 	public int getScarType() {
 		return scarType;
 	}
 
 	public void setScarType(int scarType) {
 		this.scarType = scarType;
+	}
+	
+	public void setId(int ident){
+		id = ident;
+	}
+	public int id() {
+		// TODO Auto-generated method stub
+		
+		return id;
 	}
 
 }
