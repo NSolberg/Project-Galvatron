@@ -25,7 +25,9 @@ public class Map {
 	 *            continent separated by newlines, toString representation for
 	 *            each country separated by newlines.
 	 */
+	int id = 0;
 	public Map(String data) {
+		
 		Scanner scan = new Scanner(data);
 		int numCont = scan.nextInt();
 		scan.nextLine();
@@ -37,6 +39,9 @@ public class Map {
 		while (scan.hasNextLine()) {
 			String dataLine = scan.nextLine();
 			countrys.add(new Country(dataLine));
+			countrys.get(id).setId(id);
+			id++;
+			//System.out.print(id + " ");
 		}
 	}
 

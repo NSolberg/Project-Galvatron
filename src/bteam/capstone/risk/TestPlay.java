@@ -2,16 +2,95 @@ package bteam.capstone.risk;
 
 import static org.junit.Assert.*;
 
-import java.io.File;
-import java.io.FileReader;
-
 import org.junit.Test;
 
+public class TestPlay {
 
-
-public class TestMap {
-	//File file = new File("theWorld.txt");
-	//String data = file.toString();
+	
+	@Test
+	public void testAttackOneInvalidAttack() {
+		System.out.println();
+		System.out.println("--------------------------------------------------");
+		System.out.println("||||                 Test 1                   ||||");
+		System.out.println("--------------------------------------------------");
+		System.out.println("Invalid attack, not enough troops to battle");
+		aPlayer.addCountry(0);
+		bPlayer.addCountry(1);
+		map.getCountry(0).setTroopQuantity(1);
+		map.getCountry(1).setTroopQuantity(1);
+		Play.attack(map.getCountry(0), map.getCountry(1));
+		System.out.println("--------------------------------------------------");
+		System.out.println();
+		
+	}
+	
+	@Test
+	public void testAttackOneInvalidAttackNotConnected() {
+		System.out.println();
+		System.out.println("--------------------------------------------------");
+		System.out.println("||||                 Test 2                   ||||");
+		System.out.println("--------------------------------------------------");
+		System.out.println("Invalid attack country not connected");
+		
+		aPlayer.addCountry(16);
+		bPlayer.addCountry(0);
+		map.getCountry(16).setTroopQuantity(4);
+		map.getCountry(0).setTroopQuantity(3);
+		Play.attack(map.getCountry(16), map.getCountry(0));
+		System.out.println("--------------------------------------------------");
+		
+	}
+	
+	@Test
+	public void testAttackTwoSwitchOne() {
+		System.out.println();
+		System.out.println("--------------------------------------------------");
+		System.out.println("||||                 Test 3                   ||||");
+		System.out.println("--------------------------------------------------");
+		System.out.println("testAttack switch case one");
+		aPlayer.addCountry(0);
+		bPlayer.addCountry(1);
+		map.getCountry(0).setTroopQuantity(4);
+		map.getCountry(1).setTroopQuantity(3);
+		
+		Play.attack(map.getCountry(0), map.getCountry(1));
+		System.out.println("Should Hit the first switch case: 3 atc dice 2 def");
+		System.out.println("--------------------------------------------------");
+		System.out.println();
+	}
+//	
+//	@Test
+//	public void testAttackThreeSwitchTwo() {
+//		aPlayer.addCountry(0);
+//		bPlayer.addCountry(1);
+//		map.getCountry(0).setTroopQuantity(1);
+//		map.getCountry(1).setTroopQuantity(1);
+//		Play.attack(map.getCountry(0), map.getCountry(1));
+//	}
+//	
+//	@Test
+//	public void testAttackFourSwitchThree() {
+//		aPlayer.addCountry(0);
+//		bPlayer.addCountry(1);
+//		map.getCountry(0).setTroopQuantity(1);
+//		map.getCountry(1).setTroopQuantity(1);
+//		Play.attack(map.getCountry(0), map.getCountry(1));
+//	}
+//
+//	@Test
+//	public void testAttackFourSwitchFour() {
+//		aPlayer.addCountry(0);
+//		bPlayer.addCountry(1);
+//		map.getCountry(0).setTroopQuantity(1);
+//		map.getCountry(1).setTroopQuantity(1);
+//		Play.attack(map.getCountry(0), map.getCountry(1));
+//	}
+//	
+//	@Test
+//	public void testRandomDice() {
+//		fail("Not yet implemented");
+//	}
+	
 	String data = "6" + "\n" + 
 	"NorthAmerica 	title NONE 5 0	 0 1 2 3 4 5 6 7 8" + "\n" +
 	"SouthAmerica 	title NONE 5 0	 9 10 11 12" + "\n" +
@@ -62,121 +141,10 @@ public class TestMap {
 	"40WesternAustralia 	\\NONE 1 true 1 faction 50 \\NONE 50 false  41 38 39" + "\n" +
 	"41EasternAustralia 	\\NONE 1 true 1 faction 50 \\NONE 50 false 38 40";
 
+	Map map = new Map(data);
 	
-	@Test
-	public void testCountrysConnected() {
-		Map map = new Map(data);
-		Country one = map.getCountry(0);
-		Country two = map.getCountry(1);
-		for(int i = 0; i < one.getCountryBorders().size(); i++)
-		{
-			System.out.print(one.getCountryBorders().get(i) + " ");
-			
-		}
-		System.out.println();
-		System.out.println(one.id() + " " + two.id());
-		assertEquals(true, one.getCountryBorders().contains(two.id()));
-	}
+	player aPlayer = new player("One  0 0 0 0");
+	player bPlayer = new player("Two  0 0 0 0");
 	
-	@Test
-	public void testCountrysNotConnected() {
-		Map map = new Map(data);
-		Country one = map.getCountry(0);
-		Country two = map.getCountry(16);
-		for(int i = 0; i < one.getCountryBorders().size(); i++)
-		{
-			System.out.print(one.getCountryBorders().get(i) + " ");
-			
-		}
-		System.out.println();
-		System.out.println(one.id() + " " + two.id());
-		assertEquals(false, one.getCountryBorders().contains(two.id()));
-	}
-	
-	player PlayerOne = new player("One  0 0 0 0");
-	Map testMap = new Map(data);
-	/* tests that a player that controls all of northamerica gets
-	 * the correct bonus
-	 */
-	@Test
-	public void testPlayerBonusCont(){
-		PlayerOne.addCountry(0);
-		PlayerOne.addCountry(1);
-		PlayerOne.addCountry(2);
-		PlayerOne.addCountry(3);
-		PlayerOne.addCountry(4);
-		PlayerOne.addCountry(5);
-		PlayerOne.addCountry(6);
-		PlayerOne.addCountry(7);
-		PlayerOne.addCountry(8);
-		
-		assertEquals(8, testMap.recruitTroops(PlayerOne.getCountrys(), PlayerOne.getName()));
-		
-	}
-	
-	@Test
-	public void testPlayerBonus(){
-		PlayerOne.addCountry(0);
-		PlayerOne.addCountry(1);
-		PlayerOne.addCountry(2);
-		PlayerOne.addCountry(3);
-		PlayerOne.addCountry(4);
-		PlayerOne.addCountry(5);
-		PlayerOne.addCountry(6);
-		PlayerOne.addCountry(7);
-		PlayerOne.addCountry(9);
-		
-		assertEquals(3, testMap.recruitTroops(PlayerOne.getCountrys(), PlayerOne.getName()));
-		
-	}
-	
-	@Test
-	public void  testPlayerBonusCityType1(){
-		PlayerOne.addCountry(0);
-		testMap.getCountry(0).setCityType(1);
-		assertEquals(3, testMap.recruitTroops(PlayerOne.getCountrys(), PlayerOne.getName()));
-		
-	}
-	
-	@Test
-	public void  testPlayerBonusCityType2(){
-		PlayerOne.addCountry(0);
-		testMap.getCountry(0).setCityType(2);
-		assertEquals(3, testMap.recruitTroops(PlayerOne.getCountrys(), PlayerOne.getName()));
-		
-	}
-	
-	@Test
-	public void  testPlayerBonusCityType3(){
-		PlayerOne.addCountry(0);
-		testMap.getCountry(0).setCityType(3);
-		assertEquals(3, testMap.recruitTroops(PlayerOne.getCountrys(), PlayerOne.getName()));		
-	}
-	
-	@Test
-	public void  testPlayerBonusHQNamed(){
-		PlayerOne.addCountry(0);
-		testMap.getCountry(0).setFactionHQ("one");
-		assertEquals(3, testMap.recruitTroops(PlayerOne.getCountrys(), PlayerOne.getName()));
-		
-	}
-	@Test
-	public void  testPlayerBonusNamingCont(){
-		PlayerOne.addCountry(0);
-		PlayerOne.addCountry(1);
-		PlayerOne.addCountry(2);
-		PlayerOne.addCountry(3);
-		PlayerOne.addCountry(4);
-		PlayerOne.addCountry(5);
-		PlayerOne.addCountry(6);
-		PlayerOne.addCountry(7);
-		PlayerOne.addCountry(8);
-		testMap.getCountry(0).setCityType(0);
-		testMap.getCountry(0).setFactionHQ("\\NONE");
-		testMap.getContinent(0).setTitle("One Continent");
-		testMap.getContinent(0).setNamer("One");
-		assertEquals(9, testMap.recruitTroops(PlayerOne.getCountrys(), PlayerOne.getName()));
-		
-	}
-	
+
 }
