@@ -1,6 +1,14 @@
 package bteam.capstone.risk;
 
-public class tempCore {
+public class tempCore extends Thread {
+
+	public tempCore(RiskServer riskServer, String id) {
+		// TODO Auto-generated constructor stub
+	}
+
+	public tempCore(RiskServer riskServer, String id, String name) {
+		// TODO Auto-generated constructor stub
+	}
 
 	public boolean isActive() {
 		// TODO Auto-generated method stub
@@ -43,6 +51,11 @@ public class tempCore {
 	}
 
 	public void sendToGame(String input) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void closeGame() {
 		// TODO Auto-generated method stub
 		
 	}
