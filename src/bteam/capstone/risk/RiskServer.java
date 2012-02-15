@@ -38,6 +38,15 @@ public class RiskServer {
 			e.printStackTrace();
 		}
 	}
+	
+	public void sendToClient(String clientID, String Data){
+		for(int i=0;i<MaxClients;i++){
+			if(Clients[i]!=null && Clients[i].getID().equals(clientID)){
+				Clients[i].send(Data);
+				break;
+			}
+		}
+	}
 
 	private static int reserveSeat(clientHandler c) {
 		int out = -1;
@@ -49,6 +58,24 @@ public class RiskServer {
 		}
 		Clients[out] = c;
 		return out;
+	}
+	
+	private static synchronized void createGame(int f, String string) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	private static synchronized void joinGame(int gameID,String playerID){
+		Instances[gameID].join(playerID);
+		for(int i=0;i<MaxClients;i++){
+			if(Clients[i].getID().equals(playerID)){
+				Clients[i].setGame(gameID);
+			}
+		}
+	}
+	
+	private static void listGames(boolean byUser, String user){
+		// TODO finish me
 	}
 
 	private class clientHandler extends Thread {
@@ -73,7 +100,19 @@ public class RiskServer {
 			// TODO Auto-generated method stub
 			return false;
 		}
+		
+		public void send(String data){
+			out.println(data);
+		}
+		
+		public String getID(){
+			return id;
+		}
 
+		public void setGame(int num){
+			game = num;
+		}
+		
 		@Override
 		public void run() {
 			super.run();
@@ -84,6 +123,7 @@ public class RiskServer {
 		}
 
 		private synchronized void greet() {
+			id = in.nextLine();
 			if (CurrentClients < MaxClients) {
 				seat = reserveSeat(this);
 				connected = true;
@@ -116,22 +156,31 @@ public class RiskServer {
 				cmd += "all other commands will be ignored or routed to a game instance if the client is\n";
 				cmd += "part of an instance.\n";
 			} else if (cmd.equals("games")) {
-				cmd = "ID 		Name		Creator 		Players\n";
+				cmd = "ID 		Name		Creator 		Players 		Started\n";
 				for (int i = 0; i < MaxInstances; i++) {
-					if (Instances[i] != null && Instances[i].isActive()) {
-						cmd += i + " " + " " + Instances[i].getWorldName()
-								+ " " + Instances[i].creator() + " "
-								+ Instances[i].getNumberPlayers() + "/5\n";
+					if (Instances[i] != null) {
+						cmd += i + " " + 
+								+ Instances[i].getWorldName() + " "
+								+ Instances[i].creator() + " "
+								+ Instances[i].getNumberPlayers() + " "
+								+ Instances[i].isStarted() + "\n";
 					}
 				}
 				out.println(cmd);
 			} else if (cmd.equals("join")) {
 				if (parse.hasNextInt()) {
 					int i = parse.nextInt();
-					if (Instances[i] != null && Instances[i].isActive()
-							&& Instances[i].canJoin()) {
-						Instances[i].join(id);
+					if(Instances[i]!=null){
+						if(Instances[i].canJoin()){
+							joinGame(i,id);
+						}else{
+							out.println("Game is full");
+						}
+					}else{
+						out.println("Game does not exist");
 					}
+				}else{
+					out.println("please specify a game id");
 				}
 			} else if (cmd.equals("exit")) {
 				connected = false;
@@ -148,12 +197,12 @@ public class RiskServer {
 					if (parse.hasNextInt()) {
 						int f = parse.nextInt();
 						if (f == 0) {
-							// TODO create a new game instance
+							createGame(f,"Default");
 						} else if (f == 1 && parse.hasNext()) {
 							String name = parse.next();
-							// TODO load game data into new game instance
+							createGame(f,name);
 						} else {
-							out.println("INVALID COMMAND");
+							out.println("please specify 0 for new game or 1 to load a board");
 						}
 					}
 				} else {
@@ -163,13 +212,14 @@ public class RiskServer {
 			} else if (cmd.equals("listsaved")) {
 				if (parse.hasNext()) {
 					String name = parse.next();
-					// TODO list all saved game files by user
+					listGames(true,name);
 				}
-				// TODO list all saved game files
-			} else if (game > -1 && Instances[game] != null
-					& Instances[game].isActive()) {
-				Instances[game].send(input);
+				listGames(false,"");
+			} else if (game > -1 && Instances[game] != null) {
+				Instances[game].sendToGame(input);
 			}
 		}
 	}
+
+	
 }

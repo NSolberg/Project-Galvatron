@@ -22,7 +22,7 @@ public class tempCore {
 		return false;
 	}
 
-	public void send(String input) {
+	public void sendToClient(String playerID, String Data) {
 		// TODO Auto-generated method stub
 		
 	}
@@ -35,6 +35,16 @@ public class tempCore {
 	public int creator() {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	public int isStarted() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	public void sendToGame(String input) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
