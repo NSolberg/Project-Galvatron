@@ -35,7 +35,6 @@ public class RiskServer {
 		Clients = new clientHandler[MaxClients];
 		try {
 			server = new ServerSocket(Port);
-			System.out.println("Server Started");
 			while (alive) {
 				soc = server.accept();
 				clientHandler client = new clientHandler(soc);
@@ -137,7 +136,7 @@ public class RiskServer {
 
 		} else {
 			out = "Game ID 		World Name 		Creator\n";
-			for (int i = 0; i < MaxClients; i++) {
+			for (int i = 0; i < MaxInstances; i++) {
 				if (Instances[i] != null) {
 					if (user != "Default"
 							&& Instances[i].creator().equals(user)) {
@@ -165,7 +164,7 @@ public class RiskServer {
 		// Complete
 		public clientHandler(Socket socket) throws IOException {
 			soc = socket;
-			out = new PrintWriter(soc.getOutputStream());
+			out = new PrintWriter(soc.getOutputStream(),true);
 			in = new Scanner(soc.getInputStream());
 			connected = false;
 			greet();
@@ -211,10 +210,12 @@ public class RiskServer {
 				String input = in.nextLine();
 				parseInput(input);
 			}
+			System.out.println("Client Stoped");
 		}
 
 		// Complete
 		private synchronized void greet() {
+			out.println("Whats your ID");
 			id = in.nextLine();
 			if (CurrentClients < MaxClients) {
 				reserveSeat(this);
@@ -242,13 +243,14 @@ public class RiskServer {
 					cmd += "LIST [w,g] <user>		with the additional specification of w prints out to the screen\n";
 					cmd += "						all the saved worlds, g prints out all the avaliable games. With\n";
 					cmd += "						and addition to u after w or g list only those created by the\n";
-					cmd += "						the specified user are printed out.";
+					cmd += "						the specified user are printed out.\n";
 					cmd += "JOIN [id]				Attempts to allow the player to join the game specefied by [id]\n";
-					cmd += "						where it represents the id of the game to be joined";
+					cmd += "						where it represents the id of the game to be joined\n";
 					cmd += "CREATE [n/l] <name>		Attempts to create a game instance, where a n specifies a new game\n";
 					cmd += "						and l and <name> where name is the name of a saved world loads\n";
-					cmd += "						the the world.";
-					cmd += "EXIT					Disconnects the client from the server.";
+					cmd += "						the the world.\n";
+					cmd += "EXIT					Disconnects the client from the server.\n";
+					out.println(cmd);
 				} else if (cmd.equals("list")) {
 					if (scan.hasNext()) {
 						cmd = scan.next();
@@ -305,6 +307,7 @@ public class RiskServer {
 						out.println("invalid command");
 					}
 				} else if (cmd.equals("exit")) {
+					out.println("goodbye");
 					out.close();
 					in.close();
 					try {
