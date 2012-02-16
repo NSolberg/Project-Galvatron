@@ -40,9 +40,9 @@ public class tempCore extends Thread {
 		return 0;
 	}
 
-	public int creator() {
+	public String creator() {
 		// TODO Auto-generated method stub
-		return 0;
+		return "";
 	}
 
 	public int isStarted() {

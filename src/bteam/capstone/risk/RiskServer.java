@@ -1,5 +1,7 @@
 package bteam.capstone.risk;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
@@ -42,6 +44,7 @@ public class RiskServer {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		System.out.println("Server Stoped");
 	}
 
 	public void sendToClient(String clientID, String Data) {
@@ -91,13 +94,13 @@ public class RiskServer {
 	private synchronized int createGame(int f, String id, String name) {
 		if (f == 0) {
 			for (int i = 0; i < CurrentInstances; i++) {
-				tempCore temp = new tempCore(this,id);
+				tempCore temp = new tempCore(this, id);
 				Instances[i] = temp;
 				return i;
 			}
-		}else{
+		} else {
 			for (int i = 0; i < CurrentInstances; i++) {
-				tempCore temp = new tempCore(this,id,name);
+				tempCore temp = new tempCore(this, id, name);
 				Instances[i] = temp;
 				return i;
 			}
@@ -105,8 +108,49 @@ public class RiskServer {
 		return -1;
 	}
 
-	private static void listGames(boolean byUser, String user) {
-		// TODO finish me
+	// Complete maybe
+	private static String listGames(boolean saved, String user) {
+		String out = "";
+		if (saved) {
+			out = "World Name 		Creator\n";
+			File dir = new File("Saved Games");
+			String games[] = dir.list();
+			Scanner temp;
+			if (games != null) {
+				for (int i = 0; i < games.length; i++) {
+					dir = new File("Saved Games/" + games[i] + "/index.txt");
+					try {
+						temp = new Scanner(dir);
+						String name = temp.next();
+						String creator = temp.next();
+						if (user != "Default" && creator.equals(user)) {
+							out += name + " 	" + creator + "\n";
+						} else {
+							out += name + " 	" + creator + "\n";
+						}
+						temp.close();
+					} catch (FileNotFoundException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+
+		} else {
+			out = "Game ID 		World Name 		Creator\n";
+			for (int i = 0; i < MaxClients; i++) {
+				if (Instances[i] != null) {
+					if (user != "Default"
+							&& Instances[i].creator().equals(user)) {
+						out += i + " 		" + Instances[i].getName() + " 		"
+								+ Instances[i].creator() + "\n";
+					} else {
+						out += i + " 		" + Instances[i].getName() + " 		"
+								+ Instances[i].creator() + "\n";
+					}
+				}
+			}
+		}
+		return out;
 	}
 
 	// Complete
@@ -214,10 +258,10 @@ public class RiskServer {
 								if (cmd.equals("Default")) {
 									out.println("invalid command");
 								} else {
-									listGames(true, cmd);
+									out.println(listGames(true, cmd));
 								}
 							} else {
-								listGames(true, "Default");
+								out.println(listGames(true, "Default"));
 							}
 						} else if (cmd.equals("g")) {
 							if (scan.hasNext()) {
@@ -225,10 +269,10 @@ public class RiskServer {
 								if (cmd.equals("Default")) {
 									out.println("invalid command");
 								} else {
-									listGames(false, cmd);
+									out.println(listGames(false, cmd));
 								}
 							} else {
-								listGames(false, "Default");
+								out.println(listGames(false, "Default"));
 							}
 						} else {
 							out.println("invalid command");
@@ -255,7 +299,7 @@ public class RiskServer {
 						Instances[num].join(id);
 					} else if (cmd.equals("l") && scan.hasNext()) {
 						cmd = scan.next();
-						int num = createGame(1, id,cmd);
+						int num = createGame(1, id, cmd);
 						Instances[num].join(id);
 					} else {
 						out.println("invalid command");
@@ -278,5 +322,4 @@ public class RiskServer {
 			}
 		}
 	}
-
 }
