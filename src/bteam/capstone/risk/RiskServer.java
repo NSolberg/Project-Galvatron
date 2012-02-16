@@ -1,5 +1,7 @@
 package bteam.capstone.risk;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
@@ -15,6 +17,9 @@ public class RiskServer {
 	private ServerSocket server;
 	private static tempCore[] Instances;
 	private static clientHandler[] Clients;
+	private static String helpFile;
+	private static boolean alive;
+	private Socket soc;
 
 	/**
 	 * @param args
@@ -23,22 +28,35 @@ public class RiskServer {
 		new RiskServer();
 	}
 
+	// Complete
 	public RiskServer() {
+		alive = true;
 		Instances = new tempCore[MaxInstances];
 		Clients = new clientHandler[MaxClients];
 		try {
 			server = new ServerSocket(Port);
 			System.out.println("Server Started");
-			while (true) {
-				Socket soc = server.accept();
+			while (alive) {
+				soc = server.accept();
 				clientHandler client = new clientHandler(soc);
 				client.start();
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		System.out.println("Server Stoped");
 	}
 
+	public void sendToClient(String clientID, String Data) {
+		for (int i = 0; i < MaxClients; i++) {
+			if (Clients[i] != null && Clients[i].getID().equals(clientID)) {
+				Clients[i].send(Data);
+				break;
+			}
+		}
+	}
+
+	// Complete
 	private static int reserveSeat(clientHandler c) {
 		int out = -1;
 		for (int i = 0; i < MaxClients; i++) {
@@ -51,15 +69,100 @@ public class RiskServer {
 		return out;
 	}
 
+	private synchronized void closeServer() {
+		if (alive) {
+			alive = false;
+			for (int i = 0; i < MaxClients; i++) {
+				if (Clients[i] != null && Clients[i].isConnected()) {
+					Clients[i].goodBye();
+					Clients[i] = null;
+				}
+			}
+			for (int i = 0; i < MaxInstances; i++) {
+				if (Instances[i] != null) {
+					Instances[i].closeGame();
+				}
+			}
+			try {
+				soc.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	private synchronized int createGame(int f, String id, String name) {
+		if (f == 0) {
+			for (int i = 0; i < CurrentInstances; i++) {
+				tempCore temp = new tempCore(this, id);
+				Instances[i] = temp;
+				return i;
+			}
+		} else {
+			for (int i = 0; i < CurrentInstances; i++) {
+				tempCore temp = new tempCore(this, id, name);
+				Instances[i] = temp;
+				return i;
+			}
+		}
+		return -1;
+	}
+
+	// Complete maybe
+	private static String listGames(boolean saved, String user) {
+		String out = "";
+		if (saved) {
+			out = "World Name 		Creator\n";
+			File dir = new File("Saved Games");
+			String games[] = dir.list();
+			Scanner temp;
+			if (games != null) {
+				for (int i = 0; i < games.length; i++) {
+					dir = new File("Saved Games/" + games[i] + "/index.txt");
+					try {
+						temp = new Scanner(dir);
+						String name = temp.next();
+						String creator = temp.next();
+						if (user != "Default" && creator.equals(user)) {
+							out += name + " 	" + creator + "\n";
+						} else {
+							out += name + " 	" + creator + "\n";
+						}
+						temp.close();
+					} catch (FileNotFoundException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+
+		} else {
+			out = "Game ID 		World Name 		Creator\n";
+			for (int i = 0; i < MaxClients; i++) {
+				if (Instances[i] != null) {
+					if (user != "Default"
+							&& Instances[i].creator().equals(user)) {
+						out += i + " 		" + Instances[i].getName() + " 		"
+								+ Instances[i].creator() + "\n";
+					} else {
+						out += i + " 		" + Instances[i].getName() + " 		"
+								+ Instances[i].creator() + "\n";
+					}
+				}
+			}
+		}
+		return out;
+	}
+
+	// Complete
 	private class clientHandler extends Thread {
 		private Socket soc;
 		private PrintWriter out;
-		private Scanner in, parse;
-		private int seat;
+		private Scanner in;
 		private String id;
 		private boolean connected;
 		private int game = -1;
 
+		// Complete
 		public clientHandler(Socket socket) throws IOException {
 			soc = socket;
 			out = new PrintWriter(soc.getOutputStream());
@@ -68,12 +171,39 @@ public class RiskServer {
 			greet();
 		}
 
-		public boolean isConnected() {
-
-			// TODO Auto-generated method stub
-			return false;
+		// Complete
+		public void goodBye() {
+			out.println("goodbye");
+			out.close();
+			in.close();
+			try {
+				soc.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 
+		// Complete
+		public boolean isConnected() {
+			return !soc.isClosed();
+		}
+
+		// Complete
+		public void send(String data) {
+			out.println(data);
+		}
+
+		// Complete
+		public String getID() {
+			return id;
+		}
+
+		// Complete
+		public void setGame(int num) {
+			game = num;
+		}
+
+		// Complete
 		@Override
 		public void run() {
 			super.run();
@@ -83,9 +213,11 @@ public class RiskServer {
 			}
 		}
 
+		// Complete
 		private synchronized void greet() {
+			id = in.nextLine();
 			if (CurrentClients < MaxClients) {
-				seat = reserveSeat(this);
+				reserveSeat(this);
 				connected = true;
 				out.println("CONNECTED");
 			} else {
@@ -100,75 +232,93 @@ public class RiskServer {
 			}
 		}
 
+		// Complete
 		private void parseInput(String input) {
-			parse = new Scanner(input);
-			String cmd = parse.next();
-			if (cmd.equals("help")) {
-				cmd = "<games>  prints a list of all currently running games in the following format:\n";
-				cmd += "		i n/5. where i is the identify of the game and n is the number of player \n";
-				cmd += "		currently in the game up to five.\n\n";
-				cmd += "<join n> add the user to the specified game where n is the identifier of the game.\n\n";
-				cmd += "<exit> disconnects the client from the server.\n\n";
-				cmd += "<newgame n [savename]> creates an instance of a new risk game and adds the client\n";
-				cmd += "		to the game if an instance can be created. The n flag can be either 0 for\n";
-				cmd += "		a new game with default settings or 1 and the name of a saved game file to\n";
-				cmd += "		load\n\n";
-				cmd += "all other commands will be ignored or routed to a game instance if the client is\n";
-				cmd += "part of an instance.\n";
-			} else if (cmd.equals("games")) {
-				cmd = "ID 		Name		Creator 		Players\n";
-				for (int i = 0; i < MaxInstances; i++) {
-					if (Instances[i] != null && Instances[i].isActive()) {
-						cmd += i + " " + " " + Instances[i].getWorldName()
-								+ " " + Instances[i].creator() + " "
-								+ Instances[i].getNumberPlayers() + "/5\n";
-					}
-				}
-				out.println(cmd);
-			} else if (cmd.equals("join")) {
-				if (parse.hasNextInt()) {
-					int i = parse.nextInt();
-					if (Instances[i] != null && Instances[i].isActive()
-							&& Instances[i].canJoin()) {
-						Instances[i].join(id);
-					}
-				}
-			} else if (cmd.equals("exit")) {
-				connected = false;
-				out.println("goodbye");
-				out.close();
-				in.close();
-				try {
-					soc.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			} else if (cmd.equals("newgame")) {
-				if (CurrentInstances < MaxInstances) {
-					if (parse.hasNextInt()) {
-						int f = parse.nextInt();
-						if (f == 0) {
-							// TODO create a new game instance
-						} else if (f == 1 && parse.hasNext()) {
-							String name = parse.next();
-							// TODO load game data into new game instance
+			if (game == -1) {
+				Scanner scan = new Scanner(input);
+				String cmd = scan.next();
+				if (cmd.equals("help")) {
+					cmd = "HELP 					list all the avaliable commands\n";
+					cmd += "LIST [w,g] <user>		with the additional specification of w prints out to the screen\n";
+					cmd += "						all the saved worlds, g prints out all the avaliable games. With\n";
+					cmd += "						and addition to u after w or g list only those created by the\n";
+					cmd += "						the specified user are printed out.";
+					cmd += "JOIN [id]				Attempts to allow the player to join the game specefied by [id]\n";
+					cmd += "						where it represents the id of the game to be joined";
+					cmd += "CREATE [n/l] <name>		Attempts to create a game instance, where a n specifies a new game\n";
+					cmd += "						and l and <name> where name is the name of a saved world loads\n";
+					cmd += "						the the world.";
+					cmd += "EXIT					Disconnects the client from the server.";
+				} else if (cmd.equals("list")) {
+					if (scan.hasNext()) {
+						cmd = scan.next();
+						if (cmd.equals("w")) {
+							if (scan.hasNext()) {
+								cmd = scan.next();
+								if (cmd.equals("Default")) {
+									out.println("invalid command");
+								} else {
+									out.println(listGames(true, cmd));
+								}
+							} else {
+								out.println(listGames(true, "Default"));
+							}
+						} else if (cmd.equals("g")) {
+							if (scan.hasNext()) {
+								cmd = scan.next();
+								if (cmd.equals("Default")) {
+									out.println("invalid command");
+								} else {
+									out.println(listGames(false, cmd));
+								}
+							} else {
+								out.println(listGames(false, "Default"));
+							}
 						} else {
-							out.println("INVALID COMMAND");
+							out.println("invalid command");
 						}
+					} else {
+						out.println("invalid command");
 					}
-				} else {
-					out.println("SERVER GAME TABLES FULL");
-				}
 
-			} else if (cmd.equals("listsaved")) {
-				if (parse.hasNext()) {
-					String name = parse.next();
-					// TODO list all saved game files by user
+				} else if (cmd.equals("join") && scan.hasNextInt()) {
+					int num = scan.nextInt();
+					if (num < MaxInstances && Instances[num] != null) {
+						if (Instances[num].canJoin()) {
+							Instances[num].join(id);
+						} else {
+							out.println("cannot join game");
+						}
+					} else {
+						out.println("game does not exist");
+					}
+				} else if (cmd.equals("create") && scan.hasNext()) {
+					cmd = scan.next();
+					if (cmd.equals("n")) {
+						int num = createGame(0, id, "Default");
+						Instances[num].join(id);
+					} else if (cmd.equals("l") && scan.hasNext()) {
+						cmd = scan.next();
+						int num = createGame(1, id, cmd);
+						Instances[num].join(id);
+					} else {
+						out.println("invalid command");
+					}
+				} else if (cmd.equals("exit")) {
+					out.close();
+					in.close();
+					try {
+						soc.close();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				} else if (cmd.equals("stop")) {
+					closeServer();
+				} else {
+					out.println("invalid command");
 				}
-				// TODO list all saved game files
-			} else if (game > -1 && Instances[game] != null
-					& Instances[game].isActive()) {
-				Instances[game].send(input);
+			} else {
+				Instances[game].sendToGame(input);
 			}
 		}
 	}
