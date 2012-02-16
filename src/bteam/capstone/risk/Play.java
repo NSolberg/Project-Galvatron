@@ -12,6 +12,12 @@ import java.util.Stack;
 public class Play {
 	private static boolean isAttacking = true;
 
+	
+	public static void firstTurnSetup(){
+		/**
+		 * @todo
+		 */
+	}
 	public static void attack(Country atkCountry, Country defCountry) {
 		int atcDiceOne;
 		int atcDiceTwo;
