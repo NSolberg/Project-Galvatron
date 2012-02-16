@@ -91,17 +91,21 @@ public class RiskServer {
 	}
 
 	private synchronized int createGame(int f, String id, String name) {
-		if (f == 0) {
-			for (int i = 0; i < CurrentInstances; i++) {
-				tempCore temp = new tempCore(this, id);
-				Instances[i] = temp;
-				return i;
-			}
-		} else {
-			for (int i = 0; i < CurrentInstances; i++) {
-				tempCore temp = new tempCore(this, id, name);
-				Instances[i] = temp;
-				return i;
+		if (CurrentInstances < MaxInstances) {
+			if (f == 0) {
+				for (int i = 0; i < MaxInstances; i++) {
+					tempCore temp = new tempCore(this, id);
+					Instances[i] = temp;
+					CurrentInstances ++;
+					return i;
+				}
+			} else {
+				for (int i = 0; i < MaxInstances; i++) {
+					tempCore temp = new tempCore(this, id, name);
+					Instances[i] = temp;
+					CurrentInstances ++;
+					return i;
+				}
 			}
 		}
 		return -1;
@@ -164,7 +168,7 @@ public class RiskServer {
 		// Complete
 		public clientHandler(Socket socket) throws IOException {
 			soc = socket;
-			out = new PrintWriter(soc.getOutputStream(),true);
+			out = new PrintWriter(soc.getOutputStream(), true);
 			in = new Scanner(soc.getInputStream());
 			connected = false;
 			greet();

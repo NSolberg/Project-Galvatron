@@ -18,7 +18,7 @@ public class RiskClient extends Thread {
 		control = controller;
 	}
 
-	public void sendData(String data){
+	public void sendData(String data) {
 		out.println(data);
 	}
 
@@ -28,12 +28,10 @@ public class RiskClient extends Thread {
 			out = new PrintWriter(client.getOutputStream(), true);
 			in = new Scanner(client.getInputStream());
 			linked = true;
-			control.displayData("Link to server established");			
+			control.displayData("Link to server established");
 		} catch (UnknownHostException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -54,9 +52,7 @@ public class RiskClient extends Thread {
 		try {
 			client.close();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
-	
 }
