@@ -30,7 +30,7 @@ public class Play {
 	 * @param legacy Determines weatehr or not it is standard or legacy
 	 */
 	public void firstTurnSetup(boolean legacy) {
-		ArrayList<Integer> whosPlace;
+		ArrayList<Integer> whosPlace = new ArrayList<Integer>();
 		for(int i=0;i<numPlayers;i++){
 			whosTurn.add(i);
 			whosPlace.add(i);
