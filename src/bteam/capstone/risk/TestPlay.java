@@ -6,7 +6,6 @@ import org.junit.Test;
 
 public class TestPlay {
 
-	
 	@Test
 	public void testAttackOneInvalidAttack() {
 		System.out.println();
@@ -21,6 +20,8 @@ public class TestPlay {
 		Play.attack(map.getCountry(0), map.getCountry(1));
 		System.out.println("--------------------------------------------------");
 		System.out.println();
+		aPlayer.removeAllCountrys();
+		bPlayer.removeAllCountrys();
 		
 	}
 	
@@ -38,11 +39,12 @@ public class TestPlay {
 		map.getCountry(0).setTroopQuantity(3);
 		Play.attack(map.getCountry(16), map.getCountry(0));
 		System.out.println("--------------------------------------------------");
-		
+		aPlayer.removeAllCountrys();
+		bPlayer.removeAllCountrys();
 	}
 	
 	@Test
-	public void testAttackTwoSwitchOne() {
+	public void testAttackSwitchThreeVsTwo() {
 		System.out.println();
 		System.out.println("--------------------------------------------------");
 		System.out.println("||||                 Test 3                   ||||");
@@ -57,40 +59,129 @@ public class TestPlay {
 		System.out.println("Should Hit the first switch case: 3 atc dice 2 def");
 		System.out.println("--------------------------------------------------");
 		System.out.println();
+		aPlayer.removeAllCountrys();
+		bPlayer.removeAllCountrys();
 	}
-//	
-//	@Test
-//	public void testAttackThreeSwitchTwo() {
-//		aPlayer.addCountry(0);
-//		bPlayer.addCountry(1);
-//		map.getCountry(0).setTroopQuantity(1);
-//		map.getCountry(1).setTroopQuantity(1);
-//		Play.attack(map.getCountry(0), map.getCountry(1));
-//	}
-//	
-//	@Test
-//	public void testAttackFourSwitchThree() {
-//		aPlayer.addCountry(0);
-//		bPlayer.addCountry(1);
-//		map.getCountry(0).setTroopQuantity(1);
-//		map.getCountry(1).setTroopQuantity(1);
-//		Play.attack(map.getCountry(0), map.getCountry(1));
-//	}
-//
-//	@Test
-//	public void testAttackFourSwitchFour() {
-//		aPlayer.addCountry(0);
-//		bPlayer.addCountry(1);
-//		map.getCountry(0).setTroopQuantity(1);
-//		map.getCountry(1).setTroopQuantity(1);
-//		Play.attack(map.getCountry(0), map.getCountry(1));
-//	}
-//	
-//	@Test
-//	public void testRandomDice() {
-//		fail("Not yet implemented");
-//	}
 	
+	@Test
+	public void testAttackSwitchThreeVsOne() {
+		System.out.println();
+		System.out.println("--------------------------------------------------");
+		System.out.println("||||                 Test 4                   ||||");
+		System.out.println("--------------------------------------------------");
+		System.out.println("testAttack switch case two");
+		aPlayer.addCountry(0);
+		bPlayer.addCountry(1);
+		map.getCountry(0).setTroopQuantity(4);
+		map.getCountry(1).setTroopQuantity(1);
+		
+		Play.attack(map.getCountry(0), map.getCountry(1));
+		System.out.println("Should Hit the second switch case: 3 atc dice 1 def");
+		System.out.println("--------------------------------------------------");
+		System.out.println();
+		aPlayer.removeAllCountrys();
+		bPlayer.removeAllCountrys();
+	}
+	
+	@Test
+	public void testAttackSwitchTwoVsTwo() {
+		System.out.println();
+		System.out.println("--------------------------------------------------");
+		System.out.println("||||                 Test 5                   ||||");
+		System.out.println("--------------------------------------------------");
+		System.out.println("testAttack switch case three");
+		aPlayer.addCountry(0);
+		bPlayer.addCountry(1);
+		map.getCountry(0).setTroopQuantity(3);
+		map.getCountry(1).setTroopQuantity(2);
+		
+		Play.attack(map.getCountry(0), map.getCountry(1));
+		System.out.println("Should Hit the third switch case: 2 atc dice 2 def");
+		System.out.println("--------------------------------------------------");
+		System.out.println();
+		aPlayer.removeAllCountrys();
+		bPlayer.removeAllCountrys();
+	}
+	
+	@Test
+	public void testAttackSwitchTwoVsOne() {
+		System.out.println();
+		System.out.println("--------------------------------------------------");
+		System.out.println("||||                 Test 6                   ||||");
+		System.out.println("--------------------------------------------------");
+		System.out.println("testAttack switch case four");
+		aPlayer.addCountry(0);
+		bPlayer.addCountry(1);
+		map.getCountry(0).setTroopQuantity(3);
+		map.getCountry(1).setTroopQuantity(1);
+		
+		Play.attack(map.getCountry(0), map.getCountry(1));
+		System.out.println("Should Hit the fourth switch case: 2 atc dice 1 def");
+		System.out.println("--------------------------------------------------");
+		System.out.println();
+		aPlayer.removeAllCountrys();
+		bPlayer.removeAllCountrys();
+	}
+	
+	@Test
+	public void testAttackSwitchOneVsOne() {
+		System.out.println();
+		System.out.println("--------------------------------------------------");
+		System.out.println("||||                 Test 7                   ||||");
+		System.out.println("--------------------------------------------------");
+		System.out.println("testAttack switch case five");
+		aPlayer.addCountry(0);
+		bPlayer.addCountry(1);
+		map.getCountry(0).setTroopQuantity(2);
+		map.getCountry(1).setTroopQuantity(1);
+		
+		Play.attack(map.getCountry(0), map.getCountry(1));
+		System.out.println("Should Hit the fifth switch case: 2 atc dice 1 def");
+		System.out.println("--------------------------------------------------");
+		System.out.println();
+		aPlayer.removeAllCountrys();
+		bPlayer.removeAllCountrys();
+	}
+	
+	@Test
+	public void testAttackSwitchOneVsTwo() {
+		System.out.println();
+		System.out.println("--------------------------------------------------");
+		System.out.println("||||                 Test 8                   ||||");
+		System.out.println("--------------------------------------------------");
+		System.out.println("testAttack switch case six");
+		aPlayer.addCountry(0);
+		bPlayer.addCountry(1);
+		map.getCountry(0).setTroopQuantity(2);
+		map.getCountry(1).setTroopQuantity(2);
+		
+		Play.attack(map.getCountry(0), map.getCountry(1));
+		System.out.println("Should Hit the sixth switch case: 2 atc dice 1 def");
+		System.out.println("--------------------------------------------------");
+		System.out.println();
+		aPlayer.removeAllCountrys();
+		bPlayer.removeAllCountrys();
+	}
+	
+	@Test
+	public void testAttackSwitch20vs20() {
+		System.out.println();
+		System.out.println("--------------------------------------------------");
+		System.out.println("||||                 Test 9                   ||||");
+		System.out.println("--------------------------------------------------");
+		System.out.println("testAttack with 20 vs 20");
+		aPlayer.addCountry(0);
+		bPlayer.addCountry(1);
+		map.getCountry(0).setTroopQuantity(20);
+		map.getCountry(1).setTroopQuantity(20);
+		
+		Play.attack(map.getCountry(0), map.getCountry(1));
+		System.out.println("results will be random and hit different phases. ");
+		System.out.println("--------------------------------------------------");
+		System.out.println();
+		aPlayer.removeAllCountrys();
+		bPlayer.removeAllCountrys();
+	}
 	String data = "6" + "\n" + 
 	"NorthAmerica 	title NONE 5 0	 0 1 2 3 4 5 6 7 8" + "\n" +
 	"SouthAmerica 	title NONE 5 0	 9 10 11 12" + "\n" +

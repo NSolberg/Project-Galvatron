@@ -2,8 +2,6 @@ package bteam.capstone.risk;
 
 import static org.junit.Assert.*;
 
-import java.io.File;
-import java.io.FileReader;
 
 import org.junit.Test;
 
