@@ -7,7 +7,6 @@ package bteam.capstone.risk;
 import java.util.Arrays;
 import java.util.Random;
 import java.util.Scanner;
-import java.util.Stack;
 
 public class Play {
 	private static boolean isAttacking;
@@ -18,8 +17,26 @@ public class Play {
 		 * @todo
 		 */
 	}
-	public static void attack(Country atkCountry, Country defCountry) {
-		isAttacking = true;
+	/**
+	 * @author Nick Solberg
+	 * @param atkCountry represents the attackers country
+	 * @param defCountry represents the defenders country
+	 * 
+	 * This method will resolve an attack phase between two players
+	 * Given the attacking country and defending country the method
+	 * will retrieve the number of troops each side has.
+	 * The attacking player will be allowed to choose how many dice 
+	 * will be rolled in their phase, given the attacker appropriate 
+	 * has available resources. The attacker is also given the option
+	 * to cancel the attack after any round. The loop will stop when the
+	 * attacking player has 1 troop or the denfeder has 0
+	 * 
+	 * TODO Still need to implement the uses of missles and scars.
+	 * also need to apply conquering a country and how it effects a player.
+	 * Later modify this method to work with a gui and client.
+	 */
+	public void attack(Country atkCountry, Country defCountry) {
+		boolean isAttacking = true;
 		if (atkCountry.getCountryBorders().contains(defCountry.id()) == false) {
 			System.out.println("This will be an invalid attack");
 			isAttacking = false;

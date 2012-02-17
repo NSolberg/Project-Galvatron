@@ -6,6 +6,7 @@ import org.junit.Test;
 
 public class TestPlay {
 
+	Play play = new Play();
 	@Test
 	public void testAttackOneInvalidAttack() {
 		System.out.println();
@@ -17,7 +18,7 @@ public class TestPlay {
 		bPlayer.addCountry(1);
 		map.getCountry(0).setTroopQuantity(1);
 		map.getCountry(1).setTroopQuantity(1);
-		Play.attack(map.getCountry(0), map.getCountry(1));
+		play.attack(map.getCountry(0), map.getCountry(1));
 		System.out.println("--------------------------------------------------");
 		System.out.println();
 		aPlayer.removeAllCountrys();
@@ -37,7 +38,7 @@ public class TestPlay {
 		bPlayer.addCountry(0);
 		map.getCountry(16).setTroopQuantity(4);
 		map.getCountry(0).setTroopQuantity(3);
-		Play.attack(map.getCountry(16), map.getCountry(0));
+		play.attack(map.getCountry(16), map.getCountry(0));
 		System.out.println("--------------------------------------------------");
 		aPlayer.removeAllCountrys();
 		bPlayer.removeAllCountrys();
@@ -55,7 +56,7 @@ public class TestPlay {
 		map.getCountry(0).setTroopQuantity(4);
 		map.getCountry(1).setTroopQuantity(3);
 		
-		Play.attack(map.getCountry(0), map.getCountry(1));
+		play.attack(map.getCountry(0), map.getCountry(1));
 		System.out.println("Should Hit the first switch case: 3 atc dice 2 def");
 		System.out.println("--------------------------------------------------");
 		System.out.println();
@@ -75,7 +76,7 @@ public class TestPlay {
 		map.getCountry(0).setTroopQuantity(4);
 		map.getCountry(1).setTroopQuantity(1);
 		
-		Play.attack(map.getCountry(0), map.getCountry(1));
+		play.attack(map.getCountry(0), map.getCountry(1));
 		System.out.println("Should Hit the second switch case: 3 atc dice 1 def");
 		System.out.println("--------------------------------------------------");
 		System.out.println();
@@ -95,7 +96,7 @@ public class TestPlay {
 		map.getCountry(0).setTroopQuantity(3);
 		map.getCountry(1).setTroopQuantity(2);
 		
-		Play.attack(map.getCountry(0), map.getCountry(1));
+		play.attack(map.getCountry(0), map.getCountry(1));
 		System.out.println("Should Hit the third switch case: 2 atc dice 2 def");
 		System.out.println("--------------------------------------------------");
 		System.out.println();
@@ -115,7 +116,7 @@ public class TestPlay {
 		map.getCountry(0).setTroopQuantity(3);
 		map.getCountry(1).setTroopQuantity(1);
 		
-		Play.attack(map.getCountry(0), map.getCountry(1));
+		play.attack(map.getCountry(0), map.getCountry(1));
 		System.out.println("Should Hit the fourth switch case: 2 atc dice 1 def");
 		System.out.println("--------------------------------------------------");
 		System.out.println();
@@ -135,7 +136,7 @@ public class TestPlay {
 		map.getCountry(0).setTroopQuantity(2);
 		map.getCountry(1).setTroopQuantity(1);
 		
-		Play.attack(map.getCountry(0), map.getCountry(1));
+		play.attack(map.getCountry(0), map.getCountry(1));
 		System.out.println("Should Hit the fifth switch case: 2 atc dice 1 def");
 		System.out.println("--------------------------------------------------");
 		System.out.println();
@@ -155,7 +156,7 @@ public class TestPlay {
 		map.getCountry(0).setTroopQuantity(2);
 		map.getCountry(1).setTroopQuantity(2);
 		
-		Play.attack(map.getCountry(0), map.getCountry(1));
+		play.attack(map.getCountry(0), map.getCountry(1));
 		System.out.println("Should Hit the sixth switch case: 2 atc dice 1 def");
 		System.out.println("--------------------------------------------------");
 		System.out.println();
@@ -175,7 +176,7 @@ public class TestPlay {
 		map.getCountry(0).setTroopQuantity(20);
 		map.getCountry(1).setTroopQuantity(20);
 		
-		Play.attack(map.getCountry(0), map.getCountry(1));
+		play.attack(map.getCountry(0), map.getCountry(1));
 		System.out.println("results will be random and hit different phases. ");
 		System.out.println("--------------------------------------------------");
 		System.out.println();
