@@ -163,6 +163,25 @@ public class TestPlay {
 		bPlayer.removeAllCountrys();
 	}
 	
+	@Test
+	public void testAttackSwitch20vs20() {
+		System.out.println();
+		System.out.println("--------------------------------------------------");
+		System.out.println("||||                 Test 9                   ||||");
+		System.out.println("--------------------------------------------------");
+		System.out.println("testAttack with 20 vs 20");
+		aPlayer.addCountry(0);
+		bPlayer.addCountry(1);
+		map.getCountry(0).setTroopQuantity(20);
+		map.getCountry(1).setTroopQuantity(20);
+		
+		Play.attack(map.getCountry(0), map.getCountry(1));
+		System.out.println("results will be random and hit different phases. ");
+		System.out.println("--------------------------------------------------");
+		System.out.println();
+		aPlayer.removeAllCountrys();
+		bPlayer.removeAllCountrys();
+	}
 	String data = "6" + "\n" + 
 	"NorthAmerica 	title NONE 5 0	 0 1 2 3 4 5 6 7 8" + "\n" +
 	"SouthAmerica 	title NONE 5 0	 9 10 11 12" + "\n" +
