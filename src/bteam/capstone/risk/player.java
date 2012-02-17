@@ -12,7 +12,7 @@ import java.util.Scanner;
  */
 public class player {
 
-	private int missles, redstar, coin, resource;
+	private int missles, redstar, coin, resource, troops;
 	private String name;
 	private Faction faction;
 	private ArrayList<Integer> countrys = new ArrayList<Integer>();
@@ -170,6 +170,20 @@ public class player {
 	 */
 	public Faction getFaction() {
 		return faction;
+	}
+
+	/**
+	 * @param troops the troops to set
+	 */
+	public void setTroops(int troops) {
+		this.troops = troops;
+	}
+
+	/**
+	 * @return the troops
+	 */
+	public int getTroops() {
+		return troops;
 	}
 
 }
