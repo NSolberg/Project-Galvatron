@@ -13,6 +13,7 @@ public class Map {
 	// Change this later
 	public ArrayList<Country> countrys = new ArrayList<Country>();
 	public ArrayList<Continent> continent = new ArrayList<Continent>();
+	private int freeCountrys=0;
 
 	/**
 	 * Receives a string representation of the structure of the class for its
@@ -43,6 +44,7 @@ public class Map {
 			id++;
 			//System.out.print(id + " ");
 		}
+		freeCountrys = countrys.size();
 	}
 
 	/**
@@ -64,6 +66,12 @@ public class Map {
 		return data;
 	}
 
+	public boolean hasFreeCountry(){
+		if(freeCountrys==0)
+			return false;
+		return true;
+	}	
+	
 	/**
 	 * To be used for fortification of territories, expanding into new
 	 * territories, and for post attack phase when all troops have been removed
@@ -116,6 +124,9 @@ public class Map {
 	 */
 	public void placeTroops(int country, int troopQuantity, String Faction) {
 		Country temp = countrys.get(country);
+		if(temp.getControllingFaction().equals("\\NONE")){
+			freeCountrys--;
+		}
 		temp.setControllingFaction(Faction);
 		temp.setTroopQuantity(temp.getTroopQuantity() + troopQuantity);
 	}
