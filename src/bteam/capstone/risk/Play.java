@@ -23,15 +23,16 @@ public class Play {
 	private player[] players;
 	private ArrayList<Integer> whosTurn;
 	private Map world;
-	
+
 	/**
-	 * @author Ian Paterson 
+	 * @author Ian Paterson
 	 * 
-	 * @param legacy Determines weatehr or not it is standard or legacy
+	 * @param legacy
+	 *            Determines weatehr or not it is standard or legacy
 	 */
 	public void firstTurnSetup(boolean legacy) {
 		ArrayList<Integer> whosPlace = new ArrayList<Integer>();
-		for(int i=0;i<numPlayers;i++){
+		for (int i = 0; i < numPlayers; i++) {
 			whosTurn.add(i);
 			whosPlace.add(i);
 		}
@@ -92,26 +93,26 @@ public class Play {
 						|| turnOrder.size() != 0 || placement.size() != 0) {
 					int p = tempOrder.remove(0);
 					// Send to player p: "Choose draft card"
-					//Get choice from player
+					// Get choice from player
 					String choice = "p 0";
-					int val = Integer.parseInt(choice.charAt(2)+"");
-					if(choice.charAt(0) == 'p'){
+					int val = Integer.parseInt(choice.charAt(2) + "");
+					if (choice.charAt(0) == 'p') {
 						val = placement.remove(val);
 						whosPlace.set(val, p);
-					}else if(choice.charAt(0) == 't'){
+					} else if (choice.charAt(0) == 't') {
 						players[p].setTroops(troops.remove(val));
-					}else if(choice.charAt(0) == 'c'){
+					} else if (choice.charAt(0) == 'c') {
 						players[p].setCoin(coins.remove(val));
-					}else if(choice.charAt(0) == 'o'){
+					} else if (choice.charAt(0) == 'o') {
 						val = turnOrder.remove(val);
 						whosTurn.set(val, p);
-					}					
+					}
 				}
-				
-			}else{
-				//non draft
+
+			} else {
+				// non draft
 				Random ran = new Random();
-				for(int i=0;i<numPlayers;i++){
+				for (int i = 0; i < numPlayers; i++) {
 					int c1 = i;
 					int c2 = ran.nextInt(numPlayers);
 					int temp = whosTurn.get(c1);
@@ -120,35 +121,65 @@ public class Play {
 					players[i].setTroops(8);
 					players[i].setCoin(0);
 				}
-				whosPlace = whosTurn;				
-			}			
-			int i=0;
+				whosPlace = whosTurn;
+			}
+			int i = 0;
 			int p;
-			while(i<numPlayers){
+			while (i < numPlayers) {
 				p = whosPlace.remove(0);
 				whosPlace.add(p);
 				i++;
-				//TODO Player place on map;
-			}			
-		}else{
-			//non legacy
+				boolean valid = false;
+				// ask player and place troops
+				while (!valid) {
+					sendToClient(p, "Choose a Valid Starting Continent");
+					int choice = getClientResponse();
+					if (world.getCountry(choice).getControllingFaction()
+							.equals("\\NONE")) {
+						if (world.getCountry(choice).getCityType() == 0
+								&& world.getCountry(choice).getScarType() == 0
+								|| world.getCountry(choice).getCityType() == 2) {
+							valid = true;
+							world.placeHQ(choice, players[p].getFaction()
+									.getName());
+							world.placeTroops(choice, players[p].getTroops(),
+									players[p].getFaction().getName());
+							players[p].setTroops(0);
+							sendToClient(p, "Accept");
+						}
+					}
+				}
+			}
+		} else {
+			// non legacy
 			Random ran = new Random();
-			for(int i=0;i<numPlayers;i++){
+			for (int i = 0; i < numPlayers; i++) {
 				int c1 = i;
 				int c2 = ran.nextInt(numPlayers);
 				int temp = whosTurn.get(c1);
 				whosTurn.set(c1, whosTurn.get(c2));
 				whosTurn.set(c2, temp);
-				players[i].setTroops(35-5*(numPlayers-3));
+				players[i].setTroops(35 - 5 * (numPlayers - 3));
 			}
 			int p;
-			//AUSTIN GET ON YOUR SHIT 
-			while(world.hasFreeCountry()){
+			// AUSTIN GET ON YOUR SHIT
+			while (world.hasFreeCountry()) {
 				p = whosPlace.remove(0);
 				whosPlace.add(p);
-				//TODO Player place on map;
-			}	
-		}		
+				boolean valid = false;
+				// ask player to place troop in country
+				while (!valid) {
+					sendToClient(p, "Choose a Valid Continent");
+					int choice = getClientResponse();
+					if(world.getCountry(choice).getControllingFaction().equals("\\NONE")){
+						world.placeTroops(choice, 1, players[p].getName());
+						players[p].setTroops(players[p].getTroops()-1);
+						valid = true;
+						sendToClient(p,"Accept");
+					}
+				}
+			}
+		}
 	}
 
 	/**
