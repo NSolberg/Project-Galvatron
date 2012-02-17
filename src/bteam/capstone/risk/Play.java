@@ -12,6 +12,12 @@ import java.util.Stack;
 public class Play {
 	private static boolean isAttacking;
 
+	
+	public static void firstTurnSetup(){
+		/**
+		 * @todo
+		 */
+	}
 	public static void attack(Country atkCountry, Country defCountry) {
 		isAttacking = true;
 		if (atkCountry.getCountryBorders().contains(defCountry.id()) == false) {
