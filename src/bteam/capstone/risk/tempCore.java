@@ -9,6 +9,10 @@ public class tempCore extends Thread {
 	public tempCore(RiskServer riskServer, String id, String name) {
 		// TODO Auto-generated constructor stub
 	}
+	
+	private void startLobby(){
+		
+	}
 
 	public boolean isActive() {
 		// TODO Auto-generated method stub

@@ -1,19 +1,186 @@
 /** 
  * @author Nick Solberg
+ * @author Ian Paterson
+ * @author Austin Langohorn
  */
 
 package bteam.capstone.risk;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 import java.util.Scanner;
 
 public class Play {
-	
-	public static void firstTurnSetup(){
-		/**
-		 * @todo
-		 */
+
+	private static boolean isAttacking;
+
+	/**
+	 * @author Ian Paterson
+	 * 
+	 */
+	private boolean isDraft; // Weather or not draft cards are active
+	private int numPlayers;
+	private player[] players;
+	private ArrayList<Integer> whosTurn;
+	private Map world;
+
+	/**
+	 * @author Ian Paterson
+	 * 
+	 * @param legacy
+	 *            Determines weatehr or not it is standard or legacy
+	 */
+	public void firstTurnSetup(boolean legacy) {
+		ArrayList<Integer> whosPlace = new ArrayList<Integer>();
+		for (int i = 0; i < numPlayers; i++) {
+			whosTurn.add(i);
+			whosPlace.add(i);
+		}
+		if (legacy) {
+			if (isDraft) {
+				ArrayList<Integer> placement = new ArrayList<Integer>();
+				placement.add(1);
+				placement.add(2);
+				placement.add(3);
+				if (numPlayers > 3) {
+					placement.add(4);
+					if (numPlayers > 4)
+						placement.add(5);
+				}
+
+				ArrayList<Integer> turnOrder = new ArrayList<Integer>();
+				turnOrder.add(1);
+				turnOrder.add(2);
+				turnOrder.add(3);
+				if (numPlayers > 3) {
+					turnOrder.add(4);
+					if (numPlayers > 4)
+						turnOrder.add(5);
+				}
+				ArrayList<Integer> troops = new ArrayList<Integer>();
+				troops.add(6);
+				troops.add(8);
+				troops.add(10);
+				if (numPlayers > 3) {
+					troops.add(8);
+					if (numPlayers > 4)
+						troops.add(10);
+				}
+				ArrayList<Integer> coins = new ArrayList<Integer>();
+				coins.add(0);
+				coins.add(1);
+				coins.add(2);
+				if (numPlayers > 3) {
+					coins.add(0);
+					if (numPlayers > 4)
+						coins.add(1);
+				}
+				// Temproray order of players for choosing draft cards
+				ArrayList<Integer> tempOrder = new ArrayList<Integer>();
+				for (int i = 0; i < numPlayers; i++) {
+					tempOrder.add(i);
+				}
+				Random ran = new Random();
+				// Randomizes temporary order
+				for (int i = 0; i < numPlayers; i++) {
+					int c1 = i;
+					int c2 = ran.nextInt(numPlayers);
+					int temp = tempOrder.get(c1);
+					tempOrder.set(c1, tempOrder.get(c2));
+					tempOrder.set(c2, temp);
+				}
+				while (troops.size() != 0 || coins.size() != 0
+						|| turnOrder.size() != 0 || placement.size() != 0) {
+					int p = tempOrder.remove(0);
+					// Send to player p: "Choose draft card"
+					// Get choice from player
+					String choice = "p 0";
+					int val = Integer.parseInt(choice.charAt(2) + "");
+					if (choice.charAt(0) == 'p') {
+						val = placement.remove(val);
+						whosPlace.set(val, p);
+					} else if (choice.charAt(0) == 't') {
+						players[p].setTroops(troops.remove(val));
+					} else if (choice.charAt(0) == 'c') {
+						players[p].setCoin(coins.remove(val));
+					} else if (choice.charAt(0) == 'o') {
+						val = turnOrder.remove(val);
+						whosTurn.set(val, p);
+					}
+				}
+
+			} else {
+				// non draft
+				Random ran = new Random();
+				for (int i = 0; i < numPlayers; i++) {
+					int c1 = i;
+					int c2 = ran.nextInt(numPlayers);
+					int temp = whosTurn.get(c1);
+					whosTurn.set(c1, whosTurn.get(c2));
+					whosTurn.set(c2, temp);
+					players[i].setTroops(8);
+					players[i].setCoin(0);
+				}
+				whosPlace = whosTurn;
+			}
+			int i = 0;
+			int p;
+			while (i < numPlayers) {
+				p = whosPlace.remove(0);
+				whosPlace.add(p);
+				i++;
+				boolean valid = false;
+				// ask player and place troops
+				while (!valid) {
+					sendToClient(p, "Choose a Valid Starting Continent");
+					int choice = getClientResponse();
+					if (world.getCountry(choice).getControllingFaction()
+							.equals("\\NONE")) {
+						if (world.getCountry(choice).getCityType() == 0
+								&& world.getCountry(choice).getScarType() == 0
+								|| world.getCountry(choice).getCityType() == 2) {
+							valid = true;
+							world.placeHQ(choice, players[p].getFaction()
+									.getName());
+							world.placeTroops(choice, players[p].getTroops(),
+									players[p].getFaction().getName());
+							players[p].setTroops(0);
+							sendToClient(p, "Accept");
+						}
+					}
+				}
+			}
+		} else {
+			// non legacy
+			Random ran = new Random();
+			for (int i = 0; i < numPlayers; i++) {
+				int c1 = i;
+				int c2 = ran.nextInt(numPlayers);
+				int temp = whosTurn.get(c1);
+				whosTurn.set(c1, whosTurn.get(c2));
+				whosTurn.set(c2, temp);
+				players[i].setTroops(35 - 5 * (numPlayers - 3));
+			}
+			int p;
+			// AUSTIN GET ON YOUR SHIT
+			while (world.hasFreeCountry()) {
+				p = whosPlace.remove(0);
+				whosPlace.add(p);
+				boolean valid = false;
+				// ask player to place troop in country
+				while (!valid) {
+					sendToClient(p, "Choose a Valid Continent");
+					int choice = getClientResponse();
+					if(world.getCountry(choice).getControllingFaction().equals("\\NONE")){
+						world.placeTroops(choice, 1, players[p].getName());
+						players[p].setTroops(players[p].getTroops()-1);
+						valid = true;
+						sendToClient(p,"Accept");
+					}
+				}
+			}
+		}
 	}
 	/**
 	 * @author Nick Solberg
@@ -89,7 +256,8 @@ public class Play {
 				}
 			}
 			if (switchVal == 5) {
-				System.out.println("Attacker would you like to roll one or two dice?");
+				System.out
+						.println("Attacker would you like to roll one or two dice?");
 				temp = defInScanner.next();
 				if (temp.equals("one")) {
 					switchVal = 2;
@@ -101,7 +269,8 @@ public class Play {
 			}
 
 			if (switchVal == 7) {
-				System.out.println("Attacker would you like to roll one or two dice?");
+				System.out
+						.println("Attacker would you like to roll one or two dice?");
 				temp = defInScanner.next();
 				System.out.println("Defender would you like to roll one or two dice?");
 				temp2 = defInScanner.next();
@@ -119,7 +288,8 @@ public class Play {
 			}
 
 			if (switchVal == 10) {
-				System.out.println("Attacker would you like to roll one, two, or three dice?");
+				System.out
+						.println("Attacker would you like to roll one, two, or three dice?");
 				temp = defInScanner.next();
 				if (temp.equals("one")) {
 					switchVal = 2;
@@ -164,7 +334,6 @@ public class Play {
 				}
 			}
 
-		
 			switch (switchVal) {
 			case 12:
 				System.out.println("3v2");
@@ -369,9 +538,9 @@ public class Play {
 			case 4:
 				// 1vs2
 				System.out.println("1v2");
-				int[] attack1 = { randomDice()};
+				int[] attack1 = { randomDice() };
 				Arrays.sort(attack1);
-				int[] defense1 = { randomDice(), randomDice()};
+				int[] defense1 = { randomDice(), randomDice() };
 				Arrays.sort(defense1);
 				System.out.println();
 				System.out.print("attack die from lowest to highest ");
@@ -385,11 +554,13 @@ public class Play {
 				System.out.println();
 
 				if (attack1[0] > defense1[1]) {
-					defCountry.setTroopQuantity(defCountry.getTroopQuantity() - 1);
+					defCountry
+							.setTroopQuantity(defCountry.getTroopQuantity() - 1);
 					System.out.println(attack1[0] + " is greater than "
 							+ defense1[1]);
 				} else {
-					atkCountry.setTroopQuantity(atkCountry.getTroopQuantity() - 1);
+					atkCountry
+							.setTroopQuantity(atkCountry.getTroopQuantity() - 1);
 					System.out.println(attack1[0] + " is less than or equal "
 							+ defense1[1]);
 				}
