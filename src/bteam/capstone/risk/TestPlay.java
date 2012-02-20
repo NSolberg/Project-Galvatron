@@ -14,11 +14,13 @@ public class TestPlay {
 		System.out.println("||||                 Test 1                   ||||");
 		System.out.println("--------------------------------------------------");
 		System.out.println("Invalid attack, not enough troops to battle");
+		map.getCountry(0).setOwner(aPlayer);
+		map.getCountry(1).setOwner(bPlayer);
 		aPlayer.addCountry(0);
 		bPlayer.addCountry(1);
 		map.getCountry(0).setTroopQuantity(1);
 		map.getCountry(1).setTroopQuantity(1);
-		play.attack(map.getCountry(0), map.getCountry(1));
+		play.attack(map.getCountry(0), map.getCountry(1), map);
 		System.out.println("--------------------------------------------------");
 		System.out.println();
 		aPlayer.removeAllCountrys();
@@ -33,12 +35,13 @@ public class TestPlay {
 		System.out.println("||||                 Test 2                   ||||");
 		System.out.println("--------------------------------------------------");
 		System.out.println("Invalid attack country not connected");
-		
+		map.getCountry(16).setOwner(aPlayer);
+		map.getCountry(0).setOwner(bPlayer);
 		aPlayer.addCountry(16);
 		bPlayer.addCountry(0);
 		map.getCountry(16).setTroopQuantity(4);
 		map.getCountry(0).setTroopQuantity(3);
-		play.attack(map.getCountry(16), map.getCountry(0));
+		play.attack(map.getCountry(16), map.getCountry(0), map);
 		System.out.println("--------------------------------------------------");
 		aPlayer.removeAllCountrys();
 		bPlayer.removeAllCountrys();
@@ -51,12 +54,14 @@ public class TestPlay {
 		System.out.println("||||                 Test 3                   ||||");
 		System.out.println("--------------------------------------------------");
 		System.out.println("testAttack switch case one");
+		map.getCountry(0).setOwner(aPlayer);
+		map.getCountry(1).setOwner(bPlayer);
 		aPlayer.addCountry(0);
 		bPlayer.addCountry(1);
 		map.getCountry(0).setTroopQuantity(4);
 		map.getCountry(1).setTroopQuantity(3);
 		
-		play.attack(map.getCountry(0), map.getCountry(1));
+		play.attack(map.getCountry(0), map.getCountry(1), map);
 		System.out.println("Should Hit the first switch case: 3 atc dice 2 def");
 		System.out.println("--------------------------------------------------");
 		System.out.println();
@@ -71,12 +76,14 @@ public class TestPlay {
 		System.out.println("||||                 Test 4                   ||||");
 		System.out.println("--------------------------------------------------");
 		System.out.println("testAttack switch case two");
+		map.getCountry(0).setOwner(aPlayer);
+		map.getCountry(1).setOwner(bPlayer);
 		aPlayer.addCountry(0);
 		bPlayer.addCountry(1);
 		map.getCountry(0).setTroopQuantity(4);
 		map.getCountry(1).setTroopQuantity(1);
 		
-		play.attack(map.getCountry(0), map.getCountry(1));
+		play.attack(map.getCountry(0), map.getCountry(1), map);
 		System.out.println("Should Hit the second switch case: 3 atc dice 1 def");
 		System.out.println("--------------------------------------------------");
 		System.out.println();
@@ -91,12 +98,14 @@ public class TestPlay {
 		System.out.println("||||                 Test 5                   ||||");
 		System.out.println("--------------------------------------------------");
 		System.out.println("testAttack switch case three");
+		map.getCountry(0).setOwner(aPlayer);
+		map.getCountry(1).setOwner(bPlayer);
 		aPlayer.addCountry(0);
 		bPlayer.addCountry(1);
 		map.getCountry(0).setTroopQuantity(3);
 		map.getCountry(1).setTroopQuantity(2);
 		
-		play.attack(map.getCountry(0), map.getCountry(1));
+		play.attack(map.getCountry(0), map.getCountry(1), map);
 		System.out.println("Should Hit the third switch case: 2 atc dice 2 def");
 		System.out.println("--------------------------------------------------");
 		System.out.println();
@@ -111,12 +120,14 @@ public class TestPlay {
 		System.out.println("||||                 Test 6                   ||||");
 		System.out.println("--------------------------------------------------");
 		System.out.println("testAttack switch case four");
+		map.getCountry(0).setOwner(aPlayer);
+		map.getCountry(1).setOwner(bPlayer);
 		aPlayer.addCountry(0);
 		bPlayer.addCountry(1);
 		map.getCountry(0).setTroopQuantity(3);
 		map.getCountry(1).setTroopQuantity(1);
 		
-		play.attack(map.getCountry(0), map.getCountry(1));
+		play.attack(map.getCountry(0), map.getCountry(1), map);
 		System.out.println("Should Hit the fourth switch case: 2 atc dice 1 def");
 		System.out.println("--------------------------------------------------");
 		System.out.println();
@@ -131,12 +142,14 @@ public class TestPlay {
 		System.out.println("||||                 Test 7                   ||||");
 		System.out.println("--------------------------------------------------");
 		System.out.println("testAttack switch case five");
+		map.getCountry(0).setOwner(aPlayer);
+		map.getCountry(1).setOwner(bPlayer);
 		aPlayer.addCountry(0);
 		bPlayer.addCountry(1);
 		map.getCountry(0).setTroopQuantity(2);
 		map.getCountry(1).setTroopQuantity(1);
 		
-		play.attack(map.getCountry(0), map.getCountry(1));
+		play.attack(map.getCountry(0), map.getCountry(1), map);
 		System.out.println("Should Hit the fifth switch case: 2 atc dice 1 def");
 		System.out.println("--------------------------------------------------");
 		System.out.println();
@@ -151,13 +164,63 @@ public class TestPlay {
 		System.out.println("||||                 Test 8                   ||||");
 		System.out.println("--------------------------------------------------");
 		System.out.println("testAttack switch case six");
+		map.getCountry(0).setOwner(aPlayer);
+		map.getCountry(1).setOwner(bPlayer);
 		aPlayer.addCountry(0);
 		bPlayer.addCountry(1);
 		map.getCountry(0).setTroopQuantity(2);
 		map.getCountry(1).setTroopQuantity(2);
 		
-		play.attack(map.getCountry(0), map.getCountry(1));
+		play.attack(map.getCountry(0), map.getCountry(1), map);
 		System.out.println("Should Hit the sixth switch case: 2 atc dice 1 def");
+		System.out.println("--------------------------------------------------");
+		System.out.println();
+		aPlayer.removeAllCountrys();
+		bPlayer.removeAllCountrys();
+	}
+	
+	@Test
+	public void testAttackTestScarsAmmoShortage() {
+		System.out.println();
+		System.out.println("--------------------------------------------------");
+		System.out.println("||||                 Test 9                   ||||");
+		System.out.println("--------------------------------------------------");
+		System.out.println("testAttack AMMOSHORTAGE");
+		map.getCountry(0).setOwner(aPlayer);
+		map.getCountry(1).setOwner(bPlayer);
+		aPlayer.addCountry(0);
+		bPlayer.addCountry(1);
+		//add Ammo Shortage
+		map.getCountry(1).setScarType(1);
+		map.getCountry(0).setTroopQuantity(5);
+		map.getCountry(1).setTroopQuantity(6);
+		
+		play.attack(map.getCountry(0), map.getCountry(1), map);
+		System.out.println("Should Hit the first switch case: 3 atc dice 2 def");
+		System.out.println("--------------------------------------------------");
+		System.out.println();
+		aPlayer.removeAllCountrys();
+		bPlayer.removeAllCountrys();
+	}
+	
+	@Test
+	public void testAttackTestScarsBunker() {
+		System.out.println();
+		System.out.println("--------------------------------------------------");
+		System.out.println("||||                 Test 10                  ||||");
+		System.out.println("--------------------------------------------------");
+		System.out.println("testAttack BIOHAZARD!");
+		map.getCountry(0).setOwner(aPlayer);
+		map.getCountry(1).setOwner(bPlayer);
+		aPlayer.addCountry(0);
+		bPlayer.addCountry(1);
+		//Add Biohazard
+		map.getCountry(1).setScarType(2);
+		map.getCountry(0).setTroopQuantity(4);
+		map.getCountry(1).setTroopQuantity(3);
+		
+		play.attack(map.getCountry(0), map.getCountry(1), map);
+		System.out.println("Should Hit the first switch case: 3 atc dice 2 def");
 		System.out.println("--------------------------------------------------");
 		System.out.println();
 		aPlayer.removeAllCountrys();
@@ -168,16 +231,77 @@ public class TestPlay {
 	public void testAttackSwitch20vs20() {
 		System.out.println();
 		System.out.println("--------------------------------------------------");
-		System.out.println("||||                 Test 9                   ||||");
+		System.out.println("||||                 Test 12                  ||||");
 		System.out.println("--------------------------------------------------");
 		System.out.println("testAttack with 20 vs 20");
+		map.getCountry(0).setOwner(aPlayer);
+		map.getCountry(1).setOwner(bPlayer);
 		aPlayer.addCountry(0);
 		bPlayer.addCountry(1);
 		map.getCountry(0).setTroopQuantity(20);
 		map.getCountry(1).setTroopQuantity(20);
 		
-		play.attack(map.getCountry(0), map.getCountry(1));
+		play.attack(map.getCountry(0), map.getCountry(1), map);
 		System.out.println("results will be random and hit different phases. ");
+		System.out.println("--------------------------------------------------");
+		System.out.println();
+		aPlayer.removeAllCountrys();
+		bPlayer.removeAllCountrys();
+	}
+	
+	@Test
+	public void testAttackerWinsCountryOwnerShip() {
+		System.out.println();
+		System.out.println("--------------------------------------------------");
+		System.out.println("||||                 Test 13                  ||||");
+		System.out.println("--------------------------------------------------");
+		System.out.println("testAttack with 20 vs 3");
+		map.getCountry(0).setOwner(aPlayer);
+		map.getCountry(1).setOwner(bPlayer);
+		aPlayer.addCountry(0);
+		bPlayer.addCountry(1);
+		map.getCountry(0).setTroopQuantity(20);
+		map.getCountry(1).setTroopQuantity(3);
+		
+		play.attack(map.getCountry(0), map.getCountry(1), map);
+		System.out.println("results will be random and hit different phases. ");
+		System.out.println(aPlayer.getCountrys().toString());
+		System.out.println("--------------------------------------------------");
+		System.out.println();
+		aPlayer.removeAllCountrys();
+		bPlayer.removeAllCountrys();
+	}
+	
+	@Test
+	public void testAttackStackAndMissles() {
+		System.out.println();
+		System.out.println("--------------------------------------------------");
+		System.out.println("||||                 Test 14                  ||||");
+		System.out.println("--------------------------------------------------");
+		System.out.println("testAttack with the missles and a stack");
+		map.getCountry(0).setOwner(aPlayer);
+		map.getCountry(1).setOwner(bPlayer);
+		aPlayer.addCountry(0);
+		bPlayer.addCountry(1);
+		player cPlayer = new player("PlayerChuck  0 0 0 0");
+		player dPlayer = new player("PlayerDave 0 0 0 0");
+		player ePlayer = new player("PlayerEllen  0 0 0 0");
+		aPlayer.setMissles(1);
+		bPlayer.setMissles(1);
+		cPlayer.setMissles(1);
+		dPlayer.setMissles(1);
+		ePlayer.setMissles(1);
+		map.getCountry(0).setTroopQuantity(2);
+		map.getCountry(1).setTroopQuantity(1);
+		
+		play.playerStack.add(ePlayer);
+		play.playerStack.add(dPlayer);
+		play.playerStack.add(cPlayer);
+		play.playerStack.add(bPlayer);
+		play.playerStack.add(aPlayer);
+		play.attack(map.getCountry(0), map.getCountry(1), map);
+		System.out.println("results will be random and hit different phases. ");
+		System.out.println(aPlayer.getCountrys().toString());
 		System.out.println("--------------------------------------------------");
 		System.out.println();
 		aPlayer.removeAllCountrys();
@@ -235,8 +359,8 @@ public class TestPlay {
 
 	Map map = new Map(data);
 	
-	player aPlayer = new player("One  0 0 0 0");
-	player bPlayer = new player("Two  0 0 0 0");
+	player aPlayer = new player("AttackerBob  0 0 0 0");
+	player bPlayer = new player("DefenderSue 0 0 0 0");
 	
 
 }

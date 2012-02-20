@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 import java.util.Scanner;
+import java.util.Stack;
 
 public class Play {
 
@@ -24,7 +25,10 @@ public class Play {
 	private player[] players;
 	private ArrayList<Integer> whosTurn;
 	private Map world;
+	//nicks using this baby
+	ArrayList<player> playerStack = new ArrayList<player>();
 
+	private int numOfDice;
 	/**
 	 * @author Ian Paterson
 	 * 
@@ -196,13 +200,14 @@ public class Play {
 	 * to cancel the attack after any round. The loop will stop when the
 	 * attacking player has 1 troop or the denfeder has 0
 	 * 
-	 * TODO Still need to implement the uses of missles and scars.
-	 * also need to apply conquering a country and how it effects a player.
-	 * Later modify this method to work with a gui and client. Give defender
-	 * the option to roll dice. City and Fortifications.
+	 * TODO 
+	 * Still need to implement the uses of missles
+	 * Later modify this method to work with a gui and client
+	 * City and Fortifications.
 	 */
 	//playTestGui gui = new playTestGui();
-	public void attack(Country atkCountry, Country defCountry) {
+	public void attack(Country atkCountry, Country defCountry, Map map) {
+		
 		boolean isAttacking = true;
 		if (atkCountry.getCountryBorders().contains(defCountry.id()) == false) {
 			System.out.println("This will be an invalid attack");
@@ -285,6 +290,10 @@ public class Play {
 					switchVal = 2;
 					System.out.println("1v1");
 				}
+				else if (temp.equals("two") && temp2.equals("one")) {
+					switchVal = 5;
+					System.out.println("2v1");
+				}
 			}
 
 			if (switchVal == 10) {
@@ -352,7 +361,14 @@ public class Play {
 					System.out.print(defense6[i] + " ");
 				}
 				System.out.println();
-
+				if(defCountry.getScarType() == 1){
+					defense6[1] -= 1;
+				}
+				if(defCountry.getScarType() == 2){
+					if(defense6[1] < 6){
+						defense6[1] += 1;
+					}
+				}
 				if (attack6[2] > defense6[1]) {
 					defCountry
 							.setTroopQuantity(defCountry.getTroopQuantity() - 1);
@@ -397,6 +413,14 @@ public class Play {
 				System.out.print("defense die from lowest to highest ");
 				System.out.print(defense5[0] + " ");
 				System.out.println();
+				if(defCountry.getScarType() == 1){
+					defense5[0] -= 1;
+				}
+				if(defCountry.getScarType() == 2){
+					if(defense5[0] < 6){
+						defense5[0] += 1;
+					}
+				}
 				if (attack5[2] > defense5[0]) {
 					defCountry
 							.setTroopQuantity(defCountry.getTroopQuantity() - 1);
@@ -433,7 +457,14 @@ public class Play {
 					System.out.print(defense4[i] + " ");
 				}
 				System.out.println();
-
+				if(defCountry.getScarType() == 1){
+					defense4[1] -= 1;
+				}
+				if(defCountry.getScarType() == 2){
+					if(defense4[1] < 6){
+						defense4[1] += 1;
+					}
+				}
 				if (attack4[1] > defense4[1]) {
 					defCountry
 							.setTroopQuantity(defCountry.getTroopQuantity() - 1);
@@ -481,7 +512,14 @@ public class Play {
 				System.out.print(defense3[0] + " ");
 
 				System.out.println();
-
+				if(defCountry.getScarType() == 1){
+					defense3[0] -= 1;
+				}
+				if(defCountry.getScarType() == 2){
+					if(defense3[0] < 6){
+						defense3[0] += 1;
+					}
+				}
 				if (attack3[1] > defense3[0]) {
 					defCountry
 							.setTroopQuantity(defCountry.getTroopQuantity() - 1);
@@ -500,41 +538,6 @@ public class Play {
 				switchVal = 0;
 
 				break;
-			case 2:
-				// 1vs1
-				System.out.println("1v1");
-				int[] attack2 = { randomDice(), randomDice() };
-				Arrays.sort(attack2);
-				int[] defense2 = { randomDice() };
-				Arrays.sort(defense2);
-				System.out.println();
-				System.out.print("attack die from lowest to highest ");
-
-				System.out.print(attack2[0] + " ");
-				System.out.println();
-				System.out.print("defense die from lowest to highest ");
-
-				System.out.print(defense2[0] + " ");
-
-				System.out.println();
-
-				if (attack2[0] > defense2[0]) {
-					defCountry
-							.setTroopQuantity(defCountry.getTroopQuantity() - 1);
-					System.out.println(attack2[0] + " is greater than "
-							+ defense2[0]);
-				} else {
-					atkCountry
-							.setTroopQuantity(atkCountry.getTroopQuantity() - 1);
-					System.out.println(attack2[0] + " is less than or equal "
-							+ defense2[0]);
-				}
-				System.out.println("Attackers troops remaining: "
-						+ atkCountry.getTroopQuantity());
-				System.out.println("Defeners troops remaining: "
-						+ defCountry.getTroopQuantity());
-				switchVal = 0;
-				break;
 			case 4:
 				// 1vs2
 				System.out.println("1v2");
@@ -547,7 +550,14 @@ public class Play {
 				System.out.print(attack1[0] + " ");
 				System.out.println();
 				System.out.print("defense die from lowest to highest ");
-
+				if(defCountry.getScarType() == 1){
+					defense1[1] -= 1;
+				}
+				if(defCountry.getScarType() == 2){
+					if(defense1[1] < 6){
+						defense1[1] += 1;
+					}
+				}
 				for (int i = 0; i < 2; i++) {
 					System.out.print(defense1[i] + " ");
 				}
@@ -563,6 +573,83 @@ public class Play {
 							.setTroopQuantity(atkCountry.getTroopQuantity() - 1);
 					System.out.println(attack1[0] + " is less than or equal "
 							+ defense1[1]);
+				}
+				System.out.println("Attackers troops remaining: "
+						+ atkCountry.getTroopQuantity());
+				System.out.println("Defeners troops remaining: "
+						+ defCountry.getTroopQuantity());
+				switchVal = 0;
+				break;
+			case 2:
+				// 1vs1
+				System.out.println("1v1");
+				int[] attack2 = { randomDice()};
+				Arrays.sort(attack2);
+				int[] defense2 = { randomDice() };
+				Arrays.sort(defense2);
+				numOfDice = 2;
+				System.out.println();
+				System.out.print("attack die from lowest to highest ");
+				System.out.print(attack2[0] + " ");
+				System.out.println();
+				System.out.print("defense die from lowest to highest ");
+				System.out.print(defense2[0] + " ");
+				System.out.println();
+				Scanner inScan = new Scanner(System.in);
+				String missleTemp;
+				int loopUntil = 2;
+				int misslesUsed = 0;
+				boolean missleOnDefender = false;
+				while(loopUntil > 0){
+					for(int i = playerStack.size()-1; i > -1; i--){
+						if(misslesUsed == numOfDice){
+							break;
+						}
+						if(playerStack.get(i).getMissles()  > 0){
+							System.out.println(playerStack.get(i).getName()+ "would you like to use a missle? 'yes' or 'no'");
+							missleTemp = inScan.next();
+							if(missleTemp.equals("yes")){
+								System.out.println("Defender or Attackers Dice? 'd' or 'f'");
+								missleTemp = inScan.next();
+								if(missleTemp.equals("d")){
+									System.out.println("Missle used on defenders dice");
+									System.out.println("Changed " + defense2[0] +" to a 6");
+									defense2[0] = 6;
+									missleOnDefender = true;
+									playerStack.get(i).setMissles(playerStack.get(i).getMissles()-1);
+									misslesUsed++;
+								} else {
+									System.out.println("Missle used on attackers dice");
+									attack2[0] = 6;
+									playerStack.get(i).setMissles(playerStack.get(i).getMissles()-1);
+									misslesUsed++;
+								}
+							}
+						}
+					}
+					loopUntil--;
+						
+				}
+				
+				
+				if(defCountry.getScarType() == 1 && missleOnDefender == false){
+					defense2[0] -= 1;
+				}
+				if(defCountry.getScarType() == 2 && missleOnDefender == false){
+					if(defense2[0] < 6){
+						defense2[0] += 1;
+					}
+				}
+				if (attack2[0] > defense2[0]) {
+					defCountry
+							.setTroopQuantity(defCountry.getTroopQuantity() - 1);
+					System.out.println(attack2[0] + " is greater than "
+							+ defense2[0]);
+				} else {
+					atkCountry
+							.setTroopQuantity(atkCountry.getTroopQuantity() - 1);
+					System.out.println(attack2[0] + " is less than or equal "
+							+ defense2[0]);
 				}
 				System.out.println("Attackers troops remaining: "
 						+ atkCountry.getTroopQuantity());
@@ -597,12 +684,33 @@ public class Play {
 				// }
 				// System.out.println("Victory, " + defCountry.getCountryName()
 				// +" is now yours");
+			} if(defCountry.getTroopQuantity() == 0){
+				System.out.println(defCountry.getOwner().getName() + " you have been defeated, " + defCountry.getCountryName()
+						+ " Now belongs to " + atkCountry.getOwner().getName());
+				atkCountry.getOwner().addCountry(defCountry.id());
 			}
 
 		}
 
 	}
-
+	public void drawEventCard(){
+		/*
+		 * x3 Event CardWhomever has the largest population EITHER recieves 3 troops that can be placed into
+		 * one or more citty terrotories he controls OR he may choose a new mission from the mission
+		 * deck to replace the current one
+		 */
+	}
+	public void drawMissionCard(){
+		
+		/*
+		 * SUPERIOR INFRASTRUCTURE: Control6+ Cities
+		 * REIGN OF TERROR: Conquer 9+ territories this turn
+		 * URBAN ASSAULT: Conquer 4+ Cities this turn
+		 * AMPHIBIOUS ONSLAUGHT: Conquer 4+ territories over sea lines this turn
+		 * UNEXPECTED ATTACK: Conquer all the territories in one continent this turn
+		 * IMPERIAL MIGHT: Have a current total continent bonus of 7+
+		 */
+	}
 	public static int randomDice() {
 		int dice;
 		Random generator = new Random();

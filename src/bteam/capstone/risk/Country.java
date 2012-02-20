@@ -38,8 +38,10 @@ public class Country {
 	private String factionHQ;
 
 	// scars variable
+	// 0 = NONE, 1 = AmmoShortage, 2 = Bunker
 	private int scarType;
-
+	private player owner;
+	
 	/**
 	 * Default constructor for the Country class accepting a String to be parsed
 	 * to setup the class
@@ -189,6 +191,14 @@ public class Country {
 		// TODO Auto-generated method stub
 		
 		return id;
+	}
+
+	public void setOwner(player owner) {
+		this.owner = owner;
+	}
+
+	public player getOwner() {
+		return owner;
 	}
 
 }
