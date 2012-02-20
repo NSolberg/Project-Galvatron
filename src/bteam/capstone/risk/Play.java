@@ -9,8 +9,6 @@ import java.util.Random;
 import java.util.Scanner;
 
 public class Play {
-	private static boolean isAttacking;
-
 	
 	public static void firstTurnSetup(){
 		/**
@@ -33,8 +31,10 @@ public class Play {
 	 * 
 	 * TODO Still need to implement the uses of missles and scars.
 	 * also need to apply conquering a country and how it effects a player.
-	 * Later modify this method to work with a gui and client.
+	 * Later modify this method to work with a gui and client. Give defender
+	 * the option to roll dice. City and Fortifications.
 	 */
+	//playTestGui gui = new playTestGui();
 	public void attack(Country atkCountry, Country defCountry) {
 		boolean isAttacking = true;
 		if (atkCountry.getCountryBorders().contains(defCountry.id()) == false) {
@@ -73,11 +73,21 @@ public class Play {
 					+ atkCountry.getTroopQuantity());
 			System.out.println("Current defenders troops: "
 					+ defCountry.getTroopQuantity());
-			
-			
 			Scanner defInScanner = new Scanner(System.in);
 			defInScanner.reset();
 			String temp;
+			String temp2;
+			if (switchVal == 4) {
+				System.out.println("Defender would you like to roll one or two dice?");
+				temp = defInScanner.next();
+				if (temp.equals("one")) {
+					switchVal = 2;
+					System.out.println("1v1");
+				} else if (temp.equals("two")) {
+					switchVal = 4;
+					System.out.println("1v2");
+				}
+			}
 			if (switchVal == 5) {
 				System.out.println("Attacker would you like to roll one or two dice?");
 				temp = defInScanner.next();
@@ -93,12 +103,18 @@ public class Play {
 			if (switchVal == 7) {
 				System.out.println("Attacker would you like to roll one or two dice?");
 				temp = defInScanner.next();
-				if (temp.equals("one")) {
+				System.out.println("Defender would you like to roll one or two dice?");
+				temp2 = defInScanner.next();
+				if (temp.equals("one") && temp2.equals("two")) {
 					switchVal = 4;
 					System.out.println("1v2");
-				} else if (temp.equals("two")) {
+				} else if (temp.equals("two") && temp2.equals("two")) {
 					switchVal = 7;
 					System.out.println("2v2");
+				}
+				else if (temp.equals("one") && temp2.equals("one")) {
+					switchVal = 2;
+					System.out.println("1v1");
 				}
 			}
 
@@ -120,17 +136,31 @@ public class Play {
 			if (switchVal == 12) {
 				System.out.println("Attacker would you like to roll one, two, or three dice?");
 				temp = defInScanner.next();
-				if (temp.equals("one")) {
+				System.out.println("Defender would you like to roll one or two dice?");
+				temp2 = defInScanner.next();
+				if (temp.equals("one") && temp2.equals("two")) {
 					switchVal = 4;
 					System.out.println("1v2");
 				}
-				else if (temp.equals("two")) {
+				else if (temp.equals("two") && temp2.equals("two")) {
 					switchVal = 7;
 					System.out.println("2v2");
 				}
-				else if (temp.equals("three")) {
+				else if (temp.equals("three") && temp2.equals("two")) {
 					switchVal = 12;
 					System.out.println("3v2");
+				}
+				else if (temp.equals("one") && temp2.equals("one")) {
+					switchVal = 2;
+					System.out.println("1v1");
+				}
+				else if (temp.equals("two") && temp2.equals("one")) {
+					switchVal = 5;
+					System.out.println("2v1");
+				}
+				else if (temp.equals("three") && temp2.equals("one")) {
+					switchVal = 10;
+					System.out.println("3v1");
 				}
 			}
 
@@ -378,9 +408,9 @@ public class Play {
 					&& defCountry.getTroopQuantity() > 0) {
 				System.out
 						.println("Attacker! Do you wish to continue? type 'yes' to Continue");
-				String temp2 = in.next();
+				String temp3 = in.next();
 				// in.close();
-				if (temp2.equals("yes")) {
+				if (temp3.equals("yes")) {
 					isAttacking = true;
 				} else {
 					isAttacking = false;

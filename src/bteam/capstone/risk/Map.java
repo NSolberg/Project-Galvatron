@@ -13,7 +13,7 @@ public class Map {
 	// Change this later
 	public ArrayList<Country> countrys = new ArrayList<Country>();
 	public ArrayList<Continent> continent = new ArrayList<Continent>();
-
+	//public Play letsPlay = new Play();
 	/**
 	 * Receives a string representation of the structure of the class for its
 	 * initialization.
