@@ -36,6 +36,10 @@ public class RiskClient extends Thread {
 		}
 	}
 
+	public boolean isConnected() {
+		return linked;
+	}
+
 	@Override
 	public void run() {
 		super.run();
