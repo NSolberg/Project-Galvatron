@@ -28,14 +28,14 @@ public class RiskCore {
 
 	public RiskCore(RiskServer riskServer, String clientID, String gameFile,
 			boolean legacy, boolean reserve, String pass) {
-		//init start
+		// init start
 		Random ran = new Random();
 		theServer = riskServer;
 		theClients = new ArrayList<String>();
 		clientActive = new ArrayList<Boolean>();
 		numPlayers = 0;
 		maxPlayers = 6;
-		if(legacy)
+		if (legacy)
 			maxPlayers--;
 		islegacy = legacy;
 		inGame = false;
@@ -58,7 +58,7 @@ public class RiskCore {
 			} catch (FileNotFoundException e) {
 			}
 		}
-		//init end
+		// init end
 		while (!inGame) {
 
 		}
@@ -68,76 +68,64 @@ public class RiskCore {
 	}
 
 	/**
-	 * game loop:
-	 * 	pass turn
-	 * 	Start of Turn
-	 * 	Join the War/Recruit Troops
-	 * 	Expand&Attack
-	 * 	Maneuver Troops
-	 * 	End of Turn
-	 * End of Game
+	 * game loop: pass turn Start of Turn Join the War/Recruit Troops
+	 * Expand&Attack Maneuver Troops End of Turn End of Game
 	 */
 	private void playGame() {
 		// TODO Auto-generated method stub
 
 	}
-	
+
 	/**
 	 * pass turn to the next player. Inform players whoms turn it is.
 	 */
-	private void passTurn(){
-		
-	}
-	
-	/**
-	 * If game is not legacy:
-	 * 		method does nothing
-	 * If game is legacy:
-	 * 		if player has no resourcards skip to  scar:
-	 * 			player turns in resource cards for a red Star,
-	 * 			players can buy as many reds stars as they want,
-	 * 			red stars are worth 4 resources. If player purchases
-	 * 			4th red star they win the game immediately.
-	 * 			Territory cards turned in are discarded.
-	 * 			Coin cards turned in are returned to coin pile.
-	 * 		
-	 * 			Steps needed
-	 * 			ask player if they want to turn in cards
-	 * 				if yes expect integers seperated by spaces representing cards being turned in.
-	 * 					inform all users of changes.
-	 * 				if no method ends
-	 * 		Scars
-	 * 			if player has scar card they can play ask if they want to play
-	 * 				expect scar number and target from player. inform players of changes.
-	 * @param legacy
-	 */
-	private void startOfTurn(boolean legacy){
-		
+	private void passTurn() {
+
 	}
 
 	/**
-	 * if not legacy recruit troops
-	 * if legacy if player not on board join the war else recruit troops
+	 * If game is not legacy: method does nothing If game is legacy: if player
+	 * has no resourcards skip to scar: player turns in resource cards for a red
+	 * Star, players can buy as many reds stars as they want, red stars are
+	 * worth 4 resources. If player purchases 4th red star they win the game
+	 * immediately. Territory cards turned in are discarded. Coin cards turned
+	 * in are returned to coin pile.
 	 * 
-	 * players not on board are eligible to rejoin with half starting troops and no HQ
-	 * as long as there exist a valid starting position. Inform user of possible
-	 * starting locations. expect integer representing starting country. inform
-	 * all of changes
-	 * 
-	 * inform player of available troops to place loop and ask player where
-	 * to place troops until all are place. expect integer representing 
-	 * valid country and integer representing number of troops to place.
+	 * Steps needed ask player if they want to turn in cards if yes expect
+	 * integers seperated by spaces representing cards being turned in. inform
+	 * all users of changes. if no method ends Scars if player has scar card
+	 * they can play ask if they want to play expect scar number and target from
+	 * player. inform players of changes.
 	 * 
 	 * @param legacy
 	 */
-	private void joinOrRecruit(boolean legacy){
-		
+	private void startOfTurn(boolean legacy) {
+
 	}
-	
-	private void expandAndAttack(boolean legacy){
-		
+
+	/**
+	 * if not legacy recruit troops if legacy if player not on board join the
+	 * war else recruit troops
+	 * 
+	 * players not on board are eligible to rejoin with half starting troops and
+	 * no HQ as long as there exist a valid starting position. Inform user of
+	 * possible starting locations. expect integer representing starting
+	 * country. inform all of changes
+	 * 
+	 * inform player of available troops to place loop and ask player where to
+	 * place troops until all are place. expect integer representing valid
+	 * country and integer representing number of troops to place.
+	 * 
+	 * @param legacy
+	 */
+	private void joinOrRecruit(boolean legacy) {
+
 	}
-	
+
+	private void expandAndAttack(boolean legacy) {
+
+	}
+
 	/**
 	 * 
 	 * @param legacy
@@ -148,15 +136,10 @@ public class RiskCore {
 	}
 
 	/**
-	 * Create Factions,
-	 * Create resource deck,
-	 * load scar cards,
-	 * load mission cards,
-	 * load event cards,
-	 * load world assign red stars or missiles,
-	 * give all players game state 
-	 * players choose from available factions
-	 * give players scar cards
+	 * Create Factions, Create resource deck, load scar cards, load mission
+	 * cards, load event cards, load world assign red stars or missiles, give
+	 * all players game state players choose from available factions give
+	 * players scar cards
 	 */
 	private void setUpWorld() {
 		// TODO Auto-generated method stub
@@ -200,6 +183,7 @@ public class RiskCore {
 	}
 
 	/**
+	 * @author Austin Langhorne
 	 * 
 	 * @param clientID
 	 *            ID of the client that wishes to join
@@ -235,9 +219,14 @@ public class RiskCore {
 	}
 
 	/**
+	 * @author Austin Langhorne
 	 * 
+	 *         to be used by server to redirect data to this core class. accepts
+	 *         two commands: leave and start leave can be used in game or in the
+	 *         lobby start can only be used from the lobby by the creator of
+	 *         this instance and when there is at least 3 players
 	 * @param data
-	 *            to be sent to system
+	 *            to be sent from server to this core
 	 */
 	public synchronized void sendData(String data) {
 		Scanner scan = new Scanner(data);
@@ -272,4 +261,30 @@ public class RiskCore {
 			}
 		}
 	}
+
+	/**
+	 * @author Austin Langhorne
+	 * 
+	 *         to be used to rout data from the core to a player
+	 * @param client
+	 *            clientID of the player to send data to
+	 * @param data
+	 *            to send to player
+	 */
+	public void sendDataToClient(String client, String data) {
+		theServer.sendTo(client, data);
+	}
+
+	/**
+	 * @author Austin Langhorne
+	 * 
+	 * @return a line of data in the dataBuffer
+	 */
+	public String getDataFromBuffer() {
+		Scanner scan = new Scanner(dataBuffer);
+		String out = scan.next();
+		dataBuffer = dataBuffer.substring(out.length());
+		return out;
+	}
+
 }

@@ -11,6 +11,11 @@ import java.util.Scanner;
 
 import javax.swing.Timer;
 
+/**
+ * 
+ * @author Austin Langhorne
+ * 
+ */
 public class RiskServer {
 	// Static
 	private final int maxClients = 25;

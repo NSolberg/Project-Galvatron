@@ -2,6 +2,11 @@ package bteam.capstone.risk;
 
 import java.util.Scanner;
 
+/**
+ * 
+ * @author Austin Langhorne
+ *
+ */
 public class ClientUser {
 	public static void main(String[] args) {
 		new ClientUser();

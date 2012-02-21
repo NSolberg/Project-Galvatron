@@ -6,6 +6,11 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.Scanner;
 
+/**
+ * 
+ * @author Austin Langhorne
+ *
+ */
 public class RiskClient extends Thread {
 	private Socket client;
 	private PrintWriter out;
