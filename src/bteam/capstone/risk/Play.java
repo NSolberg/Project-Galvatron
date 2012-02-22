@@ -13,8 +13,8 @@ import java.util.Scanner;
 import java.util.Stack;
 
 public class Play {
-
-	private static boolean isAttacking;
+	//NO STATIC. NO. STOP TYPEING IT. I SEE YOU TYPEING IT!! NO. 
+	private boolean isAttacking;
 
 	/**
 	 * @author Ian Paterson
