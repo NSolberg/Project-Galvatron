@@ -307,6 +307,56 @@ public class TestPlay {
 		aPlayer.removeAllCountrys();
 		bPlayer.removeAllCountrys();
 	}
+	/** TODO test all of these
+	 * SUPERIOR INFRASTRUCTURE: Control6+ Cities
+	 * REIGN OF TERROR: Conquer 9+ territories this turn
+	 * URBAN ASSAULT: Conquer 4+ Cities this turn
+	 * AMPHIBIOUS ONSLAUGHT: Conquer 4+ territories over sea lines this turn
+	 * UNEXPECTED ATTACK: Conquer all the territories in one continent this turn
+	 * IMPERIAL MIGHT: Have a current total continent bonus of 7+
+	 **/
+	@Test
+	public void testSuperiorInfrastructure(){
+		tearDown();
+		player playerAdam = new player("adam 0 0 0 0");
+		for(int i = 0; i < 4; i++){
+			playerAdam.addCountry(i);
+			play.world2.getCountry(i).setCityType(1);
+		}
+		assertEquals(false, play.checkSuperior(playerAdam));
+		
+	}
+	
+	@Test
+	public void testReignOfTerror(){
+		
+	}
+	
+	@Test
+	public void testUrbanAssault(){
+		
+	}
+	
+	@Test
+	public void testAmphibiousonSlaught(){
+		
+	}
+	
+	@Test
+	public void testUnexpectedAttack(){
+		
+	}
+	
+	@Test
+	public void testImperialMight(){
+		
+	}
+	
+	public void tearDown(){
+		for(int i = 0; i<play.world2.countrys.size(); i++){
+			play.world2.getCountry(i).setCityType(0);
+		}
+	}
 	String data = "6" + "\n" + 
 	"NorthAmerica 	title NONE 5 0	 0 1 2 3 4 5 6 7 8" + "\n" +
 	"SouthAmerica 	title NONE 5 0	 9 10 11 12" + "\n" +
