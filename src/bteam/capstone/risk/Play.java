@@ -8,12 +8,12 @@ package bteam.capstone.risk;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Random;
 import java.util.Scanner;
 import java.util.Stack;
 
 public class Play {
-	//NO STATIC. NO. STOP TYPEING IT. I SEE YOU TYPEING IT!! NO. 
 	private boolean isAttacking;
 
 	/**
@@ -258,6 +258,8 @@ public class Play {
 			String temp;
 			String temp2;
 			if (switchVal == 4) {
+				//sendToClient(defCountry.getOwner(), "Would you like to roll one or two dice");
+				//temp = getClientResponse();
 				System.out.println("Defender would you like to roll one or two dice?");
 				temp = defInScanner.next();
 				if (temp.equals("one")) {
@@ -269,8 +271,9 @@ public class Play {
 				}
 			}
 			if (switchVal == 5) {
-				System.out
-						.println("Attacker would you like to roll one or two dice?");
+				//sendToClient(atkCountry.getOwner(), "Would you like to roll one or two dice");
+				//temp = getClientResponse();
+				System.out.println("Attacker would you like to roll one or two dice?");
 				temp = defInScanner.next();
 				if (temp.equals("one")) {
 					switchVal = 2;
@@ -282,9 +285,12 @@ public class Play {
 			}
 
 			if (switchVal == 7) {
-				System.out
-						.println("Attacker would you like to roll one or two dice?");
+				//sendToClient(atkCountry.getOwner(), "Would you like to roll one or two dice");
+				//temp = getClientResponse();
+				System.out.println("Attacker would you like to roll one or two dice?");
 				temp = defInScanner.next();
+				//sendToClient(defCountry.getOwner(), "Would you like to roll one or two dice");
+				//temp = getClientResponse();
 				System.out.println("Defender would you like to roll one or two dice?");
 				temp2 = defInScanner.next();
 				if (temp.equals("one") && temp2.equals("two")) {
@@ -305,8 +311,9 @@ public class Play {
 			}
 
 			if (switchVal == 10) {
-				System.out
-						.println("Attacker would you like to roll one, two, or three dice?");
+				//sendToClient(atkCountry.getOwner(), "Would you like to roll one, two, or three dice");
+				//temp = getClientResponse();
+				System.out.println("Attacker would you like to roll one, two, or three dice?");
 				temp = defInScanner.next();
 				if (temp.equals("one")) {
 					switchVal = 2;
@@ -321,8 +328,12 @@ public class Play {
 			}
 
 			if (switchVal == 12) {
+				//sendToClient(atkCountry.getOwner(), "Would you like to roll one or two dice");
+				//temp = getClientResponse();
 				System.out.println("Attacker would you like to roll one, two, or three dice?");
 				temp = defInScanner.next();
+				//sendToClient(defCountry.getOwner(), "Would you like to roll one or two dice");
+				//temp = getClientResponse();
 				System.out.println("Defender would you like to roll one or two dice?");
 				temp2 = defInScanner.next();
 				if (temp.equals("one") && temp2.equals("two")) {
@@ -384,13 +395,19 @@ public class Play {
 						}
 						if(playerStack.get(i).getMissles()  > 0){
 							System.out.println();
-							System.out.println(playerStack.get(i).getName()+ "would you like to use a missle? 'yes' or 'no'");
+							//sendToClient(playerStack.get(i), "Would you like to use a missile?");
+							//missletemp = getClientResponse();
+							System.out.println(playerStack.get(i).getName()+ "would you like to use a missile? 'yes' or 'no'");
 							missleTemp = inScan.next();
 							if(missleTemp.equals("yes")){
+								//sendToClient(playerStack.get(i), "Defender or Attackers Dice?");
+								//missletemp = getClientResponse();
 								System.out.println("Defender or Attackers Dice? 'd' or 'f'");
 								missleTemp = inScan.next();
 								if(missleTemp.equals("d") && numDefDice > 0){
-									System.out.println("Which dice roll would you like to apply the missle to? " + 
+									//sendToClient(playerStack.get(i), "Which dice toll would you like to apply the missile to?");
+									//missletemp = getClientResponse();
+									System.out.println("Which dice roll would you like to apply the missile to? " + 
 									"first or second (first being lowest)");
 									missleTemp = inScan.next();
 									if(missleTemp.equals("first")){
@@ -410,7 +427,9 @@ public class Play {
 									}
 									
 								} else if(missleTemp.equals("f") && numAtkDice > 0){
-									System.out.println("Which dice roll would you like to apply the missle to? second or third(second being lowest)");
+									//sendToClient(playerStack.get(i), "Which dice roll would you like to apply the missile to?");
+									//missleTemp = getClientResponse();
+									System.out.println("Which dice roll would you like to apply the missile to? second or third(second being lowest)");
 									missleTemp = inScan.next();
 									if(missleTemp.equals("second")){
 										System.out.println("Changed " + attack6[1] +" to a 6");
@@ -503,9 +522,13 @@ public class Play {
 						}
 						if(playerStack.get(i).getMissles()  > 0){
 							System.out.println();
+							//sendToClient(playerStack.get(i), "Would you like to use a missle?");
+							//missletemp = getClientResponse();
 							System.out.println(playerStack.get(i).getName()+ "would you like to use a missle? 'yes' or 'no'");
 							missleTemp = inScan.next();
 							if(missleTemp.equals("yes")){
+								//sendToClient(playerStack.get(i), "Defender or Attackers dice?");
+								//missletemp = getClientResponse();
 								System.out.println("Defender or Attackers Dice? 'd' or 'f'");
 								missleTemp = inScan.next();
 								if(missleTemp.equals("d") && numDefDice > 0){
@@ -589,12 +612,18 @@ public class Play {
 						}
 						if(playerStack.get(i).getMissles()  > 0){
 							System.out.println();
+							//sendToClient(playerStack.get(i), "Would you like to use a missle?");
+							//missletemp = getClientResponse();
 							System.out.println(playerStack.get(i).getName()+ "would you like to use a missle? 'yes' or 'no'");
 							missleTemp = inScan.next();
 							if(missleTemp.equals("yes")){
+								//sendToClient(playerStack.get(i), "Attacker or defenders dice?");
+								//missletemp = getClientResponse();
 								System.out.println("Defender or Attackers Dice? 'd' or 'f'");
 								missleTemp = inScan.next();
 								if(missleTemp.equals("d") && numDefDice > 0){
+									//sendToClient(playerStack.get(i), "Which dice toll would you like to apply the missile to?");
+									//missletemp = getClientResponse();
 									System.out.println("Which dice roll would you like to apply the missle to? " + 
 									"first or second (first being lowest)");
 									missleTemp = inScan.next();
@@ -615,6 +644,8 @@ public class Play {
 									}
 									
 								} else if(missleTemp.equals("f") && numAtkDice > 0){
+									//sendToClient(playerStack.get(i), "Which dice toll would you like to apply the missile to?");
+									//missletemp = getClientResponse();
 									System.out.println("Which dice roll would you like to apply the missle to? first or second(first being lowest)");
 									missleTemp = inScan.next();
 									if(missleTemp.equals("first")){
@@ -708,6 +739,8 @@ public class Play {
 							break;
 						}
 						if(playerStack.get(i).getMissles()  > 0){
+							//sendToClient(playerStack.get(i), "Would you like to use a missle?");
+							//missletemp = getClientResponse();
 							System.out.println(playerStack.get(i).getName()+ "would you like to use a missle? 'yes' or 'no'");
 							missleTemp = inScan.next();
 							if(missleTemp.equals("yes")){
@@ -722,6 +755,8 @@ public class Play {
 										numDefDice--;
 									
 								} else if(missleTemp.equals("f") && numAtkDice > 0){
+									//sendToClient(playerStack.get(i), "Which dice toll would you like to apply the missile to?");
+									//missletemp = getClientResponse();
 									System.out.println("Which dice roll would you like to apply the missle to? first or second(first being the lowest)");
 									missleTemp = inScan.next();
 									if(missleTemp.equals("first")){
@@ -801,12 +836,18 @@ public class Play {
 							break;
 						}
 						if(playerStack.get(i).getMissles()  > 0){
+							//sendToClient(playerStack.get(i), "Would you like to use a misslie?");
+							//missletemp = getClientResponse();
 							System.out.println(playerStack.get(i).getName()+ "would you like to use a missle? 'yes' or 'no'");
 							missleTemp = inScan.next();
 							if(missleTemp.equals("yes")){
+								//sendToClient(playerStack.get(i), "Attacker or defenders missile?");
+								//missletemp = getClientResponse();
 								System.out.println("Defender or Attackers Dice? 'd' or 'f'");
 								missleTemp = inScan.next();
 								if(missleTemp.equals("d") && numDefDice > 0){
+									//sendToClient(playerStack.get(i), "Which dice toll would you like to apply the missile to?");
+									//missletemp = getClientResponse();
 									System.out.println("Which dice roll would you like to apply the missle to? first or second(first being the lowest)");
 									missleTemp = inScan.next();
 									if(missleTemp.equals("first")){
@@ -897,9 +938,13 @@ public class Play {
 							break;
 						}
 						if(playerStack.get(i).getMissles()  > 0){
+							//sendToClient(playerStack.get(i), "Would you like to use a missile?");
+							//missletemp = getClientResponse();
 							System.out.println(playerStack.get(i).getName()+ "would you like to use a missle? 'yes' or 'no'");
 							missleTemp = inScan.next();
 							if(missleTemp.equals("yes")){
+								//sendToClient(playerStack.get(i), "Attacker or Defender?");
+								//missletemp = getClientResponse();
 								System.out.println("Defender or Attackers Dice? 'd' or 'f'");
 								missleTemp = inScan.next();
 								if(missleTemp.equals("d") && numDefDice > 0){
@@ -957,6 +1002,8 @@ public class Play {
 			// isAttacking = false;
 			if (atkCountry.getTroopQuantity() > 1
 					&& defCountry.getTroopQuantity() > 0) {
+				//sendToClient(atkCountry.getOwner(), "Do you wish to continue combat?");
+				//missletemp = getClientResponse();
 				System.out
 						.println("Attacker! Do you wish to continue? type 'yes' to Continue");
 				String temp3 = in.next();
@@ -981,6 +1028,7 @@ public class Play {
 				System.out.println(defCountry.getOwner().getName() + " you have been defeated, " + defCountry.getCountryName()
 						+ " Now belongs to " + atkCountry.getOwner().getName());
 				atkCountry.getOwner().addCountry(defCountry.id());
+				atkCountry.getOwner().addConquered(defCountry.id());
 			}
 
 		}
@@ -1004,6 +1052,115 @@ public class Play {
 		 * IMPERIAL MIGHT: Have a current total continent bonus of 7+
 		 */
 	}
+	/*
+	 * Solberg
+	 * Checks the conditions for various mission cards an whether they have been met or not
+	 */
+	public boolean checkSuperior(player aPlayer) {
+		boolean val = false;
+		int count = 0;
+		ArrayList<Integer> countryList = aPlayer.getCountrys();
+		for (int i = 0; i < countryList.size(); i++) {
+			if (world.getCountry(countryList.get(0)).getCityType() != 0) {
+				count++;
+			}
+		}
+		if (count >= 6) {
+			val = true;
+		}
+		return val;
+
+	}
+
+	public boolean checkReign(player aPlayer) {
+		boolean val = false;
+		ArrayList<Integer> countryList = aPlayer.getConquered();
+		// reset list to empty at the end of a turn
+		if (countryList.size() >= 9) {
+			val = true;
+		}
+
+		return val;
+	}
+
+	public boolean checkUrban(player aPlayer) {
+		boolean val = false;
+		int count = 0;
+		ArrayList<Integer> countryList = aPlayer.getConquered();
+		for (int i = 0; i < countryList.size(); i++) {
+			if (world.getCountry(countryList.get(i)).getCityType() != 0) {
+				count++;
+			}
+		}
+		if (count >= 4) {
+			val = true;
+		}
+		return val;
+	}
+
+	public boolean checkAmphib(player aPlayer) {
+		boolean val = false;
+		// AMPHIBIOUS ONSLAUGHT: Conquer 4+ territories over sea lines this turn
+		return val;
+	}
+
+	public boolean checkUnexpectedA(player aPlayer) {
+		boolean val = false;
+		ArrayList<Integer> countryList = aPlayer.getConquered();
+		if (countryList.containsAll((Collection<?>) world.getContinent(0))) {
+			val = true;
+		}
+		if (countryList.containsAll((Collection<?>) world.getContinent(1))) {
+			val = true;
+		}
+		if (countryList.containsAll((Collection<?>) world.getContinent(2))) {
+			val = true;
+		}
+		if (countryList.containsAll((Collection<?>) world.getContinent(3))) {
+			val = true;
+		}
+		if (countryList.containsAll((Collection<?>) world.getContinent(4))) {
+			val = true;
+		}
+		if (countryList.containsAll((Collection<?>) world.getContinent(5))) {
+			val = true;
+		}
+		// UNEXPECTED ATTACK: Conquer all the territories in one continent this
+		// turn
+		return val;
+	}
+
+	public boolean checkImpMight(player aPlayer) {
+
+		boolean val = false;
+		ArrayList<Integer> countryList = aPlayer.getConquered();
+		int bonus = 0;
+		if (countryList.containsAll((Collection<?>) world.getContinent(0))) {
+			bonus += world.getContinent(0).getBonus();
+		}
+		if (countryList.containsAll((Collection<?>) world.getContinent(1))) {
+			bonus += world.getContinent(1).getBonus();
+		}
+		if (countryList.containsAll((Collection<?>) world.getContinent(2))) {
+			bonus += world.getContinent(2).getBonus();
+		}
+		if (countryList.containsAll((Collection<?>) world.getContinent(3))) {
+			bonus += world.getContinent(3).getBonus();
+		}
+		if (countryList.containsAll((Collection<?>) world.getContinent(4))) {
+			bonus += world.getContinent(4).getBonus();
+		}
+		if (countryList.containsAll((Collection<?>) world.getContinent(5))) {
+			bonus += world.getContinent(5).getBonus();
+		}
+		if (bonus >= 4) {
+			val = true;
+		}
+		// IMPERIAL MIGHT: Have a current total continent bonus of 7+
+		return val;
+	}
+	 
+	
 	public static int randomDice() {
 		int dice;
 		Random generator = new Random();

@@ -16,6 +16,8 @@ public class player {
 	private String name;
 	private Faction faction;
 	private ArrayList<Integer> countrys = new ArrayList<Integer>();
+	private int conquered;
+	private ArrayList<Integer> conqueredList = new ArrayList<Integer>();
 
 	// private Faction faction;
 
@@ -184,6 +186,14 @@ public class player {
 	 */
 	public int getTroops() {
 		return troops;
+	}
+	public void addConquered(int country) {
+		
+		conqueredList.add(country);
+	}
+	public ArrayList<Integer> getConquered() {
+		// TODO Auto-generated method stub
+		return conqueredList;
 	}
 
 }
