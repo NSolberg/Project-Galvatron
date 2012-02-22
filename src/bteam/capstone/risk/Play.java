@@ -198,16 +198,24 @@ public class Play {
 	 * will be rolled in their phase, given the attacker appropriate 
 	 * has available resources. The attacker is also given the option
 	 * to cancel the attack after any round. The loop will stop when the
-	 * attacking player has 1 troop or the denfeder has 0
+	 * attacking player has 1 troop or the denfeder has 0. Given a player
+	 * has missles. They are offered the chance to use one and pick the dice
+	 * they would like to apply it too. Each player will be asked twice
+	 * whether they would like to or not. The second time being a double check.
 	 * 
 	 * TODO 
-	 * Still need to implement the uses of missles
 	 * Later modify this method to work with a gui and client
 	 * City and Fortifications.
 	 */
 	//playTestGui gui = new playTestGui();
 	public void attack(Country atkCountry, Country defCountry, Map map) {
-		
+		Scanner inScan = new Scanner(System.in);
+		String missleTemp = "";
+		int loopUntil = 0;
+		int numAtkDice = 0;
+		int numDefDice = 0;
+		int misslesUsed = 0;
+		boolean missleOnDefender = false;
 		boolean isAttacking = true;
 		if (atkCountry.getCountryBorders().contains(defCountry.id()) == false) {
 			System.out.println("This will be an invalid attack");
@@ -350,6 +358,7 @@ public class Play {
 				Arrays.sort(attack6);
 				int[] defense6 = { randomDice(), randomDice() };
 				Arrays.sort(defense6);
+				numOfDice = 4;
 				System.out.println();
 				System.out.print("attack die from lowest to highest ");
 				for (int i = 0; i < 3; i++) {
@@ -359,6 +368,70 @@ public class Play {
 				System.out.print("defense die from lowest to highest ");
 				for (int i = 0; i < 2; i++) {
 					System.out.print(defense6[i] + " ");
+				}
+				//Missles
+				inScan = new Scanner(System.in);
+				missleTemp = "";
+				loopUntil = 2;
+				numAtkDice = 2;
+				numDefDice = 2;
+				misslesUsed = 0;
+				missleOnDefender = false;
+				while(loopUntil > 0){
+					for(int i = playerStack.size()-1; i > -1; i--){
+						if(misslesUsed == numOfDice){
+							break;
+						}
+						if(playerStack.get(i).getMissles()  > 0){
+							System.out.println();
+							System.out.println(playerStack.get(i).getName()+ "would you like to use a missle? 'yes' or 'no'");
+							missleTemp = inScan.next();
+							if(missleTemp.equals("yes")){
+								System.out.println("Defender or Attackers Dice? 'd' or 'f'");
+								missleTemp = inScan.next();
+								if(missleTemp.equals("d") && numDefDice > 0){
+									System.out.println("Which dice roll would you like to apply the missle to? " + 
+									"first or second (first being lowest)");
+									missleTemp = inScan.next();
+									if(missleTemp.equals("first")){
+										System.out.println("Changed " + defense6[0] +" to a 6");
+										defense6[0] = 6;
+										missleOnDefender = true;
+										playerStack.get(i).setMissles(playerStack.get(i).getMissles()-1);
+										misslesUsed++;
+										numDefDice--;
+									} 
+									else if(missleTemp.equals("second")){
+										System.out.println("Changed " + defense6[1] +" to a 6");
+										defense6[1] = 6;
+										playerStack.get(i).setMissles(playerStack.get(i).getMissles()-1);
+										misslesUsed++;
+										numDefDice--;
+									}
+									
+								} else if(missleTemp.equals("f") && numAtkDice > 0){
+									System.out.println("Which dice roll would you like to apply the missle to? second or third(second being lowest)");
+									missleTemp = inScan.next();
+									if(missleTemp.equals("second")){
+										System.out.println("Changed " + attack6[1] +" to a 6");
+										attack6[1] = 6;
+										playerStack.get(i).setMissles(playerStack.get(i).getMissles()-1);
+										misslesUsed++;
+										numDefDice--;
+									} 
+									else if(missleTemp.equals("third")){
+										System.out.println("Changed " + attack6[2] +" to a 6");
+										attack6[2] = 6;
+										playerStack.get(i).setMissles(playerStack.get(i).getMissles()-1);
+										misslesUsed++;
+										numDefDice--;
+									}
+								}
+							}
+						}
+					}
+					loopUntil--;
+						
 				}
 				System.out.println();
 				if(defCountry.getScarType() == 1){
@@ -404,6 +477,7 @@ public class Play {
 				Arrays.sort(attack5);
 				int[] defense5 = { randomDice() };
 				Arrays.sort(defense5);
+				numOfDice = 2;
 				System.out.println();
 				System.out.print("attack die from lowest to highest ");
 				for (int i = 0; i < 3; i++) {
@@ -413,10 +487,53 @@ public class Play {
 				System.out.print("defense die from lowest to highest ");
 				System.out.print(defense5[0] + " ");
 				System.out.println();
-				if(defCountry.getScarType() == 1){
+				
+				//Missles
+				inScan = new Scanner(System.in);
+				missleTemp = "";
+				loopUntil = 2;
+				numAtkDice = 1;
+				numDefDice = 1;
+				misslesUsed = 0;
+				missleOnDefender = false;
+				while(loopUntil > 0){
+					for(int i = playerStack.size()-1; i > -1; i--){
+						if(misslesUsed == numOfDice){
+							break;
+						}
+						if(playerStack.get(i).getMissles()  > 0){
+							System.out.println();
+							System.out.println(playerStack.get(i).getName()+ "would you like to use a missle? 'yes' or 'no'");
+							missleTemp = inScan.next();
+							if(missleTemp.equals("yes")){
+								System.out.println("Defender or Attackers Dice? 'd' or 'f'");
+								missleTemp = inScan.next();
+								if(missleTemp.equals("d") && numDefDice > 0){
+									System.out.println("Missle used on defenders dice");
+									System.out.println("Changed " + defense5[0] +" to a 6");
+									defense5[0] = 6;
+									missleOnDefender = true;
+									playerStack.get(i).setMissles(playerStack.get(i).getMissles()-1);
+									misslesUsed++;
+									numDefDice--;
+								} else if(missleTemp.equals("f") && numAtkDice > 0){
+									System.out.println("Missle used on attackers dice");
+									System.out.println("Changed " + attack5[2] +" to a 6");
+									attack5[2] = 6;
+									playerStack.get(i).setMissles(playerStack.get(i).getMissles()-1);
+									misslesUsed++;
+									numAtkDice--;
+								}
+							}
+						}
+					}
+					loopUntil--;
+						
+				}
+				if(defCountry.getScarType() == 1 && missleOnDefender == false){
 					defense5[0] -= 1;
 				}
-				if(defCountry.getScarType() == 2){
+				if(defCountry.getScarType() == 2 && missleOnDefender == false){
 					if(defense5[0] < 6){
 						defense5[0] += 1;
 					}
@@ -446,6 +563,7 @@ public class Play {
 				Arrays.sort(attack4);
 				int[] defense4 = { randomDice(), randomDice() };
 				Arrays.sort(defense4);
+				numOfDice = 4;
 				System.out.println();
 				System.out.print("attack die from lowest to highest ");
 				for (int i = 0; i < 2; i++) {
@@ -456,11 +574,75 @@ public class Play {
 				for (int i = 0; i < 2; i++) {
 					System.out.print(defense4[i] + " ");
 				}
+				//Missles
+				inScan = new Scanner(System.in);
+				missleTemp = "";
+				loopUntil = 2;
+				numAtkDice = 2;
+				numDefDice = 2;
+				misslesUsed = 0;
+				missleOnDefender = false;
+				while(loopUntil > 0){
+					for(int i = playerStack.size()-1; i > -1; i--){
+						if(misslesUsed == numOfDice){
+							break;
+						}
+						if(playerStack.get(i).getMissles()  > 0){
+							System.out.println();
+							System.out.println(playerStack.get(i).getName()+ "would you like to use a missle? 'yes' or 'no'");
+							missleTemp = inScan.next();
+							if(missleTemp.equals("yes")){
+								System.out.println("Defender or Attackers Dice? 'd' or 'f'");
+								missleTemp = inScan.next();
+								if(missleTemp.equals("d") && numDefDice > 0){
+									System.out.println("Which dice roll would you like to apply the missle to? " + 
+									"first or second (first being lowest)");
+									missleTemp = inScan.next();
+									if(missleTemp.equals("first")){
+										System.out.println("Changed " + defense4[0] +" to a 6");
+										defense4[0] = 6;
+										missleOnDefender = true;
+										playerStack.get(i).setMissles(playerStack.get(i).getMissles()-1);
+										misslesUsed++;
+										numDefDice--;
+									} 
+									else if(missleTemp.equals("second")){
+										System.out.println("Changed " + defense4[1] +" to a 6");
+										defense4[1] = 6;
+										playerStack.get(i).setMissles(playerStack.get(i).getMissles()-1);
+										misslesUsed++;
+										numDefDice--;
+									}
+									
+								} else if(missleTemp.equals("f") && numAtkDice > 0){
+									System.out.println("Which dice roll would you like to apply the missle to? first or second(first being lowest)");
+									missleTemp = inScan.next();
+									if(missleTemp.equals("first")){
+										System.out.println("Changed " + attack4[1] +" to a 6");
+										attack4[0] = 6;
+										playerStack.get(i).setMissles(playerStack.get(i).getMissles()-1);
+										misslesUsed++;
+										numDefDice--;
+									} 
+									else if(missleTemp.equals("second")){
+										System.out.println("Changed " + attack4[2] +" to a 6");
+										attack4[1] = 6;
+										playerStack.get(i).setMissles(playerStack.get(i).getMissles()-1);
+										misslesUsed++;
+										numDefDice--;
+									}
+								}
+							}
+						}
+					}
+					loopUntil--;
+						
+				}
 				System.out.println();
-				if(defCountry.getScarType() == 1){
+				if(defCountry.getScarType() == 1 && missleOnDefender == false){
 					defense4[1] -= 1;
 				}
-				if(defCountry.getScarType() == 2){
+				if(defCountry.getScarType() == 2 && missleOnDefender == false){
 					if(defense4[1] < 6){
 						defense4[1] += 1;
 					}
@@ -501,6 +683,7 @@ public class Play {
 				Arrays.sort(attack3);
 				int[] defense3 = { randomDice() };
 				Arrays.sort(defense3);
+				numOfDice = 3;
 				System.out.println();
 				System.out.print("attack die from lowest to highest ");
 				for (int i = 0; i < 2; i++) {
@@ -510,12 +693,64 @@ public class Play {
 				System.out.print("defense die from lowest to highest ");
 
 				System.out.print(defense3[0] + " ");
-
+				
+				//Missles
+				inScan = new Scanner(System.in);
+				missleTemp = "";
+				loopUntil = 2;
+				numAtkDice = 2;
+				numDefDice = 1;
+				misslesUsed = 0;
+				missleOnDefender = false;
+				while(loopUntil > 0){
+					for(int i = playerStack.size()-1; i > -1; i--){
+						if(misslesUsed == numOfDice){
+							break;
+						}
+						if(playerStack.get(i).getMissles()  > 0){
+							System.out.println(playerStack.get(i).getName()+ "would you like to use a missle? 'yes' or 'no'");
+							missleTemp = inScan.next();
+							if(missleTemp.equals("yes")){
+								System.out.println("Defender or Attackers Dice? 'd' or 'f'");
+								missleTemp = inScan.next();
+								if(missleTemp.equals("d") && numDefDice > 0){
+										System.out.println("Changed " + defense3[0] +" to a 6");
+										defense3[0] = 6;
+										missleOnDefender = true;
+										playerStack.get(i).setMissles(playerStack.get(i).getMissles()-1);
+										misslesUsed++;
+										numDefDice--;
+									
+								} else if(missleTemp.equals("f") && numAtkDice > 0){
+									System.out.println("Which dice roll would you like to apply the missle to? first or second(first being the lowest)");
+									missleTemp = inScan.next();
+									if(missleTemp.equals("first")){
+										System.out.println("Changed " + defense3[0] +" to a 6");
+										attack3[0] = 6;
+										missleOnDefender = true;
+										playerStack.get(i).setMissles(playerStack.get(i).getMissles()-1);
+										misslesUsed++;
+										numDefDice--;
+									} 
+									else if(missleTemp.equals("second")){
+										System.out.println("Changed " + attack3[1] +" to a 6");
+										attack3[1] = 6;
+										playerStack.get(i).setMissles(playerStack.get(i).getMissles()-1);
+										misslesUsed++;
+										numDefDice--;
+									}
+								}
+							}
+						}
+					}
+					loopUntil--;
+						
+				}
 				System.out.println();
-				if(defCountry.getScarType() == 1){
+				if(defCountry.getScarType() == 1 && missleOnDefender == false){
 					defense3[0] -= 1;
 				}
-				if(defCountry.getScarType() == 2){
+				if(defCountry.getScarType() == 2 && missleOnDefender == false){
 					if(defense3[0] < 6){
 						defense3[0] += 1;
 					}
@@ -545,15 +780,67 @@ public class Play {
 				Arrays.sort(attack1);
 				int[] defense1 = { randomDice(), randomDice() };
 				Arrays.sort(defense1);
+				numOfDice = 3;
 				System.out.println();
 				System.out.print("attack die from lowest to highest ");
 				System.out.print(attack1[0] + " ");
 				System.out.println();
 				System.out.print("defense die from lowest to highest ");
-				if(defCountry.getScarType() == 1){
+				
+				//Missles
+				inScan = new Scanner(System.in);
+				missleTemp = "";
+				loopUntil = 2;
+				numAtkDice = 1;
+				numDefDice = 2;
+				misslesUsed = 0;
+				missleOnDefender = false;
+				while(loopUntil > 0){
+					for(int i = playerStack.size()-1; i > -1; i--){
+						if(misslesUsed == numOfDice){
+							break;
+						}
+						if(playerStack.get(i).getMissles()  > 0){
+							System.out.println(playerStack.get(i).getName()+ "would you like to use a missle? 'yes' or 'no'");
+							missleTemp = inScan.next();
+							if(missleTemp.equals("yes")){
+								System.out.println("Defender or Attackers Dice? 'd' or 'f'");
+								missleTemp = inScan.next();
+								if(missleTemp.equals("d") && numDefDice > 0){
+									System.out.println("Which dice roll would you like to apply the missle to? first or second(first being the lowest)");
+									missleTemp = inScan.next();
+									if(missleTemp.equals("first")){
+										System.out.println("Changed " + defense1[0] +" to a 6");
+										defense1[0] = 6;
+										missleOnDefender = true;
+										playerStack.get(i).setMissles(playerStack.get(i).getMissles()-1);
+										misslesUsed++;
+										numDefDice--;
+									} else if(missleTemp.equals("second")){
+										System.out.println("Changed " + defense1[1] +" to a 6");
+										defense1[1] = 6;
+										playerStack.get(i).setMissles(playerStack.get(i).getMissles()-1);
+										misslesUsed++;
+										numDefDice--;
+									}
+									
+								} else if(missleTemp.equals("f") && numAtkDice > 0){
+									System.out.println("Missle used on attackers dice");
+									attack1[0] = 6;
+									playerStack.get(i).setMissles(playerStack.get(i).getMissles()-1);
+									misslesUsed++;
+									numAtkDice--;
+								}
+							}
+						}
+					}
+					loopUntil--;
+						
+				}
+				if(defCountry.getScarType() == 1 && missleOnDefender == false){
 					defense1[1] -= 1;
 				}
-				if(defCountry.getScarType() == 2){
+				if(defCountry.getScarType() == 2 && missleOnDefender == false){
 					if(defense1[1] < 6){
 						defense1[1] += 1;
 					}
@@ -595,11 +882,15 @@ public class Play {
 				System.out.print("defense die from lowest to highest ");
 				System.out.print(defense2[0] + " ");
 				System.out.println();
-				Scanner inScan = new Scanner(System.in);
-				String missleTemp;
-				int loopUntil = 2;
-				int misslesUsed = 0;
-				boolean missleOnDefender = false;
+				
+				//Missles
+				inScan = new Scanner(System.in);
+				missleTemp = "";
+				loopUntil = 2;
+				numAtkDice = 1;
+				numDefDice = 1;
+				misslesUsed = 0;
+				missleOnDefender = false;
 				while(loopUntil > 0){
 					for(int i = playerStack.size()-1; i > -1; i--){
 						if(misslesUsed == numOfDice){
@@ -611,18 +902,20 @@ public class Play {
 							if(missleTemp.equals("yes")){
 								System.out.println("Defender or Attackers Dice? 'd' or 'f'");
 								missleTemp = inScan.next();
-								if(missleTemp.equals("d")){
+								if(missleTemp.equals("d") && numDefDice > 0){
 									System.out.println("Missle used on defenders dice");
 									System.out.println("Changed " + defense2[0] +" to a 6");
 									defense2[0] = 6;
 									missleOnDefender = true;
 									playerStack.get(i).setMissles(playerStack.get(i).getMissles()-1);
 									misslesUsed++;
-								} else {
+									numDefDice--;
+								} else if(missleTemp.equals("f") && numAtkDice > 0){
 									System.out.println("Missle used on attackers dice");
 									attack2[0] = 6;
 									playerStack.get(i).setMissles(playerStack.get(i).getMissles()-1);
 									misslesUsed++;
+									numAtkDice--;
 								}
 							}
 						}

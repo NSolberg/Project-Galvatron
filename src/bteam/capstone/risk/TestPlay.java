@@ -291,7 +291,7 @@ public class TestPlay {
 		cPlayer.setMissles(1);
 		dPlayer.setMissles(1);
 		ePlayer.setMissles(1);
-		map.getCountry(0).setTroopQuantity(2);
+		map.getCountry(0).setTroopQuantity(4);
 		map.getCountry(1).setTroopQuantity(1);
 		
 		play.playerStack.add(ePlayer);
