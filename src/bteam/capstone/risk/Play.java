@@ -1105,27 +1105,25 @@ public class Play {
 		 * deck to replace the current one
 		 */
 	}
-	public void drawMissionCard(){
-		
-		if(newMissionCard == true){
+
+	public void drawMissionCard() {
+
+		if (newMissionCard == true) {
 			Random generator = new Random();
-			if(missionAvail.isEmpty() != true){
+			if (missionAvail.isEmpty() != true) {
 				missionInt = generator.nextInt(missionAvail.size());
-				//System.out.println("random gened number " + missionInt );
 				missionInt = missionAvail.get(missionInt);
-				//System.out.println("index of mission card " + missionInt );
 				newMissionCard = false;
 			} else {
 				missionInt = -1;
 			}
 		}
 		/*
-		 * SUPERIOR INFRASTRUCTURE: Control6+ Cities
-		 * REIGN OF TERROR: Conquer 9+ territories this turn
-		 * URBAN ASSAULT: Conquer 4+ Cities this turn
+		 * SUPERIOR INFRASTRUCTURE: Control6+ Cities REIGN OF TERROR: Conquer 9+
+		 * territories this turn URBAN ASSAULT: Conquer 4+ Cities this turn
 		 * AMPHIBIOUS ONSLAUGHT: Conquer 4+ territories over sea lines this turn
-		 * UNEXPECTED ATTACK: Conquer all the territories in one continent this turn
-		 * IMPERIAL MIGHT: Have a current total continent bonus of 7+
+		 * UNEXPECTED ATTACK: Conquer all the territories in one continent this
+		 * turn IMPERIAL MIGHT: Have a current total continent bonus of 7+
 		 */
 		switch (missionInt) {
 		case -1:
@@ -1137,9 +1135,12 @@ public class Play {
 				if (checkSuperior(playerStack.get(i)) == true) {
 					missionAvail.remove(missionAvail.indexOf(0));
 					newMissionCard = true;
-					playerStack.get(i).setRedstar(playerStack.get(i).getRedstar()+1);
-					System.out.println("SUPERIOR INFRASTRUCTURE: Control6+ Cities");
-					System.out.println(playerStack.get(i).getName() + " was awarded a redstar");
+					playerStack.get(i).setRedstar(
+							playerStack.get(i).getRedstar() + 1);
+					System.out
+							.println("SUPERIOR INFRASTRUCTURE: Control6+ Cities");
+					System.out.println(playerStack.get(i).getName()
+							+ " was awarded a redstar");
 					break;
 				}
 			}
@@ -1147,13 +1148,16 @@ public class Play {
 
 		case 1:
 			System.out.println("Active mission Card 1");
-			for(int i = 0; i< playerStack.size(); i++){
-				if(checkReign(playerStack.get(i))==true){
+			for (int i = 0; i < playerStack.size(); i++) {
+				if (checkReign(playerStack.get(i)) == true) {
 					missionAvail.remove(missionAvail.indexOf(1));
 					newMissionCard = true;
-					playerStack.get(i).setRedstar(playerStack.get(i).getRedstar()+1);
-					System.out.println("REIGN OF TERROR: Conquer 9+ territories this turn");
-					System.out.println(playerStack.get(i).getName() + " was awarded a redstar");
+					playerStack.get(i).setRedstar(
+							playerStack.get(i).getRedstar() + 1);
+					System.out
+							.println("REIGN OF TERROR: Conquer 9+ territories this turn");
+					System.out.println(playerStack.get(i).getName()
+							+ " was awarded a redstar");
 					break;
 				}
 			}
@@ -1163,12 +1167,14 @@ public class Play {
 			System.out.println("Active mission Card 2");
 			for (int i = 0; i < playerStack.size(); i++) {
 				if (checkUrban(playerStack.get(i)) == true) {
-					//System.out.println(missionAvail.indexOf(2));
 					missionAvail.remove(missionAvail.indexOf(2));
 					newMissionCard = true;
-					playerStack.get(i).setRedstar(playerStack.get(i).getRedstar()+1);
-					System.out.println("URBAN ASSAULT: Conquer 4+ Cities this turn");
-					System.out.println(playerStack.get(i).getName() + " was awarded a redstar");
+					playerStack.get(i).setRedstar(
+							playerStack.get(i).getRedstar() + 1);
+					System.out
+							.println("URBAN ASSAULT: Conquer 4+ Cities this turn");
+					System.out.println(playerStack.get(i).getName()
+							+ " was awarded a redstar");
 					break;
 				}
 			}
@@ -1180,9 +1186,12 @@ public class Play {
 				if (checkAmphib(playerStack.get(i)) == true) {
 					missionAvail.remove(missionAvail.indexOf(3));
 					newMissionCard = true;
-					playerStack.get(i).setRedstar(playerStack.get(i).getRedstar()+1);
-					System.out.println("AMPHIBIOUS ONSLAUGHT: Conquer 4+ territories over sea lines this turn");
-					System.out.println(playerStack.get(i).getName() + " was awarded a redstar");
+					playerStack.get(i).setRedstar(
+							playerStack.get(i).getRedstar() + 1);
+					System.out
+							.println("AMPHIBIOUS ONSLAUGHT: Conquer 4+ territories over sea lines this turn");
+					System.out.println(playerStack.get(i).getName()
+							+ " was awarded a redstar");
 					break;
 				}
 			}
@@ -1194,9 +1203,12 @@ public class Play {
 				if (checkUnexpectedA(playerStack.get(i)) == true) {
 					missionAvail.remove(missionAvail.indexOf(4));
 					newMissionCard = true;
-					playerStack.get(i).setRedstar(playerStack.get(i).getRedstar()+1);
-					System.out.println("UNEXPECTED ATTACK: Conquer all the territories in one continent this turn");
-					System.out.println(playerStack.get(i).getName() + " was awarded a redstar");
+					playerStack.get(i).setRedstar(
+							playerStack.get(i).getRedstar() + 1);
+					System.out
+							.println("UNEXPECTED ATTACK: Conquer all the territories in one continent this turn");
+					System.out.println(playerStack.get(i).getName()
+							+ " was awarded a redstar");
 					break;
 				}
 			}
@@ -1208,26 +1220,31 @@ public class Play {
 				if (checkImpMight(playerStack.get(i)) == true) {
 					missionAvail.remove(missionAvail.indexOf(5));
 					newMissionCard = true;
-					playerStack.get(i).setRedstar(playerStack.get(i).getRedstar()+1);
-					System.out.println("IMPERIAL MIGHT: Have a current total continent bonus of 7+");
-					System.out.println(playerStack.get(i).getName() + " was awarded a redstar");
+					playerStack.get(i).setRedstar(
+							playerStack.get(i).getRedstar() + 1);
+					System.out
+							.println("IMPERIAL MIGHT: Have a current total continent bonus of 7+");
+					System.out.println(playerStack.get(i).getName()
+							+ " was awarded a redstar");
 					break;
 				}
 			}
 			break;
-		
+
 		}
 	}
+
 	/*
-	 * Solberg
-	 * Checks the conditions for various mission cards an whether they have been met or not
+	 * Solberg Checks the conditions for various mission cards an whether they
+	 * have been met or not
 	 */
 	public boolean checkSuperior(player aPlayer) {
 		boolean val = false;
 		int count = 0;
 		ArrayList<Integer> countryList = aPlayer.getCountrys();
 		for (int i = 0; i < countryList.size(); i++) {
-			if (world2.getCountry(countryList.get(i)).getCityType() != 0 || world2.getCountry(countryList.get(i)).getCityType() != 4 ) {
+			if (world2.getCountry(countryList.get(i)).getCityType() != 0
+					|| world2.getCountry(countryList.get(i)).getCityType() != 4) {
 
 				count++;
 			}
@@ -1274,10 +1291,10 @@ public class Play {
 	public boolean checkUnexpectedA(player aPlayer) {
 		boolean val = false;
 		ArrayList<Integer> countryList = new ArrayList<Integer>();
-		for(int i = 0; i < aPlayer.getConquered().size(); i++){
+		for (int i = 0; i < aPlayer.getConquered().size(); i++) {
 			countryList.add(aPlayer.getConquered().get(i));
 		}
-		
+
 		if (countryList.containsAll(world2.getContinent(0).getCountries())) {
 			val = true;
 		}
@@ -1318,7 +1335,7 @@ public class Play {
 			bonus += world2.getContinent(2).getBonus();
 			System.out.println("2");
 		}
-		if (countryList.containsAll(world2.getContinent(3).getCountries())== true) {
+		if (countryList.containsAll(world2.getContinent(3).getCountries()) == true) {
 			bonus += world2.getContinent(3).getBonus();
 			System.out.println("3");
 		}
@@ -1330,7 +1347,7 @@ public class Play {
 			bonus += world2.getContinent(5).getBonus();
 			System.out.println("5");
 		}
-	
+
 		if (bonus >= 7) {
 			System.out.println(bonus);
 			val = true;
@@ -1338,8 +1355,7 @@ public class Play {
 		// IMPERIAL MIGHT: Have a current total continent bonus of 7+
 		return val;
 	}
-	 
-	
+
 	public static int randomDice() {
 		int dice;
 		Random generator = new Random();
