@@ -143,8 +143,8 @@ public class Play {
 				boolean valid = false;
 				// ask player and place troops
 				while (!valid) {
-					sendToClient(p, "Choose a Valid Starting Continent");
-					int choice = getClientResponse();
+					sendDataToClient(p, "Choose a Valid Starting Continent");
+					int choice = getDataFromBuffer();
 					if (world.getCountry(choice).getControllingFaction()
 							.equals("\\NONE")) {
 						if (world.getCountry(choice).getCityType() == 0
@@ -156,7 +156,7 @@ public class Play {
 							world.placeTroops(choice, players[p].getTroops(),
 									players[p].getFaction().getName());
 							players[p].setTroops(0);
-							sendToClient(p, "Accept");
+							sendDataToClient(p, "Accept");
 						}
 					}
 				}
@@ -180,13 +180,13 @@ public class Play {
 				boolean valid = false;
 				// ask player to place troop in country
 				while (!valid) {
-					sendToClient(p, "Choose a Valid Continent");
-					int choice = getClientResponse();
+					sendDataToClient(p, "Choose a Valid Continent");
+					int choice = getDataFromBuffer();
 					if(world.getCountry(choice).getControllingFaction().equals("\\NONE")){
 						world.placeTroops(choice, 1, players[p].getName());
 						players[p].setTroops(players[p].getTroops()-1);
 						valid = true;
-						sendToClient(p,"Accept");
+						sendDataToClient(p,"Accept");
 					}
 				}
 			}

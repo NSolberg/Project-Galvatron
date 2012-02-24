@@ -25,6 +25,10 @@ public class Country {
 	private int id = 0;
 	private boolean hasHQ = false;
 	
+	//card data;
+	private int resourceVal;
+	private boolean hasResource;
+	
 	// city variables
 	private String cityName;
 	// 0 = NONE, 1 = MINOR, 2 = MAJOR, 3 = CAPITOL, 4 = Destroyed
@@ -188,8 +192,6 @@ public class Country {
 		id = ident;
 	}
 	public int id() {
-		// TODO Auto-generated method stub
-		
 		return id;
 	}
 
@@ -199,6 +201,20 @@ public class Country {
 
 	public player getOwner() {
 		return owner;
+	}
+
+	public int getResourceVal() {
+		return this.resourceVal;
+	}
+
+	public void incResourceVal() {
+		this.resourceVal++;
+		
+	}
+
+	public boolean cardExist() {
+		// TODO Auto-generated method stub
+		return this.hasResource;
 	}
 
 }

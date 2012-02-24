@@ -14,6 +14,7 @@ public class RiskCore {
 	private ArrayList<Boolean> clientActive;
 	private int numPlayers;
 	private int maxPlayers;
+	private player[] thePlayers;
 	// Game Data
 	private boolean islegacy;
 	private boolean inGame;
@@ -25,6 +26,16 @@ public class RiskCore {
 	private String worldCreator;
 	private String worldName;
 	private String worldFile;
+	// Map Data
+	private Map world;
+	private ArrayList<Integer> resourceCards;
+	private StandardFaction[] originalFac;
+	private AliensFaction alienFac;
+	private MutantFaction mutantFac;
+	//place for mission cards
+	//place for scar cards
+	//place for event cars
+	private int coinCards;
 
 	public RiskCore(RiskServer riskServer, String clientID, String gameFile,
 			boolean legacy, boolean reserve, String pass) {
@@ -142,7 +153,75 @@ public class RiskCore {
 	 * players scar cards
 	 */
 	private void setUpWorld() {
-		// TODO Auto-generated method stub
+		Random ran = new Random();
+		File file = new File(worldFile+"/map.txt");
+		try {
+			Scanner scan = new Scanner(file);
+			scan.useDelimiter("");
+			String temp = scan.next();
+			world = new Map(temp);
+			resourceCards = new ArrayList<Integer>();
+			
+			for(int i=0;i<world.countrys.size();i++){
+				if(islegacy &&world.getCountry(0).cardExist()||!islegacy){
+					resourceCards.add(i);
+				}
+			}
+			//Shuffleing an Arraylist biatch
+			for(int i=0;i<resourceCards.size();i++){
+				int next = ran.nextInt(resourceCards.size());
+				int val1 = resourceCards.get(next);
+				resourceCards.set(next, resourceCards.get(i));
+				resourceCards.set(i, val1);
+			}
+			//TODO load powers
+			
+			//TODO read in playerData
+			
+		} catch (FileNotFoundException e) {
+			//This is not reachable
+		}
+		
+		if (islegacy&&world.isFirstGame()){
+			//created factions
+			StandardFaction tempFac;
+			int power;
+			//Khan
+			power = ran.nextInt(2);
+			tempFac = new StandardFaction("Khan \\NONE false false 1 "+power);
+			originalFac[0] = tempFac;
+			//Bear
+			power = ran.nextInt(2)+2;
+			tempFac = new StandardFaction("Bear \\NONE false false 1 "+power);
+			originalFac[0] = tempFac;
+			//Republic
+			power = ran.nextInt(2)+4;
+			tempFac = new StandardFaction("Republic \\NONE false false 1 "+power);
+			originalFac[0] = tempFac;
+			//Imperium
+			power = ran.nextInt(2)+6;
+			tempFac = new StandardFaction("Imperium \\NONE false false 1 "+power);
+			originalFac[0] = tempFac;
+			//RoboGermans
+			power = ran.nextInt(2)+8;
+			tempFac = new StandardFaction("RoboGermans \\NONE false false 1 "+power);
+			originalFac[0] = tempFac;
+			
+			//customize deck
+			power = 12;
+			while(power >0){
+				int cc = ran.nextInt(world.countrys.size());
+				if(world.countrys.get(cc).getResourceVal() <3){
+					Country ccc = world.countrys.get(cc);
+					ccc.incResourceVal();
+					power--;
+				}
+			}
+			
+			//paced out scars
+			
+			
+		}
 
 	}
 

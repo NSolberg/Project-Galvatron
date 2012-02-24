@@ -18,8 +18,23 @@ public class player {
 	private ArrayList<Integer> countrys = new ArrayList<Integer>();
 	private int conquered;
 	private ArrayList<Integer> conqueredList = new ArrayList<Integer>();
-
+	//TODO Ian added this for use on game setup
+	private int Wins;
 	// private Faction faction;
+
+	/**
+	 * @return the wins
+	 */
+	public int getWins() {
+		return Wins;
+	}
+
+	/**
+	 * @param wins the wins to set
+	 */
+	public void setWins(int wins) {
+		Wins = wins;
+	}
 
 	/**
 	 * Constructor for creating a new player given a string of data.
@@ -27,6 +42,10 @@ public class player {
 	 * @Param Data is string formatted to hold all the necessary information
 	 */
 
+	public player(){
+		
+	}
+	
 	public player(String data) {
 		Scanner scan = new Scanner(data);
 		this.name = scan.next();
@@ -34,6 +53,7 @@ public class player {
 		this.redstar = scan.nextInt();
 		this.coin = scan.nextInt();
 		this.resource = scan.nextInt();
+		this.Wins = scan.nextInt();
 		scan.close();
 	}
 
@@ -81,11 +101,12 @@ public class player {
 	public String toString() {
 		String out = "";
 
-		out += this.name + " ";
+		//out += this.name + " ";
 		out += this.missles + " ";
 		out += this.redstar + " ";
 		out += this.coin + " ";
 		out += this.resource;
+		out += this.Wins+ " ";
 		return out;
 	}
 
@@ -195,5 +216,7 @@ public class player {
 		// TODO Auto-generated method stub
 		return conqueredList;
 	}
+	
+	
 
 }

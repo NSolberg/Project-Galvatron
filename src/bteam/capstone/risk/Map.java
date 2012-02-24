@@ -13,7 +13,7 @@ public class Map {
 	// Change this later
 	public ArrayList<Country> countrys = new ArrayList<Country>();
 	public ArrayList<Continent> continent = new ArrayList<Continent>();
-
+	//private player sighner;
 	private int freeCountrys=0;
 
 	/**
@@ -329,5 +329,17 @@ public class Map {
 		}
 		return out;
 	}
+/*
+ * Ignore this, leaving it here incase
+	public int numCountries() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+*/
 
+	//TODO add variable and alter constructor and tostring to include this
+	public boolean isFirstGame() {
+		// TODO Auto-generated method stub
+		return false;
+	}
 }
