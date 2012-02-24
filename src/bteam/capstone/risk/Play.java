@@ -371,6 +371,11 @@ public class Play {
 			switch (switchVal) {
 			case 12:
 				System.out.println("3v2");
+				/*
+				 * If fortified
+				 * defender adds 1 to both of his dice. 
+				 * If the attacker attacks with 3 troops, the fortification gets worn down
+				 */
 				int[] attack6 = { randomDice(), randomDice(), randomDice() };
 				Arrays.sort(attack6);
 				int[] defense6 = { randomDice(), randomDice() };
@@ -459,14 +464,25 @@ public class Play {
 						
 				}
 				System.out.println();
-				if(defCountry.getScarType() == 1){
+				if(defCountry.getScarType() == 1 && missleOnDefender == false){
 					defense6[1] -= 1;
 				}
-				if(defCountry.getScarType() == 2){
+				if(defCountry.getScarType() == 2 && missleOnDefender == false){
 					if(defense6[1] < 6){
 						defense6[1] += 1;
 					}
 				}
+				
+				if(defCountry.isCityFortified() == true){
+					if(defense6[1] < 6){
+						defense6[1] += 1;
+					}
+					if(defense6[0] < 6){
+						defense6[0] += 1;
+					}
+					defCountry.setFortifyEnergy(defCountry.getFortifyEnergy()-1);
+				}
+				
 				if (attack6[2] > defense6[1]) {
 					defCountry
 							.setTroopQuantity(defCountry.getTroopQuantity() - 1);
@@ -567,6 +583,15 @@ public class Play {
 						defense5[0] += 1;
 					}
 				}
+				
+				if(defCountry.isCityFortified() == true){
+					if(defense5[0] < 6){
+						defense5[0] += 1;
+					}
+					defCountry.setFortifyEnergy(defCountry.getFortifyEnergy()-1);
+				}
+				
+				
 				if (attack5[2] > defense5[0]) {
 					defCountry
 							.setTroopQuantity(defCountry.getTroopQuantity() - 1);
@@ -684,6 +709,16 @@ public class Play {
 						defense4[1] += 1;
 					}
 				}
+				
+				if(defCountry.isCityFortified() == true){
+					if(defense4[1] < 6){
+						defense4[1] += 1;
+					}
+					if(defense4[0] < 6){
+						defense4[0] += 1;
+					}
+				}
+				
 				if (attack4[1] > defense4[1]) {
 					defCountry
 							.setTroopQuantity(defCountry.getTroopQuantity() - 1);
@@ -796,6 +831,13 @@ public class Play {
 						defense3[0] += 1;
 					}
 				}
+				
+				if(defCountry.isCityFortified() == true){
+					
+					if(defense3[0] < 6){
+						defense3[0] += 1;
+					}
+				}
 				if (attack3[1] > defense3[0]) {
 					defCountry
 							.setTroopQuantity(defCountry.getTroopQuantity() - 1);
@@ -892,6 +934,15 @@ public class Play {
 						defense1[1] += 1;
 					}
 				}
+				
+				if(defCountry.isCityFortified() == true){
+					if(defense1[1] < 6){
+						defense1[1] += 1;
+					}
+					if(defense1[0] < 6){
+						defense1[0] += 1;
+					}
+				}
 				for (int i = 0; i < 2; i++) {
 					System.out.print(defense1[i] + " ");
 				}
@@ -984,6 +1035,13 @@ public class Play {
 						defense2[0] += 1;
 					}
 				}
+				
+				if(defCountry.isCityFortified() == true){
+					
+					if(defense2[0] < 6){
+						defense2[0] += 1;
+					}
+				}
 				if (attack2[0] > defense2[0]) {
 					defCountry
 							.setTroopQuantity(defCountry.getTroopQuantity() - 1);
@@ -1053,9 +1111,9 @@ public class Play {
 			Random generator = new Random();
 			if(missionAvail.isEmpty() != true){
 				missionInt = generator.nextInt(missionAvail.size());
-				System.out.println("random gened number " + missionInt );
+				//System.out.println("random gened number " + missionInt );
 				missionInt = missionAvail.get(missionInt);
-				System.out.println("index of mission card " + missionInt );
+				//System.out.println("index of mission card " + missionInt );
 				newMissionCard = false;
 			} else {
 				missionInt = -1;
@@ -1081,6 +1139,8 @@ public class Play {
 					newMissionCard = true;
 					playerStack.get(i).setRedstar(playerStack.get(i).getRedstar()+1);
 					System.out.println("SUPERIOR INFRASTRUCTURE: Control6+ Cities");
+					System.out.println(playerStack.get(i).getName() + " was awarded a redstar");
+					break;
 				}
 			}
 			break;
@@ -1093,6 +1153,8 @@ public class Play {
 					newMissionCard = true;
 					playerStack.get(i).setRedstar(playerStack.get(i).getRedstar()+1);
 					System.out.println("REIGN OF TERROR: Conquer 9+ territories this turn");
+					System.out.println(playerStack.get(i).getName() + " was awarded a redstar");
+					break;
 				}
 			}
 			break;
@@ -1101,10 +1163,13 @@ public class Play {
 			System.out.println("Active mission Card 2");
 			for (int i = 0; i < playerStack.size(); i++) {
 				if (checkUrban(playerStack.get(i)) == true) {
+					//System.out.println(missionAvail.indexOf(2));
 					missionAvail.remove(missionAvail.indexOf(2));
 					newMissionCard = true;
 					playerStack.get(i).setRedstar(playerStack.get(i).getRedstar()+1);
 					System.out.println("URBAN ASSAULT: Conquer 4+ Cities this turn");
+					System.out.println(playerStack.get(i).getName() + " was awarded a redstar");
+					break;
 				}
 			}
 			break;
@@ -1117,6 +1182,8 @@ public class Play {
 					newMissionCard = true;
 					playerStack.get(i).setRedstar(playerStack.get(i).getRedstar()+1);
 					System.out.println("AMPHIBIOUS ONSLAUGHT: Conquer 4+ territories over sea lines this turn");
+					System.out.println(playerStack.get(i).getName() + " was awarded a redstar");
+					break;
 				}
 			}
 			break;
@@ -1129,6 +1196,8 @@ public class Play {
 					newMissionCard = true;
 					playerStack.get(i).setRedstar(playerStack.get(i).getRedstar()+1);
 					System.out.println("UNEXPECTED ATTACK: Conquer all the territories in one continent this turn");
+					System.out.println(playerStack.get(i).getName() + " was awarded a redstar");
+					break;
 				}
 			}
 			break;
@@ -1141,6 +1210,8 @@ public class Play {
 					newMissionCard = true;
 					playerStack.get(i).setRedstar(playerStack.get(i).getRedstar()+1);
 					System.out.println("IMPERIAL MIGHT: Have a current total continent bonus of 7+");
+					System.out.println(playerStack.get(i).getName() + " was awarded a redstar");
+					break;
 				}
 			}
 			break;
@@ -1237,24 +1308,31 @@ public class Play {
 		int bonus = 0;
 		if (countryList.containsAll(world2.getContinent(0).getCountries()) == true) {
 			bonus += world2.getContinent(0).getBonus();
+			System.out.println("0America");
 		}
-		if (countryList.containsAll(world2.getContinent(1).getCountries())) {
+		if (countryList.containsAll(world2.getContinent(1).getCountries()) == true) {
 			bonus += world2.getContinent(1).getBonus();
+			System.out.println("1SouthAmerica");
 		}
-		if (countryList.containsAll(world2.getContinent(2).getCountries())) {
+		if (countryList.containsAll(world2.getContinent(2).getCountries()) == true) {
 			bonus += world2.getContinent(2).getBonus();
+			System.out.println("2");
 		}
-		if (countryList.containsAll(world2.getContinent(3).getCountries())) {
+		if (countryList.containsAll(world2.getContinent(3).getCountries())== true) {
 			bonus += world2.getContinent(3).getBonus();
+			System.out.println("3");
 		}
-		if (countryList.containsAll(world2.getContinent(4).getCountries())) {
+		if (countryList.containsAll(world2.getContinent(4).getCountries()) == true) {
 			bonus += world2.getContinent(4).getBonus();
+			System.out.println("4");
 		}
-		if (countryList.containsAll(world2.getContinent(5).getCountries())) {
+		if (countryList.containsAll(world2.getContinent(5).getCountries()) == true) {
 			bonus += world2.getContinent(5).getBonus();
+			System.out.println("5");
 		}
-		System.out.println(bonus + " bonus");
-		if (bonus >= 4) {
+	
+		if (bonus >= 7) {
+			System.out.println(bonus);
 			val = true;
 		}
 		// IMPERIAL MIGHT: Have a current total continent bonus of 7+
@@ -1271,11 +1349,11 @@ public class Play {
 		
 	String data = "6" + "\n" + 
 
-	"NorthAmerica 	title NONE 0 5	 0 1 2 3 4 5 6 7 8" + "\n" +
-	"SouthAmerica 	title NONE 0 2	 9 10 11 12" + "\n" +
+	"NorthAmerica 	title NONE 0 8	 0 1 2 3 4 5 6 7 8" + "\n" +
+	"SouthAmerica 	title NONE 0 4	 9 10 11 12" + "\n" +
 	"Africa 		title NONE 0 3	 13 14 15 16 17 18 19" + "\n" +
 	"Europe 	 	title NONE 0 5	 20 21 22 23 24 25" + "\n" +
-	"Asia 			title NONE 0 7	 26 27 28 29 30 31 32 33 34 35 36 37" + "\n" +
+	"Asia 			title NONE 0 9	 26 27 28 29 30 31 32 33 34 35 36 37" + "\n" +
 	"Australia 		title NONE 0 2	 38 39 40 41" + "\n" +
 
 	"0Alaska 				\\NONE 0 false 0 faction 0 \\NONE 0 false  34 1 5 " + "\n" +
@@ -1290,35 +1368,35 @@ public class Play {
 	"9Venezuala				\\NONE 0 false 0 faction 0 \\NONE 0 false  8 12 10" + "\n" +
 	"10Peru 				\\NONE 0 false 0 faction 0 \\NONE 0 false  9 11 12" + "\n" +
 	"11Argentina 			\\NONE 0 false 0 faction 0 \\NONE 0 false  10 12" + "\n" +
-	"12Brazil 				\\NONE 1 true 1 faction 50 \\NONE 50 false  9 10 11 13" + "\n" +
-	"13NorthAfrica 			\\NONE 1 true 1 faction 50 \\NONE 50 false  12 14 17 18 19 20" + "\n" +
-	"14CentralAfrica 		\\NONE 1 true 1 faction 50 \\NONE 50 false  13 15 17" + "\n" +
-	"15SouthAfrica 			\\NONE 1 true 1 faction 50 \\NONE 50 false  16 14 17" + "\n" +
-	"16Madagascar 			\\NONE 1 true 1 faction 50 \\NONE 50 false  15 17" + "\n" +
-	"17EastAfrica 			\\NONE 1 true 1 faction 50 \\NONE 50 false  16 15 14 13 18 28" + "\n" +
-	"18Egypt 				\\NONE 1 true 1 faction 50 \\NONE 50 false  19 13 17 28" + "\n" +
-	"19SouthernEurope 		\\NONE 1 true 1 faction 50 \\NONE 50 false  13 18 28 25 24 20" + "\n" +
-	"20WesternEurope 		\\NONE 1 true 1 faction 50 \\NONE 50 false  21 24 19 13" + "\n" +
-	"21GreatBritain 		\\NONE 1 true 1 faction 50 \\NONE 50 false 22 23 24 20" + "\n" +
-	"22IceLand 				\\NONE 1 true 1 faction 50 \\NONE 50 false  2 21 23" + "\n" +
-	"23Scandinavia 			\\NONE 1 true 1 faction 50 \\NONE 50 false  22 21 24 25" + "\n" +
-	"24NorthernEurope 		\\NONE 1 true 1 faction 50 \\NONE 50 false  21 23 20 19 25" + "\n" +
-	"25Russia 				\\NONE 1 true 1 faction 50 \\NONE 50 false  23 24 19 28 27 26" + "\n" +
-	"26Ural 				\\NONE 1 true 1 faction 50 \\NONE 50 false  25 32 31 27" + "\n" +
-	"27Afghanistan 			\\NONE 1 true 1 faction 50 \\NONE 50 false  25 26 31 29 28" + "\n" +
-	"28MiddleEast 			\\NONE 1 true 1 faction 50 \\NONE 50 false  25 19 18 17 29 27" + "\n" +
-	"29India 				\\NONE 1 true 1 faction 50 \\NONE 50 false  28 27 31 30" + "\n" +
-	"30SoutheastAsia		\\NONE 1 true 1 faction 50 \\NONE 50 false  39 31 29" + "\n" +
-	"31China 				\\NONE 1 true 1 faction 50 \\NONE 50 false  30 29 27 26 32 36" + "\n" +
-	"32Siberia 				\\NONE 1 true 1 faction 50 \\NONE 50 false  26 31 36 37 33" + "\n" +
-	"33Yakutsk 				\\NONE 1 true 1 faction 50 \\NONE 50 false  34 37 32" + "\n" +
-	"34Kamchatka 			\\NONE 1 true 1 faction 50 \\NONE 50 false  0 35 33 37 36" + "\n" +
-	"35Japan 				\\NONE 1 true 1 faction 50 \\NONE 50 false  36 34" + "\n" +
-	"36Mongolia 			\\NONE 1 true 1 faction 50 \\NONE 50 false  35 34 37 32 31" + "\n" +
-	"37Irkutsk 				\\NONE 1 true 1 faction 50 \\NONE 50 false 33 32 36 34" + "\n" +
-	"38NewGuinea 			\\NONE 1 true 1 faction 50 \\NONE 50 false  41 40 39" + "\n" +
-	"39Indonesia 			\\NONE 1 true 1 faction 50 \\NONE 50 false  30 38 40" + "\n" +
-	"40WesternAustralia 	\\NONE 1 true 1 faction 50 \\NONE 50 false  41 38 39" + "\n" +
-	"41EasternAustralia 	\\NONE 1 true 1 faction 50 \\NONE 50 false 38 40";
+	"12Brazil 				\\NONE 0 true 0 faction 50 \\NONE 50 false  9 10 11 13" + "\n" +
+	"13NorthAfrica 			\\NONE 0 true 0 faction 50 \\NONE 50 false  12 14 17 18 19 20" + "\n" +
+	"14CentralAfrica 		\\NONE 0 true 0 faction 50 \\NONE 50 false  13 15 17" + "\n" +
+	"15SouthAfrica 			\\NONE 0 true 0 faction 50 \\NONE 50 false  16 14 17" + "\n" +
+	"16Madagascar 			\\NONE 0 true 0 faction 50 \\NONE 50 false  15 17" + "\n" +
+	"17EastAfrica 			\\NONE 0 true 0 faction 50 \\NONE 50 false  16 15 14 13 18 28" + "\n" +
+	"18Egypt 				\\NONE 0 true 0 faction 50 \\NONE 50 false  19 13 17 28" + "\n" +
+	"19SouthernEurope 		\\NONE 0 true 0 faction 50 \\NONE 50 false  13 18 28 25 24 20" + "\n" +
+	"20WesternEurope 		\\NONE 0 true 0 faction 50 \\NONE 50 false  21 24 19 13" + "\n" +
+	"21GreatBritain 		\\NONE 0 true 0 faction 50 \\NONE 50 false 22 23 24 20" + "\n" +
+	"22IceLand 				\\NONE 0 true 0 faction 50 \\NONE 50 false  2 21 23" + "\n" +
+	"23Scandinavia 			\\NONE 0 true 0 faction 50 \\NONE 50 false  22 21 24 25" + "\n" +
+	"24NorthernEurope 		\\NONE 0 true 0 faction 50 \\NONE 50 false  21 23 20 19 25" + "\n" +
+	"25Russia 				\\NONE 0 true 0 faction 50 \\NONE 50 false  23 24 19 28 27 26" + "\n" +
+	"26Ural 				\\NONE 0 true 0 faction 50 \\NONE 50 false  25 32 31 27" + "\n" +
+	"27Afghanistan 			\\NONE 0 true 0 faction 50 \\NONE 50 false  25 26 31 29 28" + "\n" +
+	"28MiddleEast 			\\NONE 0 true 0 faction 50 \\NONE 50 false  25 19 18 17 29 27" + "\n" +
+	"29India 				\\NONE 0 true 0 faction 50 \\NONE 50 false  28 27 31 30" + "\n" +
+	"30SoutheastAsia		\\NONE 0 true 0 faction 50 \\NONE 50 false  39 31 29" + "\n" +
+	"31China 				\\NONE 0 true 0 faction 50 \\NONE 50 false  30 29 27 26 32 36" + "\n" +
+	"32Siberia 				\\NONE 0 true 0 faction 50 \\NONE 50 false  26 31 36 37 33" + "\n" +
+	"33Yakutsk 				\\NONE 0 true 0 faction 50 \\NONE 50 false  34 37 32" + "\n" +
+	"34Kamchatka 			\\NONE 0 true 0 faction 50 \\NONE 50 false  0 35 33 37 36" + "\n" +
+	"35Japan 				\\NONE 0 true 0 faction 50 \\NONE 50 false  36 34" + "\n" +
+	"36Mongolia 			\\NONE 0 true 0 faction 50 \\NONE 50 false  35 34 37 32 31" + "\n" +
+	"37Irkutsk 				\\NONE 0 true 0 faction 50 \\NONE 50 false 33 32 36 34" + "\n" +
+	"38NewGuinea 			\\NONE 0 true 0 faction 50 \\NONE 50 false  41 40 39" + "\n" +
+	"39Indonesia 			\\NONE 0 true 0 faction 50 \\NONE 50 false  30 38 40" + "\n" +
+	"40WesternAustralia 	\\NONE 0 true 0 faction 50 \\NONE 50 false  41 38 39" + "\n" +
+	"41EasternAustralia 	\\NONE 0 true 0 faction 50 \\NONE 50 false 38 40";
 	Map world2 = new Map(data);
 }

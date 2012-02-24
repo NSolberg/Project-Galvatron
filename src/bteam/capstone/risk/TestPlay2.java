@@ -173,6 +173,78 @@ public class TestPlay2 {
 		aPlayer.removeAllCountrys();
 		aPlayer.getConquered().clear();
 	}	
+
+	@Test
+	public void testAll(){
+		System.out.println();
+		
+		player aPlayer = new player("Allen  0 0 0 0");
+		player bPlayer = new player("Bob 0 0 0 0");
+		player cPlayer = new player("Chuck  0 0 0 0");
+		player dPlayer = new player("Dave 0 0 0 0");
+		Play play = new Play();
+		play.playerStack.clear();
+		play.missionAvail.add(0);
+		play.missionAvail.add(1);
+		play.missionAvail.add(2);
+		play.missionAvail.add(4);
+		play.missionAvail.add(5);
+		/*
+		 * SUPERIOR INFRASTRUCTURE: Control6+ Cities
+		 * REIGN OF TERROR: Conquer 9+ territories this turn
+		 * URBAN ASSAULT: Conquer 4+ Cities this turn
+		 * AMPHIBIOUS ONSLAUGHT: Conquer 4+ territories over sea lines this turn
+		 * UNEXPECTED ATTACK: Conquer all the territories in one continent this turn
+		 * IMPERIAL MIGHT: Have a current total continent bonus of 7+
+		 */
+		aPlayer.removeAllCountrys();
+		bPlayer.removeAllCountrys();
+		cPlayer.removeAllCountrys();
+		dPlayer.removeAllCountrys();
+		play.playerStack.add(aPlayer);
+		aPlayer.setRedstar(1);
+		for(int i = 24; i < 32; i++){
+		play.world2.getCountry(i).setCityType(1);
+		aPlayer.addCountry(i);
+		}
+		
+		play.playerStack.add(bPlayer);
+		bPlayer.setRedstar(1);
+		for(int i = 9; i < 28; i+=2){
+		bPlayer.addConquered(i);
+		}
+		
+		play.playerStack.add(cPlayer);
+		cPlayer.setRedstar(1);
+		for(int i = 33; i < 41; i++){
+		cPlayer.addConquered(i);
+		//cPlayer.addCountry(i);
+		play.world2.getCountry(i).setCityType(1);
+		}
+		
+		play.playerStack.add(dPlayer);
+		dPlayer.setRedstar(1);
+		for(int i = 0; i < 9; i++){
+		dPlayer.addConquered(i);
+		dPlayer.addCountry(i);
+		}
+		
+		play.drawMissionCard();
+		play.drawMissionCard();
+		play.drawMissionCard();
+		play.drawMissionCard();
+		play.drawMissionCard();
+		assertEquals(2 , aPlayer.getRedstar());
+		System.out.println();
+		assertEquals(2 , bPlayer.getRedstar());
+		System.out.println();
+		assertEquals(2 , cPlayer.getRedstar());
+		System.out.println();
+		assertEquals(3 , dPlayer.getRedstar());
+		System.out.println();
+		
+		
+	}
 			player aPlayer = new player("AttackerBob  0 0 0 0");
 			player bPlayer = new player("DefenderSue 0 0 0 0");
 }
