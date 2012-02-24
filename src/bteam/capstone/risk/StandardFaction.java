@@ -11,7 +11,10 @@ public class StandardFaction extends Faction {
 	private int count;
 
 	/**
-	 * @return Gets PowerListArray
+	 * @author Ian Paterson
+	 * @Description this is the standard faction there are 5 of these
+	 * in a normal game. All of their powers and abilities are set
+	 * up by the player.
 	 */
 	public StandardFaction(String data) {
 		count = 0;

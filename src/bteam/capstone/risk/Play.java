@@ -43,8 +43,20 @@ public class Play {
 	 * @param legacy: Determines weatehr or not it is standard or legacy
 	 * @description The purpose of this method is to set up the first turn of 
 	 * any Risk standard or Risk Legacy game. Its first function is it takes 
-	 * in the number of players that will be participateing and add's them
-	 * too two arrayList's          
+	 * in the number of players that will be participating and add's them
+	 * too two arrayList's that keep track of who's turn it is and whosPlace which
+	 * keeps track of whos "turn" it is to place troops. If draft cards are active 
+	 * this method becomes far more complicates as we have to go through the 
+	 * various types of draft cards which determine placement order, the amount
+	 * of troops you can place, the turn order for the game to be played, the number
+	 * of "coins" you will receive. Draft cards are selected by random assignment after
+	 * the arraylist of cards is shuffled and they are "dealed out". After a card has
+	 * been assigned it is removed from the array list. IF draft cards are not active,
+	 * then these values are all assigned to their standard values as prescribed by the
+	 * game rules. If it is standard risk then this is far simpler and most of the values 
+	 * are not even needed, they are simply initialized to their standard values. 
+	 * 
+	 *@TODO The client/server communication needs to be implimented by austin. 
 	 */
 	public void firstTurnSetup(boolean legacy) {
 		

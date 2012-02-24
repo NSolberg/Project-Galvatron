@@ -146,11 +146,16 @@ public class RiskCore {
 
 	}
 
+
+	
 	/**
-	 * Create Factions, Create resource deck, load scar cards, load mission
+	 * @author Ian Paterson
+	 * @Description This method is completly responsible
+	 * for createing the world and setting up the game.
+	 *  Create Factions, Create resource deck, load scar cards, load mission
 	 * cards, load event cards, load world assign red stars or missiles, give
 	 * all players game state players choose from available factions give
-	 * players scar cards
+	 * players scar cards. It loads a new game from the map.txt file ALOT MORE TO GO HERE
 	 */
 	private void setUpWorld() {
 		Random ran = new Random();
