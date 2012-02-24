@@ -1157,6 +1157,7 @@ public class Play {
 		ArrayList<Integer> countryList = aPlayer.getCountrys();
 		for (int i = 0; i < countryList.size(); i++) {
 			if (world2.getCountry(countryList.get(i)).getCityType() != 0 || world2.getCountry(countryList.get(i)).getCityType() != 4 ) {
+
 				count++;
 			}
 		}
@@ -1269,12 +1270,14 @@ public class Play {
 	}
 		
 	String data = "6" + "\n" + 
+
 	"NorthAmerica 	title NONE 0 5	 0 1 2 3 4 5 6 7 8" + "\n" +
 	"SouthAmerica 	title NONE 0 2	 9 10 11 12" + "\n" +
 	"Africa 		title NONE 0 3	 13 14 15 16 17 18 19" + "\n" +
 	"Europe 	 	title NONE 0 5	 20 21 22 23 24 25" + "\n" +
 	"Asia 			title NONE 0 7	 26 27 28 29 30 31 32 33 34 35 36 37" + "\n" +
 	"Australia 		title NONE 0 2	 38 39 40 41" + "\n" +
+
 	"0Alaska 				\\NONE 0 false 0 faction 0 \\NONE 0 false  34 1 5 " + "\n" +
 	"1NorthwestTerritory 	\\NONE 0 false 0 faction 0 \\NONE 0 false  0 2 4 5" + "\n" +
 	"2GreenLand 			\\NONE 0 false 0 faction 0 \\NONE 0 false  1 4 3 22" + "\n" +
