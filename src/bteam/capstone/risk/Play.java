@@ -14,8 +14,14 @@ import java.util.Scanner;
 import java.util.Stack;
 
 public class Play {
+	//nicks using this baby
+	ArrayList<player> playerStack = new ArrayList<player>();
+	private int numOfDice;
 	private boolean isAttacking;
-
+	public ArrayList<Integer> missionAvail = new ArrayList<Integer>();
+	private boolean newMissionCard = true;
+	private int missionInt = -1;
+	
 	/**
 	 * @author Ian Paterson
 	 * 
@@ -25,10 +31,8 @@ public class Play {
 	private player[] players;
 	private ArrayList<Integer> whosTurn;
 	private Map world;
-	//nicks using this baby
-	ArrayList<player> playerStack = new ArrayList<player>();
-
-	private int numOfDice;
+	
+	
 	/**
 	 * @author Ian Paterson
 	 * 
@@ -36,6 +40,8 @@ public class Play {
 	 *            Determines weatehr or not it is standard or legacy
 	 */
 	public void firstTurnSetup(boolean legacy) {
+		
+		
 		ArrayList<Integer> whosPlace = new ArrayList<Integer>();
 		for (int i = 0; i < numPlayers; i++) {
 			whosTurn.add(i);
@@ -1043,6 +1049,18 @@ public class Play {
 	}
 	public void drawMissionCard(){
 		
+		if(newMissionCard == true){
+			Random generator = new Random();
+			if(missionAvail.isEmpty() != true){
+				missionInt = generator.nextInt(missionAvail.size());
+				System.out.println("random gened number " + missionInt );
+				missionInt = missionAvail.get(missionInt);
+				System.out.println("index of mission card " + missionInt );
+				newMissionCard = false;
+			} else {
+				missionInt = -1;
+			}
+		}
 		/*
 		 * SUPERIOR INFRASTRUCTURE: Control6+ Cities
 		 * REIGN OF TERROR: Conquer 9+ territories this turn
@@ -1051,6 +1069,83 @@ public class Play {
 		 * UNEXPECTED ATTACK: Conquer all the territories in one continent this turn
 		 * IMPERIAL MIGHT: Have a current total continent bonus of 7+
 		 */
+		switch (missionInt) {
+		case -1:
+			break;
+
+		case 0:
+			System.out.println("Active mission Card 0");
+			for (int i = 0; i < playerStack.size(); i++) {
+				if (checkSuperior(playerStack.get(i)) == true) {
+					missionAvail.remove(missionAvail.indexOf(0));
+					newMissionCard = true;
+					playerStack.get(i).setRedstar(playerStack.get(i).getRedstar()+1);
+					System.out.println("SUPERIOR INFRASTRUCTURE: Control6+ Cities");
+				}
+			}
+			break;
+
+		case 1:
+			System.out.println("Active mission Card 1");
+			for(int i = 0; i< playerStack.size(); i++){
+				if(checkReign(playerStack.get(i))==true){
+					missionAvail.remove(missionAvail.indexOf(1));
+					newMissionCard = true;
+					playerStack.get(i).setRedstar(playerStack.get(i).getRedstar()+1);
+					System.out.println("REIGN OF TERROR: Conquer 9+ territories this turn");
+				}
+			}
+			break;
+
+		case 2:
+			System.out.println("Active mission Card 2");
+			for (int i = 0; i < playerStack.size(); i++) {
+				if (checkUrban(playerStack.get(i)) == true) {
+					missionAvail.remove(missionAvail.indexOf(2));
+					newMissionCard = true;
+					playerStack.get(i).setRedstar(playerStack.get(i).getRedstar()+1);
+					System.out.println("URBAN ASSAULT: Conquer 4+ Cities this turn");
+				}
+			}
+			break;
+
+		case 3:
+			System.out.println("Active mission Card 3");
+			for (int i = 0; i < playerStack.size(); i++) {
+				if (checkAmphib(playerStack.get(i)) == true) {
+					missionAvail.remove(missionAvail.indexOf(3));
+					newMissionCard = true;
+					playerStack.get(i).setRedstar(playerStack.get(i).getRedstar()+1);
+					System.out.println("AMPHIBIOUS ONSLAUGHT: Conquer 4+ territories over sea lines this turn");
+				}
+			}
+			break;
+
+		case 4:
+			System.out.println("Active mission Card 4");
+			for (int i = 0; i < playerStack.size(); i++) {
+				if (checkUnexpectedA(playerStack.get(i)) == true) {
+					missionAvail.remove(missionAvail.indexOf(4));
+					newMissionCard = true;
+					playerStack.get(i).setRedstar(playerStack.get(i).getRedstar()+1);
+					System.out.println("UNEXPECTED ATTACK: Conquer all the territories in one continent this turn");
+				}
+			}
+			break;
+
+		case 5:
+			System.out.println("Active mission Card 5");
+			for (int i = 0; i < playerStack.size(); i++) {
+				if (checkImpMight(playerStack.get(i)) == true) {
+					missionAvail.remove(missionAvail.indexOf(5));
+					newMissionCard = true;
+					playerStack.get(i).setRedstar(playerStack.get(i).getRedstar()+1);
+					System.out.println("IMPERIAL MIGHT: Have a current total continent bonus of 7+");
+				}
+			}
+			break;
+		
+		}
 	}
 	/*
 	 * Solberg
@@ -1061,7 +1156,7 @@ public class Play {
 		int count = 0;
 		ArrayList<Integer> countryList = aPlayer.getCountrys();
 		for (int i = 0; i < countryList.size(); i++) {
-			if (world.getCountry(countryList.get(0)).getCityType() != 0) {
+			if (world2.getCountry(countryList.get(i)).getCityType() != 0 || world2.getCountry(countryList.get(i)).getCityType() != 4 ) {
 				count++;
 			}
 		}
@@ -1088,7 +1183,7 @@ public class Play {
 		int count = 0;
 		ArrayList<Integer> countryList = aPlayer.getConquered();
 		for (int i = 0; i < countryList.size(); i++) {
-			if (world.getCountry(countryList.get(i)).getCityType() != 0) {
+			if (world2.getCountry(countryList.get(i)).getCityType() != 0) {
 				count++;
 			}
 		}
@@ -1106,23 +1201,27 @@ public class Play {
 
 	public boolean checkUnexpectedA(player aPlayer) {
 		boolean val = false;
-		ArrayList<Integer> countryList = aPlayer.getConquered();
-		if (countryList.containsAll((Collection<?>) world.getContinent(0))) {
+		ArrayList<Integer> countryList = new ArrayList<Integer>();
+		for(int i = 0; i < aPlayer.getConquered().size(); i++){
+			countryList.add(aPlayer.getConquered().get(i));
+		}
+		
+		if (countryList.containsAll(world2.getContinent(0).getCountries())) {
 			val = true;
 		}
-		if (countryList.containsAll((Collection<?>) world.getContinent(1))) {
+		if (countryList.containsAll(world2.getContinent(1).getCountries())) {
 			val = true;
 		}
-		if (countryList.containsAll((Collection<?>) world.getContinent(2))) {
+		if (countryList.containsAll(world2.getContinent(2).getCountries())) {
 			val = true;
 		}
-		if (countryList.containsAll((Collection<?>) world.getContinent(3))) {
+		if (countryList.containsAll(world2.getContinent(3).getCountries())) {
 			val = true;
 		}
-		if (countryList.containsAll((Collection<?>) world.getContinent(4))) {
+		if (countryList.containsAll(world2.getContinent(4).getCountries())) {
 			val = true;
 		}
-		if (countryList.containsAll((Collection<?>) world.getContinent(5))) {
+		if (countryList.containsAll(world2.getContinent(5).getCountries())) {
 			val = true;
 		}
 		// UNEXPECTED ATTACK: Conquer all the territories in one continent this
@@ -1135,24 +1234,25 @@ public class Play {
 		boolean val = false;
 		ArrayList<Integer> countryList = aPlayer.getConquered();
 		int bonus = 0;
-		if (countryList.containsAll((Collection<?>) world.getContinent(0))) {
-			bonus += world.getContinent(0).getBonus();
+		if (countryList.containsAll(world2.getContinent(0).getCountries()) == true) {
+			bonus += world2.getContinent(0).getBonus();
 		}
-		if (countryList.containsAll((Collection<?>) world.getContinent(1))) {
-			bonus += world.getContinent(1).getBonus();
+		if (countryList.containsAll(world2.getContinent(1).getCountries())) {
+			bonus += world2.getContinent(1).getBonus();
 		}
-		if (countryList.containsAll((Collection<?>) world.getContinent(2))) {
-			bonus += world.getContinent(2).getBonus();
+		if (countryList.containsAll(world2.getContinent(2).getCountries())) {
+			bonus += world2.getContinent(2).getBonus();
 		}
-		if (countryList.containsAll((Collection<?>) world.getContinent(3))) {
-			bonus += world.getContinent(3).getBonus();
+		if (countryList.containsAll(world2.getContinent(3).getCountries())) {
+			bonus += world2.getContinent(3).getBonus();
 		}
-		if (countryList.containsAll((Collection<?>) world.getContinent(4))) {
-			bonus += world.getContinent(4).getBonus();
+		if (countryList.containsAll(world2.getContinent(4).getCountries())) {
+			bonus += world2.getContinent(4).getBonus();
 		}
-		if (countryList.containsAll((Collection<?>) world.getContinent(5))) {
-			bonus += world.getContinent(5).getBonus();
+		if (countryList.containsAll(world2.getContinent(5).getCountries())) {
+			bonus += world2.getContinent(5).getBonus();
 		}
+		System.out.println(bonus + " bonus");
 		if (bonus >= 4) {
 			val = true;
 		}
@@ -1167,4 +1267,55 @@ public class Play {
 		dice = generator.nextInt(6) + 1;
 		return dice;
 	}
+		
+	String data = "6" + "\n" + 
+	"NorthAmerica 	title NONE 0 5	 0 1 2 3 4 5 6 7 8" + "\n" +
+	"SouthAmerica 	title NONE 0 2	 9 10 11 12" + "\n" +
+	"Africa 		title NONE 0 3	 13 14 15 16 17 18 19" + "\n" +
+	"Europe 	 	title NONE 0 5	 20 21 22 23 24 25" + "\n" +
+	"Asia 			title NONE 0 7	 26 27 28 29 30 31 32 33 34 35 36 37" + "\n" +
+	"Australia 		title NONE 0 2	 38 39 40 41" + "\n" +
+	"0Alaska 				\\NONE 0 false 0 faction 0 \\NONE 0 false  34 1 5 " + "\n" +
+	"1NorthwestTerritory 	\\NONE 0 false 0 faction 0 \\NONE 0 false  0 2 4 5" + "\n" +
+	"2GreenLand 			\\NONE 0 false 0 faction 0 \\NONE 0 false  1 4 3 22" + "\n" +
+	"3EasternCanada 		\\NONE 0 false 0 faction 0 \\NONE 0 false  2 4 7" + "\n" +
+	"4Ontario 				\\NONE 0 false 0 faction 0 \\NONE 0 false  1 5 6 7 3 2" + "\n" +
+	"5Alberta 				\\NONE 0 false 0 faction 0 \\NONE 0 false  1 0 6 3" + "\n" +
+	"6WesternUS 			\\NONE 0 false 0 faction 0 \\NONE 0 false  5 4 8 7" + "\n" +
+	"7EasternUS 			\\NONE 0 false 0 faction 0 \\NONE 0 false  3 4 6 8" + "\n" +
+	"8CentralAmerica 		\\NONE 0 false 0 faction 0 \\NONE 0 false  7 6 9" + "\n" +
+	"9Venezuala				\\NONE 0 false 0 faction 0 \\NONE 0 false  8 12 10" + "\n" +
+	"10Peru 				\\NONE 0 false 0 faction 0 \\NONE 0 false  9 11 12" + "\n" +
+	"11Argentina 			\\NONE 0 false 0 faction 0 \\NONE 0 false  10 12" + "\n" +
+	"12Brazil 				\\NONE 1 true 1 faction 50 \\NONE 50 false  9 10 11 13" + "\n" +
+	"13NorthAfrica 			\\NONE 1 true 1 faction 50 \\NONE 50 false  12 14 17 18 19 20" + "\n" +
+	"14CentralAfrica 		\\NONE 1 true 1 faction 50 \\NONE 50 false  13 15 17" + "\n" +
+	"15SouthAfrica 			\\NONE 1 true 1 faction 50 \\NONE 50 false  16 14 17" + "\n" +
+	"16Madagascar 			\\NONE 1 true 1 faction 50 \\NONE 50 false  15 17" + "\n" +
+	"17EastAfrica 			\\NONE 1 true 1 faction 50 \\NONE 50 false  16 15 14 13 18 28" + "\n" +
+	"18Egypt 				\\NONE 1 true 1 faction 50 \\NONE 50 false  19 13 17 28" + "\n" +
+	"19SouthernEurope 		\\NONE 1 true 1 faction 50 \\NONE 50 false  13 18 28 25 24 20" + "\n" +
+	"20WesternEurope 		\\NONE 1 true 1 faction 50 \\NONE 50 false  21 24 19 13" + "\n" +
+	"21GreatBritain 		\\NONE 1 true 1 faction 50 \\NONE 50 false 22 23 24 20" + "\n" +
+	"22IceLand 				\\NONE 1 true 1 faction 50 \\NONE 50 false  2 21 23" + "\n" +
+	"23Scandinavia 			\\NONE 1 true 1 faction 50 \\NONE 50 false  22 21 24 25" + "\n" +
+	"24NorthernEurope 		\\NONE 1 true 1 faction 50 \\NONE 50 false  21 23 20 19 25" + "\n" +
+	"25Russia 				\\NONE 1 true 1 faction 50 \\NONE 50 false  23 24 19 28 27 26" + "\n" +
+	"26Ural 				\\NONE 1 true 1 faction 50 \\NONE 50 false  25 32 31 27" + "\n" +
+	"27Afghanistan 			\\NONE 1 true 1 faction 50 \\NONE 50 false  25 26 31 29 28" + "\n" +
+	"28MiddleEast 			\\NONE 1 true 1 faction 50 \\NONE 50 false  25 19 18 17 29 27" + "\n" +
+	"29India 				\\NONE 1 true 1 faction 50 \\NONE 50 false  28 27 31 30" + "\n" +
+	"30SoutheastAsia		\\NONE 1 true 1 faction 50 \\NONE 50 false  39 31 29" + "\n" +
+	"31China 				\\NONE 1 true 1 faction 50 \\NONE 50 false  30 29 27 26 32 36" + "\n" +
+	"32Siberia 				\\NONE 1 true 1 faction 50 \\NONE 50 false  26 31 36 37 33" + "\n" +
+	"33Yakutsk 				\\NONE 1 true 1 faction 50 \\NONE 50 false  34 37 32" + "\n" +
+	"34Kamchatka 			\\NONE 1 true 1 faction 50 \\NONE 50 false  0 35 33 37 36" + "\n" +
+	"35Japan 				\\NONE 1 true 1 faction 50 \\NONE 50 false  36 34" + "\n" +
+	"36Mongolia 			\\NONE 1 true 1 faction 50 \\NONE 50 false  35 34 37 32 31" + "\n" +
+	"37Irkutsk 				\\NONE 1 true 1 faction 50 \\NONE 50 false 33 32 36 34" + "\n" +
+	"38NewGuinea 			\\NONE 1 true 1 faction 50 \\NONE 50 false  41 40 39" + "\n" +
+	"39Indonesia 			\\NONE 1 true 1 faction 50 \\NONE 50 false  30 38 40" + "\n" +
+	"40WesternAustralia 	\\NONE 1 true 1 faction 50 \\NONE 50 false  41 38 39" + "\n" +
+	"41EasternAustralia 	\\NONE 1 true 1 faction 50 \\NONE 50 false 38 40";
+	Map world2 = new Map(data);
 }
