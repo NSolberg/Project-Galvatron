@@ -22,6 +22,7 @@ public class player {
 	 * @author Ian Paterson
 	 * Will require more functonality to track missles
 	 * Will add this later
+	 * @deprecated 
 	 */
 	//private int Wins;
 	// private Faction faction;

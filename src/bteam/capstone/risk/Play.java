@@ -155,6 +155,7 @@ public class Play {
 				}
 				whosPlace = whosTurn;
 			}
+	
 			int i = 0;
 			int p;
 			while (i < numPlayers) {
