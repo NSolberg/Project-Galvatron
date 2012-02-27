@@ -23,16 +23,17 @@ public class player {
 	 * Will require more functonality to track missles
 	 * Will add this later
 	 */
-	private int Wins;
+	//private int Wins;
 	// private Faction faction;
 
 	/**
 	 * @return the wins
 	 */
+	/*
 	public int getWins() {
 		return Wins;
 	}
-
+*/
 	/**
 	 * @param wins the wins to set
 	 */
