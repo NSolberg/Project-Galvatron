@@ -11,7 +11,14 @@ public class MutantFaction extends Faction {
 
 	private int[] PowerList;
 	private int count;
-
+/**
+ * @author Ian Paterson
+ * @param data: a string with data from the Faction Class
+ * 
+ * @Description This assigns the propper powers to the mutant class and ensures that they
+ * are assighned to the propper values. Like aliens, mutants have 4 powers already assighned
+ * whene they start so they have less places for variables then the other two. 
+ */
 	public MutantFaction(String data) {
 		count = 4;
 		PowerList = new int[6];

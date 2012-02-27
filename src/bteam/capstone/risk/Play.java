@@ -24,7 +24,11 @@ public class Play {
 	
 	/**
 	 * @author Ian Paterson
-	 * 
+	 * @param isDraft: Determains wether or not the various draft cards are active
+	 * @param numPlayers: Self explanatory, how many players are playing
+	 * @param players: an array of players
+	 * @param whosTurn: Array list for keepng track of who's turn it is
+	 * @param world: a Map wich is the game board itslef
 	 */
 	private boolean isDraft; // Weather or not draft cards are active
 	private int numPlayers;
@@ -36,8 +40,23 @@ public class Play {
 	/**
 	 * @author Ian Paterson
 	 * 
-	 * @param legacy
-	 *            Determines weatehr or not it is standard or legacy
+	 * @param legacy: Determines weatehr or not it is standard or legacy
+	 * @description The purpose of this method is to set up the first turn of 
+	 * any Risk standard or Risk Legacy game. Its first function is it takes 
+	 * in the number of players that will be participating and add's them
+	 * too two arrayList's that keep track of who's turn it is and whosPlace which
+	 * keeps track of whos "turn" it is to place troops. If draft cards are active 
+	 * this method becomes far more complicates as we have to go through the 
+	 * various types of draft cards which determine placement order, the amount
+	 * of troops you can place, the turn order for the game to be played, the number
+	 * of "coins" you will receive. Draft cards are selected by random assignment after
+	 * the arraylist of cards is shuffled and they are "dealed out". After a card has
+	 * been assigned it is removed from the array list. IF draft cards are not active,
+	 * then these values are all assigned to their standard values as prescribed by the
+	 * game rules. If it is standard risk then this is far simpler and most of the values 
+	 * are not even needed, they are simply initialized to their standard values. 
+	 * 
+	 *@TODO The client/server communication needs to be implimented by austin. 
 	 */
 	public void firstTurnSetup(boolean legacy) {
 		
@@ -143,8 +162,8 @@ public class Play {
 				boolean valid = false;
 				// ask player and place troops
 				while (!valid) {
-					sendToClient(p, "Choose a Valid Starting Continent");
-					int choice = getClientResponse();
+					sendDataToClient(p, "Choose a Valid Starting Continent");
+					int choice = getDataFromBuffer();
 					if (world.getCountry(choice).getControllingFaction()
 							.equals("\\NONE")) {
 						if (world.getCountry(choice).getCityType() == 0
@@ -156,7 +175,7 @@ public class Play {
 							world.placeTroops(choice, players[p].getTroops(),
 									players[p].getFaction().getName());
 							players[p].setTroops(0);
-							sendToClient(p, "Accept");
+							sendDataToClient(p, "Accept");
 						}
 					}
 				}
@@ -180,13 +199,13 @@ public class Play {
 				boolean valid = false;
 				// ask player to place troop in country
 				while (!valid) {
-					sendToClient(p, "Choose a Valid Continent");
-					int choice = getClientResponse();
+					sendDataToClient(p, "Choose a Valid Continent");
+					int choice = getDataFromBuffer();
 					if(world.getCountry(choice).getControllingFaction().equals("\\NONE")){
 						world.placeTroops(choice, 1, players[p].getName());
 						players[p].setTroops(players[p].getTroops()-1);
 						valid = true;
-						sendToClient(p,"Accept");
+						sendDataToClient(p,"Accept");
 					}
 				}
 			}

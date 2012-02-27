@@ -1,5 +1,6 @@
 /**
  * @author Ian Paterson
+ * 
  */
 /**
  * @todo 
@@ -13,7 +14,15 @@ public class AliensFaction extends Faction {
 
 	private int[] PowerList;
 	private int count;
-
+/**
+ * @author Ian Paterson
+ * @param PowerList: Is the array that holds the special "powers
+ * for this type of faction
+ * @param Count counts up the amount of powers the are allowed
+ * @Description The alien faction works very similarly too the other factions 
+ * but 3 of its powers are predetermined and not assigned by the player. It also
+ * contains a fromString and tooString to allow for saveing and loading
+ */
 	public AliensFaction(String data) {
 		count = 3;
 		PowerList = new int[4];

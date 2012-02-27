@@ -11,6 +11,19 @@ public class Faction {
 	protected Boolean isWinner;
 	protected Boolean wasEliminated;
 
+	
+/**
+ * @author Ian Paterson
+ * @param PlayerName: The player playing the faction last game
+ * @param startingTerritory: The territory this faction starts in
+ * @param isWinner: Weather or not this faction won last game
+ * @param wasEliminated: Weather or not the faction was destroyed
+ * last game
+ * 
+ * @description THis class holds all the basic data that ALL 
+ * factions have. The 3 other types inherit this class in order
+ * to keep the diffrent types organized. 
+ */
 	/**
 	 * @param name
 	 *            the name to set
