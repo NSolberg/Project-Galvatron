@@ -155,7 +155,13 @@ public class Play {
 				}
 				whosPlace = whosTurn;
 			}
-	
+	/**
+	 * @author Ian Paterson
+	 * @deprecated THis will need to be moved 
+	 * to a diffrent location later and the Play class will be deleted
+	 * This error happend due to a TINY lack of communication 
+	 * in the group
+	 */
 			int i = 0;
 			int p;
 			while (i < numPlayers) {
