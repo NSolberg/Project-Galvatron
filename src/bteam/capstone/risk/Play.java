@@ -24,11 +24,11 @@ public class Play {
 	
 	/**
 	 * @author Ian Paterson
-	 * @param isDraft: Determains wether or not the various draft cards are active
+	 * @param isDraft: Determines whether or not the various draft cards are active
 	 * @param numPlayers: Self explanatory, how many players are playing
 	 * @param players: an array of players
 	 * @param whosTurn: Array list for keepng track of who's turn it is
-	 * @param world: a Map wich is the game board itslef
+	 * @param world: a Map which is the game board itself
 	 */
 	private boolean isDraft; // Weather or not draft cards are active
 	private int numPlayers;
@@ -56,7 +56,9 @@ public class Play {
 	 * game rules. If it is standard risk then this is far simpler and most of the values 
 	 * are not even needed, they are simply initialized to their standard values. 
 	 * 
-	 *@TODO The client/server communication needs to be implimented by austin. 
+	 *@TODO The client/server communication needs to be implimented by austin.
+	 *@TODO Implementations of faction assighnment 
+	 *@TODO Other faction ablilites need to be added 
 	 */
 	public void firstTurnSetup(boolean legacy) {
 		

@@ -18,7 +18,11 @@ public class player {
 	private ArrayList<Integer> countrys = new ArrayList<Integer>();
 	private int conquered;
 	private ArrayList<Integer> conqueredList = new ArrayList<Integer>();
-	//TODO Ian added this for use on game setup
+	/**
+	 * @author Ian Paterson
+	 * Will require more functonality to track missles
+	 * Will add this later
+	 */
 	private int Wins;
 	// private Faction faction;
 

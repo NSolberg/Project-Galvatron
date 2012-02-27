@@ -14,7 +14,10 @@ public class StandardFaction extends Faction {
 	 * @author Ian Paterson
 	 * @Description this is the standard faction there are 5 of these
 	 * in a normal game. All of their powers and abilities are set
-	 * up by the player.
+	 * up by the player. Powers are randomly assighned to the 
+	 * faction by the computer in order to streamline the board
+	 * game's "randomization" This is acomplished by schuffling the array 
+	 * so that the i value becomes the begining of the new value. 
 	 */
 	public StandardFaction(String data) {
 		count = 0;

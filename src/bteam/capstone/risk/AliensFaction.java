@@ -22,6 +22,10 @@ public class AliensFaction extends Faction {
  * @Description The alien faction works very similarly too the other factions 
  * but 3 of its powers are predetermined and not assigned by the player. It also
  * contains a fromString and tooString to allow for saveing and loading
+ * Alien faction comes into the game later in the game and changes the board in 
+ * diffrent ways from other faction in that it has the ablility to "destroy" various 
+ * city's and to remove 
+ * missles
  */
 	public AliensFaction(String data) {
 		count = 3;
