@@ -30,16 +30,9 @@ public class player {
 	 * @return the wins
 	 */
 	/*
-	public int getWins() {
-		return Wins;
-	}
-*/
-	/**
-	 * @param wins the wins to set
-	 */
-	public void setWins(int wins) {
-		Wins = wins;
-	}
+
+
+
 
 	/**
 	 * Constructor for creating a new player given a string of data.
@@ -58,7 +51,6 @@ public class player {
 		this.redstar = scan.nextInt();
 		this.coin = scan.nextInt();
 		this.resource = scan.nextInt();
-		this.Wins = scan.nextInt();
 		scan.close();
 	}
 
@@ -111,7 +103,6 @@ public class player {
 		out += this.redstar + " ";
 		out += this.coin + " ";
 		out += this.resource;
-		out += this.Wins+ " ";
 		return out;
 	}
 
