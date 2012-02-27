@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
 
-public class RiskCore {
+public class RiskCore extends Thread {
 	// Server Data
 	private RiskServer theServer;
 	// Player Data
@@ -59,11 +59,16 @@ public class RiskCore {
 			}
 		}
 		// init end
+
+	}
+
+	@Override
+	public void run() {
 		while (!inGame) {
 
 		}
 		setUpWorld();
-		firstTurnSetup(legacy);
+		firstTurnSetup(islegacy);
 		playGame();
 	}
 
@@ -231,14 +236,18 @@ public class RiskCore {
 	public synchronized void sendData(String data) {
 		Scanner scan = new Scanner(data);
 		String client = scan.next();
-		String cmd = scan.nextLine();
-		if (!inGame) {
+		String cmd = scan.next();
+		if (cmd.equals("help")) {
+			cmd = "leave\nstart";
+			theServer.sendTo(client, cmd);
+		} else if (!inGame) {
 			if (cmd.equals("leave")) {
 				int num = theClients.indexOf(client);
 				theClients.remove(num);
 				clientActive.remove(num);
 				num = theServer.ClientID.indexOf(client);
 				theServer.Clients.get(num).setGameID(-1);
+				theServer.sendTo(client, "leftgame");
 			} else if (cmd.equals("start")) {
 				if (worldCreator.equals(client) && numPlayers >= 3)
 					if (numPlayers > 2)

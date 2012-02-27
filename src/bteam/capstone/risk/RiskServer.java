@@ -110,9 +110,9 @@ public class RiskServer {
 			out = "GameID     WorldName     Creator     Legacy     Password";
 			for (RiskCore core : Instances) {
 				if (!byUser || byUser && core.getWorldCreator().equals(user)) {
-					out += core.getWorldID() + " " + core.getWorldName() + " "
-							+ core.getWorldCreator() + " " + core.isLegacy()
-							+ " " + core.hasPassword() + "\n";
+					out += "\n" + core.getWorldID() + " " + core.getWorldName()
+							+ " " + core.getWorldCreator() + " "
+							+ core.isLegacy() + " " + core.hasPassword();
 				}
 			}
 		} else {
@@ -133,7 +133,7 @@ public class RiskServer {
 				scan = new Scanner(dir);
 				while (scan.hasNext()) {
 					String temp = scan.nextLine();
-					out += temp;
+					out += "\n" + temp;
 				}
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
@@ -190,9 +190,10 @@ public class RiskServer {
 		}
 		if (InstanceID.size() < maxInstances) {
 			File file = new File(gameFile);
-			if (file.exists()) {
+			if (file.exists() || gameFile.equals("Default")) {
 				RiskCore core = new RiskCore(this, ClientID, gameFile, legacy,
 						reserve, pass);
+				core.start();
 				int num = core.getWorldID();
 				InstanceID.add(num);
 				Instances.add(core);
@@ -266,11 +267,28 @@ public class RiskServer {
 			String cmd = scan.next();
 			if (GameID == -1) {
 				if (cmd.equals("help")) {
-
+					cmd = "create     creates an instance of a game. Additional options seperated by space:\n";
+					cmd +="           l r p a, where l is for createing a game instance from an existing game file\n";
+					cmd +="           a file name must also be specified after the l. r reserves seats in the game\n";
+					cmd +="           a specifies a new legacy version of risk, p is for requireing a password for\n";
+					cmd +="           entry into the game also followed by a string for the password\n\n";
+					cmd +="list       list the avaliable games on the server. the addition of u followed by a name\n";
+					cmd +="           list only games created by that user that is running, s followed by a name\n";
+					cmd +="           list all avaliable games saved by the calling user(if any exist)\n\n";
+					cmd +="join       followed by an integer representing a currently running game joins the client to\n";
+					cmd +="           the game and the addition of a string after the integer specifies the password to\n";
+					cmd +="           be used to join the game if it has one\n\n";
+					cmd +="exit       disconnects the user from the server\n\n";
+					cmd +="stop       warning after 30 seconds all users will be forcefully dissconnected and games shut\n";
+					cmd +="           down and then the server will close";
+					out.println(cmd);
 				} else if (cmd.equals("create")) {
-					cmd = scan.nextLine();
+					if(scan.hasNext())
+						cmd = scan.nextLine();
+					else
+						cmd = "";
 					GameID = CreateGame(ClientID, cmd);
-				} else if (cmd.equals("join")) {
+				} else if (cmd.equals("join")&&scan.hasNext()) {
 					int worldID = scan.nextInt();
 					cmd = "";
 					if (scan.hasNext())
@@ -279,7 +297,9 @@ public class RiskServer {
 				} else if (cmd.equals("list")) {
 					if (scan.hasNext())
 						cmd = scan.nextLine();
-					list(cmd, ClientID);
+					else
+						cmd = "";
+					out.println(list(cmd, ClientID));
 				} else if (cmd.equals("exit")) {
 					this.goodBye();
 				} else if (cmd.equals("stop")) {
@@ -288,7 +308,8 @@ public class RiskServer {
 					out.println("invalid command");
 				}
 			} else {
-				int num = InstanceID.get(GameID);
+				System.out.println(InstanceID.size());
+				int num = InstanceID.indexOf(GameID);
 				if (cmd.equals("message")) {
 					if (scan.hasNext()) {
 						String msg = scan.nextLine();
