@@ -76,16 +76,6 @@ public class RiskCore extends Thread {
 
 	}
 
-	@Override
-	public void run() {
-		while (!inGame) {
-
-		}
-		setUpWorld();
-		firstTurnSetup(islegacy);
-		playGame();
-	}
-
 	/**
 	 * game loop: pass turn Start of Turn Join the War/Recruit Troops
 	 * Expand&Attack Maneuver Troops End of Turn End of Game
@@ -145,92 +135,6 @@ public class RiskCore extends Thread {
 
 	}
 
-	/**
-	 * @author Ian Paterson
-	 * @Description This method is completly responsible for createing the world
-	 *              and setting up the game. Create Factions, Create resource
-	 *              deck, load scar cards, load mission cards, load event cards,
-	 *              load world assign red stars or missiles, give all players
-	 *              game state players choose from available factions give
-	 *              players scar cards. It loads a new game from the map.txt
-	 *              file ALOT MORE TO GO HERE
-	 */
-	private void setUpWorld() {
-		Random ran = new Random();
-		File file = new File(worldFile + "/map.txt");
-		try {
-			Scanner scan = new Scanner(file);
-			scan.useDelimiter("");
-			String temp = scan.next();
-			world = new Map(temp);
-			resourceCards = new ArrayList<Integer>();
-
-			for (int i = 0; i < world.countrys.size(); i++) {
-				if (islegacy && world.getCountry(0).cardExist() || !islegacy) {
-					resourceCards.add(i);
-				}
-			}
-			// Shuffleing an Arraylist biatch
-			// fun fact:
-			// Collections.shuffle(list);
-			for (int i = 0; i < resourceCards.size(); i++) {
-				int next = ran.nextInt(resourceCards.size());
-				int val1 = resourceCards.get(next);
-				resourceCards.set(next, resourceCards.get(i));
-				resourceCards.set(i, val1);
-			}
-			// TODO load powers
-
-			// TODO read in playerData
-
-		} catch (FileNotFoundException e) {
-			// This is not reachable
-		}
-
-		if (islegacy && world.isFirstGame()) {
-			// created factions
-			StandardFaction tempFac;
-			int power;
-			// Khan
-			power = ran.nextInt(2);
-			tempFac = new StandardFaction("Khan \\NONE false false 1 " + power);
-			originalFac[0] = tempFac;
-			// Bear
-			power = ran.nextInt(2) + 2;
-			tempFac = new StandardFaction("Bear \\NONE false false 1 " + power);
-			originalFac[0] = tempFac;
-			// Republic
-			power = ran.nextInt(2) + 4;
-			tempFac = new StandardFaction("Republic \\NONE false false 1 "
-					+ power);
-			originalFac[0] = tempFac;
-			// Imperium
-			power = ran.nextInt(2) + 6;
-			tempFac = new StandardFaction("Imperium \\NONE false false 1 "
-					+ power);
-			originalFac[0] = tempFac;
-			// RoboGermans
-			power = ran.nextInt(2) + 8;
-			tempFac = new StandardFaction("RoboGermans \\NONE false false 1 "
-					+ power);
-			originalFac[0] = tempFac;
-
-			// customize deck
-			power = 12;
-			while (power > 0) {
-				int cc = ran.nextInt(world.countrys.size());
-				if (world.countrys.get(cc).getResourceVal() < 3) {
-					Country ccc = world.countrys.get(cc);
-					ccc.incResourceVal();
-					power--;
-				}
-			}
-
-			// paced out scars
-
-		}
-
-	}
 
 	private String getGameState() {
 		// TODO Auto-generated method stub
@@ -384,217 +288,6 @@ public class RiskCore extends Thread {
 	public ArrayList<Integer> missionAvail = new ArrayList<Integer>();
 	private boolean newMissionCard = true;
 	private int missionInt = -1;
-
-	/**
-	 * @author Ian Paterson
-	 * @param isDraft
-	 *            : Determines whether or not the various draft cards are active
-	 * @param numPlayers
-	 *            : Self explanatory, how many players are playing
-	 * @param players
-	 *            : an array of players
-	 * @param whosTurn
-	 *            : Array list for keepng track of who's turn it is
-	 * @param world
-	 *            : a Map which is the game board itself
-	 */
-	private boolean isDraft; // Weather or not draft cards are active
-	private int numoFPlayers;
-	private player[] players;
-	private ArrayList<Integer> whosTurn;
-
-	// private Map world;
-
-	/**
-	 * @author Ian Paterson
-	 * 
-	 * @param legacy
-	 *            : Determines weatehr or not it is standard or legacy
-	 * @description The purpose of this method is to set up the first turn of
-	 *              any Risk standard or Risk Legacy game. Its first function is
-	 *              it takes in the number of players that will be participating
-	 *              and add's them too two arrayList's that keep track of who's
-	 *              turn it is and whosPlace which keeps track of whos "turn" it
-	 *              is to place troops. If draft cards are active this method
-	 *              becomes far more complicates as we have to go through the
-	 *              various types of draft cards which determine placement
-	 *              order, the amount of troops you can place, the turn order
-	 *              for the game to be played, the number of "coins" you will
-	 *              receive. Draft cards are selected by random assignment after
-	 *              the arraylist of cards is shuffled and they are
-	 *              "dealed out". After a card has been assigned it is removed
-	 *              from the array list. IF draft cards are not active, then
-	 *              these values are all assigned to their standard values as
-	 *              prescribed by the game rules. If it is standard risk then
-	 *              this is far simpler and most of the values are not even
-	 *              needed, they are simply initialized to their standard
-	 *              values.
-	 * 
-	 * @TODO The client/server communication needs to be implimented by austin.
-	 * @TODO Implementations of faction assighnment
-	 * @TODO Other faction ablilites need to be added
-	 */
-	public void firstTurnSetup(boolean legacy) {
-
-		ArrayList<Integer> whosPlace = new ArrayList<Integer>();
-		for (int i = 0; i < numoFPlayers; i++) {
-			whosTurn.add(i);
-			whosPlace.add(i);
-		}
-		if (legacy) {
-			if (isDraft) {
-				ArrayList<Integer> placement = new ArrayList<Integer>();
-				placement.add(1);
-				placement.add(2);
-				placement.add(3);
-				if (numoFPlayers > 3) {
-					placement.add(4);
-					if (numoFPlayers > 4)
-						placement.add(5);
-				}
-
-				ArrayList<Integer> turnOrder = new ArrayList<Integer>();
-				turnOrder.add(1);
-				turnOrder.add(2);
-				turnOrder.add(3);
-				if (numoFPlayers > 3) {
-					turnOrder.add(4);
-					if (numoFPlayers > 4)
-						turnOrder.add(5);
-				}
-				ArrayList<Integer> troops = new ArrayList<Integer>();
-				troops.add(6);
-				troops.add(8);
-				troops.add(10);
-				if (numoFPlayers > 3) {
-					troops.add(8);
-					if (numoFPlayers > 4)
-						troops.add(10);
-				}
-				ArrayList<Integer> coins = new ArrayList<Integer>();
-				coins.add(0);
-				coins.add(1);
-				coins.add(2);
-				if (numoFPlayers > 3) {
-					coins.add(0);
-					if (numoFPlayers > 4)
-						coins.add(1);
-				}
-				// Temproray order of players for choosing draft cards
-				ArrayList<Integer> tempOrder = new ArrayList<Integer>();
-				for (int i = 0; i < numoFPlayers; i++) {
-					tempOrder.add(i);
-				}
-				Random ran = new Random();
-				// Randomizes temporary order
-				for (int i = 0; i < numoFPlayers; i++) {
-					int c1 = i;
-					int c2 = ran.nextInt(numoFPlayers);
-					int temp = tempOrder.get(c1);
-					tempOrder.set(c1, tempOrder.get(c2));
-					tempOrder.set(c2, temp);
-				}
-				while (troops.size() != 0 || coins.size() != 0
-						|| turnOrder.size() != 0 || placement.size() != 0) {
-					int p = tempOrder.remove(0);
-					// Send to player p: "Choose draft card"
-					// Get choice from player
-					String choice = "p 0";
-					int val = Integer.parseInt(choice.charAt(2) + "");
-					if (choice.charAt(0) == 'p') {
-						val = placement.remove(val);
-						whosPlace.set(val, p);
-					} else if (choice.charAt(0) == 't') {
-						players[p].setTroops(troops.remove(val));
-					} else if (choice.charAt(0) == 'c') {
-						players[p].setCoin(coins.remove(val));
-					} else if (choice.charAt(0) == 'o') {
-						val = turnOrder.remove(val);
-						whosTurn.set(val, p);
-					}
-				}
-
-			} else {
-				// non draft
-				Random ran = new Random();
-				for (int i = 0; i < numoFPlayers; i++) {
-					int c1 = i;
-					int c2 = ran.nextInt(numoFPlayers);
-					int temp = whosTurn.get(c1);
-					whosTurn.set(c1, whosTurn.get(c2));
-					whosTurn.set(c2, temp);
-					players[i].setTroops(8);
-					players[i].setCoin(0);
-				}
-				whosPlace = whosTurn;
-			}
-			/**
-			 * @author Ian Paterson
-			 * @deprecated THis will need to be moved to a diffrent location
-			 *             later and the Play class will be deleted This error
-			 *             happend due to a TINY lack of communication in the
-			 *             group
-			 */
-			int i = 0;
-			int p;
-			while (i < numoFPlayers) {
-				p = whosPlace.remove(0);
-				whosPlace.add(p);
-				i++;
-				boolean valid = false;
-				// ask player and place troops
-				while (!valid) {
-					sendDataToClient(p, "Choose a Valid Starting Continent");
-					int choice = getDataFromBuffer();
-					if (world.getCountry(choice).getControllingFaction()
-							.equals("\\NONE")) {
-						if (world.getCountry(choice).getCityType() == 0
-								&& world.getCountry(choice).getScarType() == 0
-								|| world.getCountry(choice).getCityType() == 2) {
-							valid = true;
-							world.placeHQ(choice, players[p].getFaction()
-									.getName());
-							world.placeTroops(choice, players[p].getTroops(),
-									players[p].getFaction().getName());
-							players[p].setTroops(0);
-							sendDataToClient(p, "Accept");
-						}
-					}
-				}
-			}
-		} else {
-			// non legacy
-			Random ran = new Random();
-			for (int i = 0; i < numoFPlayers; i++) {
-				int c1 = i;
-				int c2 = ran.nextInt(numoFPlayers);
-				int temp = whosTurn.get(c1);
-				whosTurn.set(c1, whosTurn.get(c2));
-				whosTurn.set(c2, temp);
-				players[i].setTroops(35 - 5 * (numoFPlayers - 3));
-			}
-			int p;
-			// AUSTIN GET ON YOUR SHIT
-			while (world.hasFreeCountry()) {
-				p = whosPlace.remove(0);
-				whosPlace.add(p);
-				boolean valid = false;
-				// ask player to place troop in country
-				while (!valid) {
-					sendDataToClient(p, "Choose a Valid Continent");
-					int choice = getDataFromBuffer();
-					if (world.getCountry(choice).getControllingFaction()
-							.equals("\\NONE")) {
-						world.placeTroops(choice, 1, players[p].getName());
-						players[p].setTroops(players[p].getTroops() - 1);
-						valid = true;
-						sendDataToClient(p, "Accept");
-					}
-				}
-			}
-		}
-	}
-
 	/**
 	 * @author Nick Solberg
 	 * @param atkCountry
@@ -621,22 +314,61 @@ public class RiskCore extends Thread {
 	// playTestGui gui = new playTestGui();
 	
 	
+	@SuppressWarnings("unchecked")
 	public void intialTurnRisk(int players){
-		ArrayList<Country> temp = world.countrys;
+		ArrayList<Country> temp = (ArrayList<Country>) world.countrys.clone();
 		Collections.shuffle(temp);
 		for(int i = 0; i< world.countrys.size(); i+=players){
 			int count = 0;
 			for(int j = i; j< players+i; j++){
 				if(j< 42 ){
-				world.countrys.get(j).setOwner(activePlayer.get(count));
-				world.countrys.get(j).setTroopQuantity(1);
-				System.out.println(activePlayer.get(count).getName() + ": one troop added to " + world.countrys.get(j).getCountryName());
+				activePlayer.get(count).addCountry(world.countrys.get(temp.get(j).id()).id());
+				world.countrys.get(temp.get(j).id()).setOwner(activePlayer.get(count));
+				world.countrys.get(temp.get(j).id()).setTroopQuantity(1);
+				System.out.println(activePlayer.get(count).getName() + ": one troop added to " + world.countrys.get(temp.get(j).id()).getCountryName());
 				count++;
 				}
 			}
 		}
+	}
+	
+	public void intialRiskAddTroops(){
 		
 	}
+	
+	public void addTroops(player player) {
+		Scanner scan = new Scanner(System.in);
+		int recruitable = world.recruitTroops(player.getCountrys(),
+				player.getName());
+		System.out.println("Available countrys to reinforce: ");
+		for (int i = 0; i < player.getCountrys().size(); i++) {
+			System.out.print(world.countrys.get(player.getCountrys().get(i))
+					.getCountryName() + " ");
+		}
+		System.out.println();
+		while (recruitable > 0) {
+			System.out.println("Available troops " + recruitable);
+			System.out.println("Choose a country ");
+			int country = scan.nextInt();
+			System.out.println(world.countrys.get(country).getCountryName());
+//			if (!player.getCountrys().contains(country)) {
+//				System.out.println("Enter a valid country you control");
+//				country = scan.nextInt();
+//			}
+			System.out.println("How many troops will you reinforce with");
+			int reinforce = scan.nextInt();
+			if (reinforce > recruitable) {
+				System.out.println("Enter a valid number of troops");
+				reinforce = scan.nextInt();
+			}
+			
+			world.countrys.get(country).setTroopQuantity(world.countrys.get(country).getTroopQuantity() + reinforce); 
+			System.out.println("Added " + reinforce + " to " + world.countrys.get(country).getCountryName());
+			recruitable =recruitable - reinforce;
+		}
+
+	}
+	
 	public void attack(Country atkCountry, Country defCountry, Map map) {
 		Scanner inScan = new Scanner(System.in);
 		String missleTemp = "";

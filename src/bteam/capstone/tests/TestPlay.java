@@ -328,6 +328,7 @@ public class TestPlay {
 		core.activePlayer.add(gPlayer);
 	
 		core.intialTurnRisk(5);
+		core.addTroops(dPlayer);
 	}
 	String data = "6" + "\n" + 
 	"NorthAmerica 	title NONE 5 0	 0 1 2 3 4 5 6 7 8" + "\n" +
