@@ -1,8 +1,10 @@
-package bteam.capstone.risk;
+package bteam.capstone.tests;
 
 import static org.junit.Assert.*;
 
 import org.junit.Test;
+
+import bteam.capstone.risk.Continent;
 
 public class TestContinent {
 	String cont1 = "NorthAmerica title namer 50 502 0 1 2 3 4 5 6 7 8 ";

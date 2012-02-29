@@ -1,9 +1,13 @@
-package bteam.capstone.risk;
+package bteam.capstone.tests;
 
 import static org.junit.Assert.*;
 
 
 import org.junit.Test;
+
+import bteam.capstone.risk.Country;
+import bteam.capstone.risk.Map;
+import bteam.capstone.risk.player;
 
 
 

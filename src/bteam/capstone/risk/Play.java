@@ -15,7 +15,7 @@ import java.util.Stack;
 
 public class Play {
 	//nicks using this baby
-	ArrayList<player> playerStack = new ArrayList<player>();
+	public ArrayList<player> playerStack = new ArrayList<player>();
 	private int numOfDice;
 	private boolean isAttacking;
 	public ArrayList<Integer> missionAvail = new ArrayList<Integer>();
@@ -1442,5 +1442,5 @@ public class Play {
 	"39Indonesia 			\\NONE 0 true 0 faction 50 \\NONE 50 false  30 38 40" + "\n" +
 	"40WesternAustralia 	\\NONE 0 true 0 faction 50 \\NONE 50 false  41 38 39" + "\n" +
 	"41EasternAustralia 	\\NONE 0 true 0 faction 50 \\NONE 50 false 38 40";
-	Map world2 = new Map(data);
+	public Map world2 = new Map(data);
 }
