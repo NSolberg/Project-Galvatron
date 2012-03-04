@@ -286,8 +286,10 @@ public class RiskCore extends Thread {
 	 * game loop: pass turn Start of Turn Join the War/Recruit Troops
 	 * Expand&Attack Maneuver Troops End of Turn End of Game
 	 */
+
+
+
 	public void playGame(int players) {
-		intialTurnRisk(players);
 		Scanner scan = new Scanner(System.in);
 		boolean gameOver = false;
 			while(gameOver != true){
@@ -305,58 +307,11 @@ public class RiskCore extends Thread {
 							attack = false;
 						}
 					}
-					
 				}
 			}
 
 	}
-	
-	public void intialRandomRiskCardDeck(){
-	
-		for(int i = 0; i < 42; i+=3){
-			cardDeck.add(new RiskCard(1, world.countrys.get(i)));
-			cardDeck.add(new RiskCard(2, world.countrys.get(i+1)));
-			cardDeck.add(new RiskCard(3, world.countrys.get(i+2)));
-		}
-		
-		Collections.shuffle(cardDeck);
-	}
-	
-	
-	public void turnInCards(player aPlayer, int a, int b, int c){
-		boolean valid = false;
-		if(aPlayer.getCards().get(a) != aPlayer.getCards().get(b) || aPlayer.getCards().get(a) != aPlayer.getCards().get(c) || aPlayer.getCards().get(b) != aPlayer.getCards().get(c)){
-			valid = true; 
-		}
-		if(aPlayer.getCards().get(a) == aPlayer.getCards().get(b) || aPlayer.getCards().get(a) == aPlayer.getCards().get(c)){
-			valid = true;
-		}
-		
-		switch(aPlayer.getSets()){
-		case 1:
-			aPlayer.setTroops(aPlayer.getTroops() + 4);
-			break;
-		case 2:
-			aPlayer.setTroops(aPlayer.getTroops() + 6);
-			break;
-		case 3:
-			aPlayer.setTroops(aPlayer.getTroops() + 8);
-			break;
-		case 4:
-			aPlayer.setTroops(aPlayer.getTroops() + 10);
-			break;
-		case 5:
-			aPlayer.setTroops(aPlayer.getTroops() + 12);
-			break;
-		case 6:
-			aPlayer.setTroops(aPlayer.getTroops() + 15);
-			break;
-		}
-		
-		if(aPlayer.getSets()>6){
-			aPlayer.setTroops(aPlayer.getTroops() + 15 + 5*aPlayer.getSets()-6);
-		}
-	}
+
 	
 	@SuppressWarnings("unchecked")
 	public void intialTurnRisk(int players){
