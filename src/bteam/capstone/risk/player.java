@@ -2,6 +2,7 @@ package bteam.capstone.risk;
 
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.Stack;
 
 /**
  * 
@@ -18,23 +19,9 @@ public class player {
 	private ArrayList<Integer> countrys = new ArrayList<Integer>();
 	private int conquered;
 	private ArrayList<Integer> conqueredList = new ArrayList<Integer>();
-	/**
-	 * @author Ian Paterson
-	 * Will require more functonality to track missles
-	 * Will add this later
-	 * @deprecated 
-	 */
-	//private int Wins;
-	// private Faction faction;
-
-	/**
-	 * @return the wins
-	 */
-	/*
-
-
-
-
+	private Stack<RiskCard> ownedCards = new Stack<RiskCard>();
+	private int setsRedeemed;
+	
 	/**
 	 * Constructor for creating a new player given a string of data.
 	 * 
@@ -59,6 +46,21 @@ public class player {
 		return countrys;
 	}
 
+	public Stack<RiskCard> getCards(){
+		return ownedCards;
+	}
+	
+	public void addCard(RiskCard card){
+		ownedCards.add(card);
+	}
+	
+	public int getSets(){
+		return setsRedeemed; 
+	}
+	
+	public void setSets(){
+		setsRedeemed = 1 + setsRedeemed;
+	}
 	/**
 	 * Returns the country from the array given a country
 	 * 
