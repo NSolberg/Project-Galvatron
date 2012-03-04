@@ -288,68 +288,209 @@ public class RiskCore extends Thread {
 	 */
 
 
-
+	
+	/*
+	 * Ignore, this will form the text based portion.
+	 * ALMOST DONE!
+	 */
+	
+	
+	/**
+	 * 
+	 * TODO finish the code where commented and test
+	 * @param players number of players
+	 */
 	public void playGame(int players) {
 		Scanner scan = new Scanner(System.in);
+		intialTurnRisk(players);
 		boolean gameOver = false;
-			while(gameOver != true){
-				for(int i = 0; i < activePlayer.size(); i++){
-					addTroops(activePlayer.get(i));
-					System.out.println("");
-					boolean attack = true;
-					while(attack){
-					System.out.println("Enter the country you wish to attack followed by your country");
+		while (gameOver != true) {
+			for (int i = 0; i < activePlayer.size(); i++) {
+				
+				addTroops(activePlayer.get(i));
+				System.out.println("");
+				boolean attack = true;
+				//Turn in cards? reinforce troops.
+				while (attack) {
+					System.out
+							.println("Enter the country you wish to attack followed by your country");
 					int country1 = scan.nextInt();
 					int country2 = scan.nextInt();
-					attack(world.getCountry(country1),world.getCountry(country2), world);
+					attack(world.getCountry(country1),
+							world.getCountry(country2), world);
 					System.out.println("attack another country?");
-					if(scan.next().equals("no")){
-							attack = false;
-						}
+					if (scan.next().equals("no")) {
+						attack = false;
 					}
 				}
+				//Ask to move troops
+				//End of turn next players
+				//If a player is eliminated remove from the list. 
 			}
+		}
 
 	}
 
+	public void intialRandomRiskCardDeck() {
+
+		for (int i = 0; i < 42; i += 3) {
+			cardDeck.add(new RiskCard(1, world.countrys.get(i)));
+			cardDeck.add(new RiskCard(2, world.countrys.get(i + 1)));
+			cardDeck.add(new RiskCard(3, world.countrys.get(i + 2)));
+		}
+
+		Collections.shuffle(cardDeck);
+
+	}
+
+	public void turnInCards(player aPlayer, int a, int b, int c) {
+		boolean valid = false;
+		if (aPlayer.getCards().get(a) != aPlayer.getCards().get(b)
+				|| aPlayer.getCards().get(a) != aPlayer.getCards().get(c)
+				|| aPlayer.getCards().get(b) != aPlayer.getCards().get(c)) {
+			valid = true;
+		}
+		if (aPlayer.getCards().get(a) == aPlayer.getCards().get(b)
+				|| aPlayer.getCards().get(a) == aPlayer.getCards().get(c)) {
+			valid = true;
+		}
+		if (valid) {
+			switch (aPlayer.getSets()) {
+			case 1:
+				aPlayer.setTroops(aPlayer.getTroops() + 4);
+				// 4
+				break;
+			case 2:
+				// 6+
+				aPlayer.setTroops(aPlayer.getTroops() + 6);
+				break;
+			case 3:
+				// 8
+				aPlayer.setTroops(aPlayer.getTroops() + 8);
+				break;
+			case 4:
+				// 10
+				aPlayer.setTroops(aPlayer.getTroops() + 10);
+				break;
+			case 5:
+				// 12
+				aPlayer.setTroops(aPlayer.getTroops() + 12);
+				break;
+			case 6:
+				// 15
+				aPlayer.setTroops(aPlayer.getTroops() + 15);
+				break;
+			}
+
+			if (aPlayer.getSets() > 6) {
+				aPlayer.setTroops(aPlayer.getTroops() + 15 + 5
+						* aPlayer.getSets() - 6);
+			}
+		}
+
+	}
 	
 	@SuppressWarnings("unchecked")
-	public void intialTurnRisk(int players){
+	public void intialTurnRisk(int players) {
 		ArrayList<Country> temp = (ArrayList<Country>) world.countrys.clone();
 		Collections.shuffle(temp);
-		for(int i = 0; i< world.countrys.size(); i+=players){
+		for (int i = 0; i < world.countrys.size(); i += players) {
 			int count = 0;
-			for(int j = i; j< players+i; j++){
-				if(j< 42 ){
-				activePlayer.get(count).addCountry(world.countrys.get(temp.get(j).id()).id());
-				world.countrys.get(temp.get(j).id()).setOwner(activePlayer.get(count));
-				world.countrys.get(temp.get(j).id()).setTroopQuantity(1);
-				System.out.println(activePlayer.get(count).getName() + ": one troop added to " + world.countrys.get(temp.get(j).id()).getCountryName());
-				count++;
+			for (int j = i; j < players + i; j++) {
+				if (j < 42) {
+					activePlayer.get(count).addCountry(
+							world.countrys.get(temp.get(j).id()).id());
+					world.countrys.get(temp.get(j).id()).setOwner(
+							activePlayer.get(count));
+					world.countrys.get(temp.get(j).id()).setTroopQuantity(1);
+					System.out.println(activePlayer.get(count).getName()
+							+ ": one troop added to "
+							+ world.countrys.get(temp.get(j).id())
+									.getCountryName());
+					count++;
 				}
 			}
 		}
-		
-		switch(players){
+		Scanner scan = new Scanner(System.in);
+		switch (players) {
 		case 3:
 			activePlayer.get(0).setTroops(35);
 			activePlayer.get(1).setTroops(35);
 			activePlayer.get(2).setTroops(35);
+			for (int i = 0; i < 35; i++) {
+				for (int j = 0; j < players; j++) {
+					System.out.println("Available countrys to reinforce: ");
+					for (int k = 0; k < activePlayer.get(j).getCountrys()
+							.size(); k++) {
+						System.out.print(world.countrys.get(
+								activePlayer.get(j).getCountrys().get(k))
+								.getCountryName()
+								+ " ");
+					}
+					System.out.println(activePlayer.get(j)
+							+ "enter a country and place a troop");
+					int country = scan.nextInt();
+					world.countrys.get(country).setTroopQuantity(
+							world.countrys.get(country).getTroopQuantity() + 1);
+					System.out.println("Added " + 1 + " to "
+							+ world.countrys.get(country).getCountryName());
+
+				}
+			}
 			break;
 		case 4:
 			activePlayer.get(0).setTroops(30);
 			activePlayer.get(1).setTroops(30);
 			activePlayer.get(2).setTroops(30);
 			activePlayer.get(3).setTroops(30);
+			for (int i = 0; i < 30; i++) {
+				for (int j = 0; j < players; j++) {
+					System.out.println("Available countrys to reinforce: ");
+					for (int k = 0; k < activePlayer.get(j).getCountrys()
+							.size(); k++) {
+						System.out.print(world.countrys.get(
+								activePlayer.get(j).getCountrys().get(k))
+								.getCountryName()
+								+ " ");
+					}
+					System.out.println(activePlayer.get(j)
+							+ "enter a country and place a troop");
+					int country = scan.nextInt();
+					world.countrys.get(country).setTroopQuantity(
+							world.countrys.get(country).getTroopQuantity() + 1);
+					System.out.println("Added " + 1 + " to "
+							+ world.countrys.get(country).getCountryName());
+
+				}
+			}
 			break;
-			
+
 		case 5:
 			activePlayer.get(0).setTroops(25);
 			activePlayer.get(1).setTroops(25);
 			activePlayer.get(2).setTroops(25);
 			activePlayer.get(3).setTroops(25);
 			activePlayer.get(4).setTroops(25);
-			
+			for (int i = 0; i < 25; i++) {
+				for (int j = 0; j < players; j++) {
+					System.out.println("Available countrys to reinforce: ");
+					for (int k = 0; k < activePlayer.get(j).getCountrys()
+							.size(); k++) {
+						System.out.print(world.countrys.get(
+								activePlayer.get(j).getCountrys().get(k))
+								.getCountryName()
+								+ " ");
+					}
+					System.out.println(activePlayer.get(j)
+							+ "enter a country and place a troop");
+					int country = scan.nextInt();
+					world.countrys.get(country).setTroopQuantity(
+							world.countrys.get(country).getTroopQuantity() + 1);
+					System.out.println("Added " + 1 + " to "
+							+ world.countrys.get(country).getCountryName());
+
+				}
+			}
 			break;
 		case 6:
 			activePlayer.get(0).setTroops(20);
@@ -358,9 +499,27 @@ public class RiskCore extends Thread {
 			activePlayer.get(3).setTroops(20);
 			activePlayer.get(4).setTroops(20);
 			activePlayer.get(4).setTroops(20);
+			for (int i = 0; i < 20; i++) {
+				for (int j = 0; j < players; j++) {
+					System.out.println("Available countrys to reinforce: ");
+					for (int k = 0; k < activePlayer.get(j).getCountrys()
+							.size(); k++) {
+						System.out.print(world.countrys.get(
+								activePlayer.get(j).getCountrys().get(k))
+								.getCountryName()
+								+ " ");
+					}
+					System.out.println(activePlayer.get(j)
+							+ "enter a country and place a troop");
+					int country = scan.nextInt();
+					world.countrys.get(country).setTroopQuantity(
+							world.countrys.get(country).getTroopQuantity() + 1);
+					System.out.println("Added " + 1 + " to "
+							+ world.countrys.get(country).getCountryName());
+
+				}
+			}
 			break;
-			
-			
 		}
 	}
 	
