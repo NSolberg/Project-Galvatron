@@ -1,8 +1,13 @@
-package bteam.capstone.risk;
+package bteam.capstone.tests;
 
 import static org.junit.Assert.*;
 
 import org.junit.Test;
+
+import bteam.capstone.risk.Map;
+import bteam.capstone.risk.Play;
+import bteam.capstone.risk.RiskCore;
+import bteam.capstone.risk.player;
 
 public class TestPlay {
 
@@ -306,6 +311,26 @@ public class TestPlay {
 		System.out.println();
 		aPlayer.removeAllCountrys();
 		bPlayer.removeAllCountrys();
+	}
+	
+	@Test
+	public void testNicksBasicRisk(){
+		RiskCore core = new RiskCore(null, data, data, false, false, data);
+		player cPlayer = new player("PlayerChuck  0 0 0 0");
+		player dPlayer = new player("PlayerDave 0 0 0 0");
+		player ePlayer = new player("PlayerEllen  0 0 0 0");
+		player fPlayer = new player("PlayerFred  0 0 0 0");
+		player gPlayer = new player("PlayerGeorge 0 0 0 0");
+		core.activePlayer.add(cPlayer);
+		core.activePlayer.add(dPlayer);
+		core.activePlayer.add(ePlayer);
+		core.activePlayer.add(fPlayer);
+		core.activePlayer.add(gPlayer);
+	
+
+		//core.intialTurnRisk(5);
+		core.playGame(5);
+
 	}
 	String data = "6" + "\n" + 
 	"NorthAmerica 	title NONE 5 0	 0 1 2 3 4 5 6 7 8" + "\n" +
