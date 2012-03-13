@@ -286,8 +286,130 @@ public class RiskCore extends Thread {
 	 * game loop: pass turn Start of Turn Join the War/Recruit Troops
 	 * Expand&Attack Maneuver Troops End of Turn End of Game
 	 */
+	private boolean isDraft; // Weather or not draft cards are active
+	private int numofPlayers;
+	private player[] players;
+	private ArrayList<Integer> whosTurn;
+	/**
+	 * @author Ian Paterson
+	 * 
+	 * @param legacy: Determines weatehr or not it is standard or legacy
+	 * @description The purpose of this method is to set up the first turn of 
+	 * any Risk standard or Risk Legacy game. Its first function is it takes 
+	 * in the number of players that will be participating and add's them
+	 * too two arrayList's that keep track of who's turn it is and whosPlace which
+	 * keeps track of whos "turn" it is to place troops. If draft cards are active 
+	 * this method becomes far more complicates as we have to go through the 
+	 * various types of draft cards which determine placement order, the amount
+	 * of troops you can place, the turn order for the game to be played, the number
+	 * of "coins" you will receive. Draft cards are selected by random assignment after
+	 * the arraylist of cards is shuffled and they are "dealed out". After a card has
+	 * been assigned it is removed from the array list. IF draft cards are not active,
+	 * then these values are all assigned to their standard values as prescribed by the
+	 * game rules. If it is standard risk then this is far simpler and most of the values 
+	 * are not even needed, they are simply initialized to their standard values. 
+	 * 
+	 *@TODO The client/server communication needs to be implimented by austin.
+	 *@TODO Implementations of faction assighnment 
+	 *@TODO Other faction ablilites need to be added 
+	 */
+	public void firstTurnSetup(boolean legacy) {
+		
+		
+		ArrayList<Integer> whosPlace = new ArrayList<Integer>();
+		for (int i = 0; i < numofPlayers; i++) {
+			whosTurn.add(i);
+			whosPlace.add(i);
+		}
+		if (legacy) {
+			if (isDraft) {
+				ArrayList<Integer> placement = new ArrayList<Integer>();
+				placement.add(1);
+				placement.add(2);
+				placement.add(3);
+				if (numofPlayers > 3) {
+					placement.add(4);
+					if (numofPlayers > 4)
+						placement.add(5);
+				}
 
+				ArrayList<Integer> turnOrder = new ArrayList<Integer>();
+				turnOrder.add(1);
+				turnOrder.add(2);
+				turnOrder.add(3);
+				if (numofPlayers > 3) {
+					turnOrder.add(4);
+					if (numofPlayers > 4)
+						turnOrder.add(5);
+				}
+				ArrayList<Integer> troops = new ArrayList<Integer>();
+				troops.add(6);
+				troops.add(8);
+				troops.add(10);
+				if (numofPlayers > 3) {
+					troops.add(8);
+					if (numofPlayers > 4)
+						troops.add(10);
+				}
+				ArrayList<Integer> coins = new ArrayList<Integer>();
+				coins.add(0);
+				coins.add(1);
+				coins.add(2);
+				if (numofPlayers > 3) {
+					coins.add(0);
+					if (numofPlayers > 4)
+						coins.add(1);
+				}
+				// Temproray order of players for choosing draft cards
+				ArrayList<Integer> tempOrder = new ArrayList<Integer>();
+				for (int i = 0; i < numofPlayers; i++) {
+					tempOrder.add(i);
+				}
+				Random ran = new Random();
+				// Randomizes temporary order
+				for (int i = 0; i < numofPlayers; i++) {
+					int c1 = i;
+					int c2 = ran.nextInt(numofPlayers);
+					int temp = tempOrder.get(c1);
+					tempOrder.set(c1, tempOrder.get(c2));
+					tempOrder.set(c2, temp);
+				}
+				while (troops.size() != 0 || coins.size() != 0
+						|| turnOrder.size() != 0 || placement.size() != 0) {
+					int p = tempOrder.remove(0);
+					// Send to player p: "Choose draft card"
+					// Get choice from player
+					String choice = "p 0";
+					int val = Integer.parseInt(choice.charAt(2) + "");
+					if (choice.charAt(0) == 'p') {
+						val = placement.remove(val);
+						whosPlace.set(val, p);
+					} else if (choice.charAt(0) == 't') {
+						players[p].setTroops(troops.remove(val));
+					} else if (choice.charAt(0) == 'c') {
+						players[p].setCoin(coins.remove(val));
+					} else if (choice.charAt(0) == 'o') {
+						val = turnOrder.remove(val);
+						whosTurn.set(val, p);
+					}
+				}
 
+			} else {
+				// non draft
+				Random ran = new Random();
+				for (int i = 0; i < numofPlayers; i++) {
+					int c1 = i;
+					int c2 = ran.nextInt(numofPlayers);
+					int temp = whosTurn.get(c1);
+					whosTurn.set(c1, whosTurn.get(c2));
+					whosTurn.set(c2, temp);
+					players[i].setTroops(8);
+					players[i].setCoin(0);
+				}
+				whosPlace = whosTurn;
+			}
+		}
+	}
 	
 	/*
 	 * Ignore, this will form the text based portion.
@@ -407,10 +529,27 @@ public class RiskCore extends Thread {
 							+ ": one troop added to "
 							+ world.countrys.get(temp.get(j).id())
 									.getCountryName());
+					//sendDataToClient(Client, data);
 					count++;
 				}
 			}
 		}
+	
+//		while (world.hasFreeCountry()) {
+//			boolean valid = false;
+//			 ask player to place troop in country
+//			while (!valid) {
+//				sendDataToClient(p, "Choose a Valid Continent");
+//				int choice = getDataFromBuffer();
+//				if(world.getCountry(choice).getControllingFaction().equals("\\NONE")){
+//					world.placeTroops(choice, 1, players[p].getName());
+//					players[p].setTroops(players[p].getTroops()-1);
+//					valid = true;
+//					sendDataToClient(p,"Accept");
+//				}
+//			}
+//		}
+		
 		Scanner scan = new Scanner(System.in);
 		switch (players) {
 		case 3:
@@ -1775,7 +1914,7 @@ public class RiskCore extends Thread {
 		}
 		return val;
 	}
-
+	
 	public boolean checkAmphib(player aPlayer) {
 		boolean val = false;
 		// AMPHIBIOUS ONSLAUGHT: Conquer 4+ territories over sea lines this turn
