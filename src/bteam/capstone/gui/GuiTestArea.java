@@ -1,4 +1,4 @@
-package bteam.capstone.risk;
+package bteam.capstone.gui;
 
 public class GuiTestArea {
 

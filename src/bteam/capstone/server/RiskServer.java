@@ -1,4 +1,4 @@
-package bteam.capstone.risk;
+package bteam.capstone.server;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -10,6 +10,7 @@ import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 import javax.swing.Timer;
+
 
 /**
  * 

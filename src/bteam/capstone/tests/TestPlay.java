@@ -6,8 +6,8 @@ import org.junit.Test;
 
 import bteam.capstone.risk.Map;
 import bteam.capstone.risk.Play;
-import bteam.capstone.risk.RiskCore;
 import bteam.capstone.risk.player;
+import bteam.capstone.server.RiskCore;
 
 public class TestPlay {
 

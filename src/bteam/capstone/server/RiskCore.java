@@ -1,4 +1,4 @@
-package bteam.capstone.risk;
+package bteam.capstone.server;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -8,6 +8,14 @@ import java.util.Collections;
 import java.util.Random;
 import java.util.Scanner;
 import java.util.Stack;
+
+import bteam.capstone.faction.AliensFaction;
+import bteam.capstone.faction.MutantFaction;
+import bteam.capstone.faction.StandardFaction;
+import bteam.capstone.risk.Country;
+import bteam.capstone.risk.Map;
+import bteam.capstone.risk.RiskCard;
+import bteam.capstone.risk.player;
 
 public class RiskCore extends Thread {
 	// Server Data

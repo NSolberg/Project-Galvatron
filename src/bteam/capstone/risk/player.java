@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.Stack;
 
+import bteam.capstone.faction.Faction;
+import bteam.capstone.faction.StandardFaction;
+
 /**
  * 
  * @author Nick The player class will have a constructor that will create a
