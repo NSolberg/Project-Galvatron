@@ -1,0 +1,56 @@
+42
+6
+North America
+9
+Alaska/1/150/210
+Alberta/1/310/320
+Central America/1/310/580
+Eastern United States/1/465/500
+Greenland/1/700/140
+Northwest Territory/1/350/225
+Ontario/1/440/350
+Quebec/1/565/350
+Western United States/1/320/470
+South America
+4
+Argentina/1/500/1080
+Brazil/1/620/880
+Peru/1/500/920
+Venezuela/1/480/745
+Europe
+7
+Great Britain/2/845/450/770/440
+Iceland/1/860/280
+Northern Europe/1/990/460
+Scandinavia/1/1020/240
+Southern Europe/1/1030/570
+Ukraine/1/1180/380
+Western Europe/1/845/640
+Africa
+6
+Congo/1/1085/1000
+East Africa/1/1160/910
+Egypt/1/1080/770
+Madagascar/1/1260/1170
+North Africa/1/930/830
+South Africa/1/1080/1180
+Asia
+12
+Afghanistan/1/1345/500
+China/1/1565/620
+India/1/1450/690
+Irkutsk/1/1600/360
+Japan/1/1820/485
+Kamchatka/1/1780/180
+Middle East/1/1330/720
+Mongolia/1/1620/465
+Siam/1/1610/750
+Siberia/1/1470/240
+Ural/1/1370/300
+Yakutsk/1/1625/170
+Australia
+4
+Eastern Australia/1/1846/1099
+Indonesia/4/1640/960/1580/977/1653/1041/1690/989
+New Guinea/1/1809/923
+Western Australia/1/1722/1164
