@@ -1,44 +1,49 @@
 /**
  * @author Ian Paterson
- * @author Austin Langhorn
+ * 
  */
-
-package bteam.capstone.risk;
+/**
+ * @todo 
+ * REMAKE THESE AS SEPERATE CLASSES
+ */
+package bteam.capstone.faction;
 
 import java.util.Scanner;
 
-public class MutantFaction extends Faction {
+public class AliensFaction extends Faction {
 
 	private int[] PowerList;
 	private int count;
 /**
  * @author Ian Paterson
- * @param data: a string with data from the Faction Class
- * 
- * @Description This assigns the propper powers to the mutant class and ensures that they
- * are assighned to the propper values. Like aliens, mutants have 4 powers already assighned
- * whene they start so they have less places for variables then the other two. 
+ * @param PowerList: Is the array that holds the special "powers
+ * for this type of faction
+ * @param Count counts up the amount of powers the are allowed
+ * @Description The alien faction works very similarly too the other factions 
+ * but 3 of its powers are predetermined and not assigned by the player. It also
+ * contains a fromString and tooString to allow for saveing and loading
+ * Alien faction comes into the game later in the game and changes the board in 
+ * diffrent ways from other faction in that it has the ablility to "destroy" various 
+ * city's and to remove 
+ * missles
  */
-	public MutantFaction(String data) {
-		count = 4;
-		PowerList = new int[6];
+	public AliensFaction(String data) {
+		count = 3;
+		PowerList = new int[4];
 		/*
 		 * HEY DOUCHBAGS! CHANGE THESE LATER TO THE ACTUAL RULES
 		 */
 		PowerList[0] = 1;
 		PowerList[1] = 2;
 		PowerList[2] = 3;
-		PowerList[3] = 4;
-
-		// String in for loading
 		Scanner scan = new Scanner(data);
 		this.PlayerName = scan.next();
 		this.startingTerritory = scan.next();
 		this.isWinner = scan.nextBoolean();
 		this.wasEliminated = scan.nextBoolean();
+		PowerList[3] = scan.nextInt();
 		PowerList[4] = scan.nextInt();
 		PowerList[5] = scan.nextInt();
-
 	}
 
 	@Override
@@ -86,6 +91,11 @@ public class MutantFaction extends Faction {
 	 */
 	public void setCount(int count) {
 		this.count = count;
+	}
+
+	public void addPower(int power) {
+		PowerList[count] = power;
+		count++;
 	}
 
 }

@@ -3,7 +3,7 @@
  * Faction class
  * 
  */
-package bteam.capstone.risk;
+package bteam.capstone.faction;
 
 public class Faction {
 	protected String PlayerName;

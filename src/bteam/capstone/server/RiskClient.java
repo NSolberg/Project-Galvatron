@@ -1,4 +1,4 @@
-package bteam.capstone.risk;
+package bteam.capstone.server;
 
 import java.io.IOException;
 import java.io.PrintWriter;

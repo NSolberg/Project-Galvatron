@@ -1,27 +1,34 @@
 /**
- * @Author Ian Paterson 
- * @Author Austin Langhorne
+ * @author Ian Paterson
+ * @author Austin Langhorn
  */
-package bteam.capstone.risk;
+
+package bteam.capstone.faction;
 
 import java.util.Scanner;
 
-public class StandardFaction extends Faction {
+public class MutantFaction extends Faction {
+
 	private int[] PowerList;
 	private int count;
-
-	/**
-	 * @author Ian Paterson
-	 * @Description this is the standard faction there are 5 of these
-	 * in a normal game. All of their powers and abilities are set
-	 * up by the player. Powers are randomly assighned to the 
-	 * faction by the computer in order to streamline the board
-	 * game's "randomization" This is acomplished by schuffling the array 
-	 * so that the i value becomes the begining of the new value. 
-	 */
-	public StandardFaction(String data) {
-		count = 0;
+/**
+ * @author Ian Paterson
+ * @param data: a string with data from the Faction Class
+ * 
+ * @Description This assigns the propper powers to the mutant class and ensures that they
+ * are assighned to the propper values. Like aliens, mutants have 4 powers already assighned
+ * whene they start so they have less places for variables then the other two. 
+ */
+	public MutantFaction(String data) {
+		count = 4;
 		PowerList = new int[6];
+		/*
+		 * HEY DOUCHBAGS! CHANGE THESE LATER TO THE ACTUAL RULES
+		 */
+		PowerList[0] = 1;
+		PowerList[1] = 2;
+		PowerList[2] = 3;
+		PowerList[3] = 4;
 
 		// String in for loading
 		Scanner scan = new Scanner(data);
@@ -29,16 +36,11 @@ public class StandardFaction extends Faction {
 		this.startingTerritory = scan.next();
 		this.isWinner = scan.nextBoolean();
 		this.wasEliminated = scan.nextBoolean();
-		this.count = scan.nextInt();
-		PowerList[0] = scan.nextInt();
-		PowerList[1] = scan.nextInt();
-		PowerList[2] = scan.nextInt();
-		PowerList[3] = scan.nextInt();
 		PowerList[4] = scan.nextInt();
 		PowerList[5] = scan.nextInt();
+
 	}
 
-	// To String for saveing
 	@Override
 	public String toString() {
 		String out = "";
@@ -56,14 +58,9 @@ public class StandardFaction extends Faction {
 		return out;
 	}
 
-	public int getCount() {
-		return count;
-	}
-
-	public void setCount(int count) {
-		this.count = count;
-	}
-
+	/**
+	 * @return the powerList
+	 */
 	public int[] getPowerList() {
 		return PowerList;
 	}
@@ -76,9 +73,19 @@ public class StandardFaction extends Faction {
 		PowerList = powerList;
 	}
 
-	public void addPower(int power) {
-		PowerList[count] = power;
-		count++;
+	/**
+	 * @return the count
+	 */
+	public int getCount() {
+		return count;
+	}
+
+	/**
+	 * @param count
+	 *            the count to set
+	 */
+	public void setCount(int count) {
+		this.count = count;
 	}
 
 }

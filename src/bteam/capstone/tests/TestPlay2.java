@@ -1,10 +1,13 @@
-package bteam.capstone.risk;
+package bteam.capstone.tests;
 
 import static org.junit.Assert.*;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import bteam.capstone.risk.Play;
+import bteam.capstone.risk.player;
 
 public class TestPlay2 {
 

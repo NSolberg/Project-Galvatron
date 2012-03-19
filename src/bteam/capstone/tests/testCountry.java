@@ -1,10 +1,12 @@
-package bteam.capstone.risk;
+package bteam.capstone.tests;
 
 import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 
 import org.junit.Test;
+
+import bteam.capstone.risk.Country;
 
 public class testCountry {
 	String countryA = "0Alaska cityName 1 true 1 faction 50 factionHQ 50 false 34 1 5 ";

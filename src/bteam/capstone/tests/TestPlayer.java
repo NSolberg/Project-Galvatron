@@ -1,4 +1,4 @@
-package bteam.capstone.risk;
+package bteam.capstone.tests;
 
 import static org.junit.Assert.*;
 
@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import org.junit.Test;
+
+import bteam.capstone.risk.player;
 
 public class TestPlayer {
 	String data1 = "PlayerA 1 2 12 5";
