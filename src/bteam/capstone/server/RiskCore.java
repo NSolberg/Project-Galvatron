@@ -440,6 +440,7 @@ public class RiskCore extends Thread {
 		int i = 0;
 		while (gameOver != true) {
 			for (i = 0; i < activePlayer.size(); i++) {
+				drawMissionCard();
 				System.out.println(activePlayer.get(i).getName() +"... it is your turn.");
 				writeOut();
 				addTroops(activePlayer.get(i));
@@ -1738,6 +1739,14 @@ public class RiskCore extends Thread {
 				
 				atkCountry.getOwner().addCountry(defCountry.id());
 				atkCountry.getOwner().addConquered(defCountry.id());
+				
+				atkCountry.getOwner().addCard(cardDeck.pop());
+				if(defCountry.getOwner().getCountrys().size() < 1){
+					for(int i = 0; i < defCountry.getOwner().getCards().size(); i++){
+					atkCountry.getOwner().addCard(defCountry.getOwner().getCards().get(i));
+				
+					}
+				}
 			}
 
 		}
