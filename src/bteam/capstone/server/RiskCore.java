@@ -1,7 +1,9 @@
 package bteam.capstone.server;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -434,31 +436,84 @@ public class RiskCore extends Thread {
 		Scanner scan = new Scanner(System.in);
 		intialTurnRisk(players);
 		boolean gameOver = false;
+		boolean rein	 = false;
+		int i = 0;
 		while (gameOver != true) {
-			for (int i = 0; i < activePlayer.size(); i++) {
-				
+			for (i = 0; i < activePlayer.size(); i++) {
+				System.out.println(activePlayer.get(i).getName() +"... it is your turn.");
+				writeOut();
 				addTroops(activePlayer.get(i));
 				System.out.println("");
 				boolean attack = true;
+				rein = false;
+				writeOut();
+				if (rein == false) {
+					System.out.println("Would you like to reinforce now?");
+					if (scan.next().equals("yes")) {
+						System.out.println("enter country to move troops from followed by destination and then amount");
+						int country1 = scan.nextInt();
+						int country2 = scan.nextInt();
+						int quant = scan.nextInt();
+						world.moveToops(country1, country2, quant);
+						writeOut();
+					}
+				}
 				//Turn in cards? reinforce troops.
 				while (attack) {
 					System.out
-							.println("Enter the country you wish to attack followed by your country");
+							.println("Enter your country followed by the one you wish to attack");
 					int country1 = scan.nextInt();
 					int country2 = scan.nextInt();
-					attack(world.getCountry(country1),
-							world.getCountry(country2), world);
+					attack(world.getCountry(country1),world.getCountry(country2));
 					System.out.println("attack another country?");
 					if (scan.next().equals("no")) {
 						attack = false;
 					}
 				}
+				writeOut();
+				for(int l = 0; l< activePlayer.size(); l++){
+					if(isEliminated(activePlayer.get(l))){
+						activePlayer.remove(l);
+					}
+				}
+				if(activePlayer.size() < 2){
+					gameOver = true;
+				}
 				//Ask to move troops
 				//End of turn next players
 				//If a player is eliminated remove from the list. 
+				if (rein == false) {
+					System.out.println("Would you like to reinforce now?");
+					if (scan.next().equals("yes")) {
+						int country1 = scan.nextInt();
+						int country2 = scan.nextInt();
+						int quant = scan.nextInt();
+						world.moveToops(country1, country2, quant);
+						rein = true;
+					}
+				}
+				
+				for(int k = 0; k < activePlayer.size(); k++){
+					if(activePlayer.get(k).isEliminated() == true){
+						activePlayer.remove(k);
+					}
+				}
+				
+				if(activePlayer.size() < 2){
+					gameOver = true;
+				}
 			}
+			i =0;
 		}
 
+	}
+	
+	private boolean isEliminated(player aPlayer){
+		if(aPlayer.getCountrys().size() < 1){
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	public void intialRandomRiskCardDeck() {
@@ -484,6 +539,7 @@ public class RiskCore extends Thread {
 				|| aPlayer.getCards().get(a) == aPlayer.getCards().get(c)) {
 			valid = true;
 		}
+		System.out.println("No valid card combinations");
 		if (valid) {
 			switch (aPlayer.getSets()) {
 			case 1:
@@ -520,95 +576,63 @@ public class RiskCore extends Thread {
 
 	}
 	
-	@SuppressWarnings("unchecked")
+	//@SuppressWarnings("unchecked")
 	public void intialTurnRisk(int players) {
+		
+//		for(int k = 0; k< activePlayer.size(); k ++){
+//			activePlayer.get(k).setClientID(theClients.get(k));
+//		}
+		
 		ArrayList<Country> temp = (ArrayList<Country>) world.countrys.clone();
 		Collections.shuffle(temp);
 		for (int i = 0; i < world.countrys.size(); i += players) {
 			int count = 0;
 			for (int j = i; j < players + i; j++) {
 				if (j < 42) {
-					activePlayer.get(count).addCountry(
-							world.countrys.get(temp.get(j).id()).id());
-					world.countrys.get(temp.get(j).id()).setOwner(
-							activePlayer.get(count));
+					activePlayer.get(count).addCountry(world.countrys.get(temp.get(j).id()).id());
+					world.countrys.get(temp.get(j).id()).setOwner(activePlayer.get(count));
 					world.countrys.get(temp.get(j).id()).setTroopQuantity(1);
 					System.out.println(activePlayer.get(count).getName()
 							+ ": one troop added to "
 							+ world.countrys.get(temp.get(j).id())
 									.getCountryName());
-					//sendDataToClient(Client, data);
+					//sendDataToClient(activePlayer.getClientID,activePlayer.get(count).getName() + ": one troop added to "+ world.countrys.get(temp.get(j).id()).getCountryName());
 					count++;
 				}
 			}
 		}
 	
-//		while (world.hasFreeCountry()) {
-//			boolean valid = false;
-//			 ask player to place troop in country
-//			while (!valid) {
-//				sendDataToClient(p, "Choose a Valid Continent");
-//				int choice = getDataFromBuffer();
-//				if(world.getCountry(choice).getControllingFaction().equals("\\NONE")){
-//					world.placeTroops(choice, 1, players[p].getName());
-//					players[p].setTroops(players[p].getTroops()-1);
-//					valid = true;
-//					sendDataToClient(p,"Accept");
-//				}
-//			}
-//		}
-		
-		Scanner scan = new Scanner(System.in);
 		switch (players) {
 		case 3:
 			activePlayer.get(0).setTroops(35);
 			activePlayer.get(1).setTroops(35);
 			activePlayer.get(2).setTroops(35);
-			for (int i = 0; i < 35; i++) {
-				for (int j = 0; j < players; j++) {
-					System.out.println("Available countrys to reinforce: ");
-					for (int k = 0; k < activePlayer.get(j).getCountrys()
-							.size(); k++) {
-						System.out.print(world.countrys.get(
-								activePlayer.get(j).getCountrys().get(k))
-								.getCountryName()
-								+ " ");
+			
+			for (int k = 0; k < activePlayer.size(); k++){
+				while(activePlayer.get(k).getTroops() > 0){
+					for(int l = 0; l < activePlayer.get(k).getCountrys().size(); l++){
+						world.countrys.get(activePlayer.get(k).getCountrys().get(l)).setTroopQuantity(world.countrys.get(activePlayer.get(k).getCountrys().get(l)).getTroopQuantity() + 1);
+						activePlayer.get(k).setTroops(activePlayer.get(k).getTroops() - 1);
 					}
-					System.out.println(activePlayer.get(j)
-							+ "enter a country and place a troop");
-					int country = scan.nextInt();
-					world.countrys.get(country).setTroopQuantity(
-							world.countrys.get(country).getTroopQuantity() + 1);
-					System.out.println("Added " + 1 + " to "
-							+ world.countrys.get(country).getCountryName());
-
 				}
+				
 			}
+			
 			break;
 		case 4:
 			activePlayer.get(0).setTroops(30);
 			activePlayer.get(1).setTroops(30);
 			activePlayer.get(2).setTroops(30);
 			activePlayer.get(3).setTroops(30);
-			for (int i = 0; i < 30; i++) {
-				for (int j = 0; j < players; j++) {
-					System.out.println("Available countrys to reinforce: ");
-					for (int k = 0; k < activePlayer.get(j).getCountrys()
-							.size(); k++) {
-						System.out.print(world.countrys.get(
-								activePlayer.get(j).getCountrys().get(k))
-								.getCountryName()
-								+ " ");
+			
+			for (int k = 0; k < activePlayer.size(); k++){
+				while(activePlayer.get(k).getTroops() > 0){
+					for(int l = 0; l < activePlayer.get(k).getCountrys().size(); l++){
+						world.countrys.get(activePlayer.get(k).getCountrys().get(l)).setTroopQuantity(world.countrys.get(activePlayer.get(k).getCountrys().get(l)).getTroopQuantity() + 1);
+						activePlayer.get(k).setTroops(activePlayer.get(k).getTroops() - 1);
 					}
-					System.out.println(activePlayer.get(j)
-							+ "enter a country and place a troop");
-					int country = scan.nextInt();
-					world.countrys.get(country).setTroopQuantity(
-							world.countrys.get(country).getTroopQuantity() + 1);
-					System.out.println("Added " + 1 + " to "
-							+ world.countrys.get(country).getCountryName());
-
 				}
+				
 			}
 			break;
 
@@ -618,25 +642,15 @@ public class RiskCore extends Thread {
 			activePlayer.get(2).setTroops(25);
 			activePlayer.get(3).setTroops(25);
 			activePlayer.get(4).setTroops(25);
-			for (int i = 0; i < 25; i++) {
-				for (int j = 0; j < players; j++) {
-					System.out.println("Available countrys to reinforce: ");
-					for (int k = 0; k < activePlayer.get(j).getCountrys()
-							.size(); k++) {
-						System.out.print(world.countrys.get(
-								activePlayer.get(j).getCountrys().get(k))
-								.getCountryName()
-								+ " ");
-					}
-					System.out.println(activePlayer.get(j)
-							+ "enter a country and place a troop");
-					int country = scan.nextInt();
-					world.countrys.get(country).setTroopQuantity(
-							world.countrys.get(country).getTroopQuantity() + 1);
-					System.out.println("Added " + 1 + " to "
-							+ world.countrys.get(country).getCountryName());
 
+			for (int k = 0; k < activePlayer.size(); k++){
+				while(activePlayer.get(k).getTroops() > 0){
+					for(int l = 0; l < activePlayer.get(k).getCountrys().size(); l++){
+						world.countrys.get(activePlayer.get(k).getCountrys().get(l)).setTroopQuantity(world.countrys.get(activePlayer.get(k).getCountrys().get(l)).getTroopQuantity() + 1);
+						activePlayer.get(k).setTroops(activePlayer.get(k).getTroops() - 1);
+					}
 				}
+				
 			}
 			break;
 		case 6:
@@ -645,26 +659,16 @@ public class RiskCore extends Thread {
 			activePlayer.get(2).setTroops(20);
 			activePlayer.get(3).setTroops(20);
 			activePlayer.get(4).setTroops(20);
-			activePlayer.get(4).setTroops(20);
-			for (int i = 0; i < 20; i++) {
-				for (int j = 0; j < players; j++) {
-					System.out.println("Available countrys to reinforce: ");
-					for (int k = 0; k < activePlayer.get(j).getCountrys()
-							.size(); k++) {
-						System.out.print(world.countrys.get(
-								activePlayer.get(j).getCountrys().get(k))
-								.getCountryName()
-								+ " ");
-					}
-					System.out.println(activePlayer.get(j)
-							+ "enter a country and place a troop");
-					int country = scan.nextInt();
-					world.countrys.get(country).setTroopQuantity(
-							world.countrys.get(country).getTroopQuantity() + 1);
-					System.out.println("Added " + 1 + " to "
-							+ world.countrys.get(country).getCountryName());
+			activePlayer.get(5).setTroops(20);
 
+			for (int k = 0; k < activePlayer.size(); k++){
+				while(activePlayer.get(k).getTroops() > 0){
+					for(int l = 0; l < activePlayer.get(k).getCountrys().size(); l++){
+						world.countrys.get(activePlayer.get(k).getCountrys().get(l)).setTroopQuantity(world.countrys.get(activePlayer.get(k).getCountrys().get(l)).getTroopQuantity() + 1);
+						activePlayer.get(k).setTroops(activePlayer.get(k).getTroops() - 1);
+					}
 				}
+				
 			}
 			break;
 		}
@@ -672,7 +676,8 @@ public class RiskCore extends Thread {
 	
 	public void addTroops(player player) {
 		Scanner scan = new Scanner(System.in);
-		int recruitable = world.recruitTroops(player.getCountrys(),player.getName()) + player.getTroops();
+		int recruitable = world.recruitTroops(player.getCountrys(),player.getName());
+		System.out.println("Available troops " + recruitable);
 		System.out.println("Available countrys to reinforce: ");
 		for (int i = 0; i < player.getCountrys().size(); i++) {
 			System.out.print(world.countrys.get(player.getCountrys().get(i))
@@ -688,7 +693,7 @@ public class RiskCore extends Thread {
 			int reinforce = scan.nextInt();
 			world.countrys.get(country).setTroopQuantity(world.countrys.get(country).getTroopQuantity() + reinforce); 
 			System.out.println("Added " + reinforce + " to " + world.countrys.get(country).getCountryName());
-			recruitable =recruitable - reinforce;
+			recruitable = recruitable - reinforce;
 		}
 
 	}
@@ -717,7 +722,7 @@ public class RiskCore extends Thread {
 	 *            City and Fortifications.
 	 */
 	// playTestGui gui = new playTestGui();
-	public void attack(Country atkCountry, Country defCountry, Map map) {
+	public void attack(Country atkCountry, Country defCountry) {
 		Scanner inScan = new Scanner(System.in);
 		String missleTemp = "";
 		int loopUntil = 0;
@@ -1730,6 +1735,7 @@ public class RiskCore extends Thread {
 						+ " you have been defeated, "
 						+ defCountry.getCountryName() + " Now belongs to "
 						+ atkCountry.getOwner().getName());
+				
 				atkCountry.getOwner().addCountry(defCountry.id());
 				atkCountry.getOwner().addConquered(defCountry.id());
 			}
@@ -2004,6 +2010,68 @@ public class RiskCore extends Thread {
 		return dice;
 	}
 
+	public void writeOut(){
+		try{
+	           BufferedWriter bw = new BufferedWriter(new FileWriter("everyturn.txt"));
+	           for(int i = 0; i< activePlayer.size(); i++){
+	        	   //writes player name
+	        	   bw.write(activePlayer.get(i).getName() +": ");
+	        	   bw.newLine();
+	        	   //Write out owned countrys followed by number of troops
+	        	   for(int j = 0; j < activePlayer.get(i).getCountrys().size(); j++){
+	        		   Country temp = world.getCountry(activePlayer.get(i).getCountrys().get(j));
+	        		   bw.write(temp.getCountryName() + ": " + temp.getTroopQuantity() + " |  ");
+	        	   }
+	        	   bw.newLine();
+	        	   bw.write("Country:                 Borders:");
+	        	   bw.newLine();
+	        	   
+				for (int k = 0; k < activePlayer.get(i).getCountrys().size(); k++) {
+					Country temp = world.getCountry(activePlayer.get(i).getCountrys().get(k));
+					String country = temp.getCountryName();
+					// int m = 25 - bords.length();
+					for (int y = country.length(); y < 25; y++) {
+						country = country.concat(" ");
+					}
+					//writes country
+					bw.write(country);
+
+					for (int l = 0; l < temp.getCountryBorders().size(); l++) {
+						int borderTemp = temp.getCountryBorders().get(l);
+
+						String bords = world.getCountry(borderTemp).getCountryName();
+						// int m = 25 - bords.length();
+						for (int y = bords.length(); y < 25; y++) {
+							bords = bords.concat(" ");
+						}
+
+						bw.write(bords);
+					}
+					bw.newLine();
+					bw.write("                         ");
+					for (int h = 0; h < temp.getCountryBorders().size(); h++){
+						int borderTemp = temp.getCountryBorders().get(h);
+						String name = world.getCountry(borderTemp).getOwner().getName();
+
+						// int m = 25 - bords.length();
+						for (int y = name.length(); y < 25; y++) {
+							name = name.concat(" ");
+							
+						}
+						bw.write(name);
+					}
+					bw.newLine();
+					bw.newLine();
+				}
+				bw.newLine();
+			}
+	           
+	           
+
+	           bw.close();
+
+	        }catch(Exception e){}
+	}
 	String data = "6" + "\n" + 
 
 	"NorthAmerica 	title NONE 0 8	 0 1 2 3 4 5 6 7 8" + "\n" +

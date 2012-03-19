@@ -24,6 +24,8 @@ public class player {
 	private ArrayList<Integer> conqueredList = new ArrayList<Integer>();
 	private Stack<RiskCard> ownedCards = new Stack<RiskCard>();
 	private int setsRedeemed;
+	private String clientID;
+	private boolean eliminated = false;
 	
 	/**
 	 * Constructor for creating a new player given a string of data.
@@ -218,7 +220,20 @@ public class player {
 		// TODO Auto-generated method stub
 		return conqueredList;
 	}
+
+	public String getClientID() {
+		return clientID;
+	}
+
+	public void setClientID(String clientID) {
+		this.clientID = clientID;
+	}
 	
-	
+	public boolean isEliminated(){
+		if(this.getCountrys().size() < 1){
+			eliminated = true;
+		}
+		return eliminated;
+	}
 
 }
