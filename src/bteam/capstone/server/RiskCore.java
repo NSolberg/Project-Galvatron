@@ -1740,13 +1740,13 @@ public class RiskCore extends Thread {
 				atkCountry.getOwner().addCountry(defCountry.id());
 				atkCountry.getOwner().addConquered(defCountry.id());
 				
-				atkCountry.getOwner().addCard(cardDeck.pop());
-				if(defCountry.getOwner().getCountrys().size() < 1){
-					for(int i = 0; i < defCountry.getOwner().getCards().size(); i++){
-					atkCountry.getOwner().addCard(defCountry.getOwner().getCards().get(i));
-				
-					}
-				}
+//				atkCountry.getOwner().addCard(cardDeck.pop());
+//				if(defCountry.getOwner().getCountrys().size() < 1){
+//					for(int i = 0; i < defCountry.getOwner().getCards().size(); i++){
+//					atkCountry.getOwner().addCard(defCountry.getOwner().getCards().get(i));
+//				
+//					}
+//				}
 			}
 
 		}
