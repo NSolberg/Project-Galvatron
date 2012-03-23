@@ -39,9 +39,6 @@ public class RiskWindow extends JFrame {
 		}
 	}
 	
-	public Window getFullScreenWindow(){
-		return gDevice.getFullScreenWindow();
-	}
 	
 	public void exitFullScreen(){
 		Window w = gDevice.getFullScreenWindow();
