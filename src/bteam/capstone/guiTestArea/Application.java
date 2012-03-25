@@ -24,6 +24,7 @@ public class Application implements ActionListener {
 	private Dimension size;
 	private JPanel[] panels;
 	private JPanel mainpanel;
+	public Client client;
 
 	public static void main(String[] args) {
 		new Application();
@@ -48,7 +49,7 @@ public class Application implements ActionListener {
 
 	private void createPanels() {
 		GUIGamePanel gp = new GUIGamePanel(size);
-		GUILogOnPanel lp = new GUILogOnPanel();
+		GUILogOnPanel lp = new GUILogOnPanel(this);
 		GUIServerPanel sp = new GUIServerPanel();
 		panels = new JPanel[3];
 		panels[0] = lp;
@@ -60,7 +61,8 @@ public class Application implements ActionListener {
 		mainpanel.add(panels[1], "Server");
 		mainpanel.add(panels[2], "Game");
 		CardLayout c1 = (CardLayout) mainpanel.getLayout();
-		c1.show(mainpanel, "Game");
+		c1.show(mainpanel, "LogOn");
+		this.client = new Client(lp);
 	}
 
 	private void createWindow(boolean Fullscrean) {
@@ -130,6 +132,21 @@ public class Application implements ActionListener {
 				this.size = new Dimension(n1, n2);
 				this.window.changeSize(this.size);
 			}
+		}
+	}
+
+	public void switchView(int view) {
+		CardLayout c1 = (CardLayout) mainpanel.getLayout();
+		switch (view) {
+		case 0:
+			c1.show(mainpanel, "LogOn");
+			break;
+		case 1:
+			c1.show(mainpanel, "Server");
+			break;
+		case 2:
+			c1.show(mainpanel, "Game");
+			break;
 		}
 	}
 }
