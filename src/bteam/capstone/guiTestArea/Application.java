@@ -23,6 +23,7 @@ public class Application implements ActionListener {
 	private JCheckBoxMenuItem selRes, selMode;
 	private Dimension size;
 	private JPanel[] panels;
+	private JPanel mainpanel;
 
 	public static void main(String[] args) {
 		new Application();
@@ -46,13 +47,20 @@ public class Application implements ActionListener {
 	}
 
 	private void createPanels() {
-		GUIGamePanel gp = new GUIGamePanel();
+		GUIGamePanel gp = new GUIGamePanel(size);
 		GUILogOnPanel lp = new GUILogOnPanel();
 		GUIServerPanel sp = new GUIServerPanel();
 		panels = new JPanel[3];
 		panels[0] = lp;
 		panels[1] = sp;
 		panels[2] = gp;
+		mainpanel = new JPanel();
+		mainpanel.setLayout(new CardLayout());
+		mainpanel.add(panels[0], "LogOn");
+		mainpanel.add(panels[1], "Server");
+		mainpanel.add(panels[2], "Game");
+		CardLayout c1 = (CardLayout) mainpanel.getLayout();
+		c1.show(mainpanel, "Game");
 	}
 
 	private void createWindow(boolean Fullscrean) {
@@ -61,9 +69,7 @@ public class Application implements ActionListener {
 		window = new GUIWindow(size, Fullscrean);
 		window.setJMenuBar(menubar);
 		window.setLayout(new CardLayout());
-		window.add(panels[0],"LogOn");
-		window.add(panels[1],"Server");
-		window.add(panels[2],"Game");
+		window.add(mainpanel);
 	}
 
 	private void createMenu() {
