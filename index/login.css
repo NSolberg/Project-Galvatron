@@ -1,3 +1,9 @@
 body {
-	text-align: center;
+	background-image: url('riskTitleScreen.png');
+	background-repeat:no-repeat;
+}
+#forms{
+	border:none;
+	position: relative;
+	
 }
