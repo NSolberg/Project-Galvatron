@@ -77,7 +77,7 @@ public class RiskCore extends Thread {
 		password = pass;
 		dataBuffer = "";
 		worldFile = gameFile;
-		if (gameFile.equals("Default")) {
+		if (true) {
 			worldCreator = clientID;
 			worldID = ran.nextInt(10000000);
 			worldName = "\\NONE";
@@ -197,18 +197,18 @@ public class RiskCore extends Thread {
 			if (reserveSeat && theClients.contains(clientID)) {
 				int num = theClients.indexOf(clientID);
 				clientActive.set(num, true);
-				theServer.sendTo(clientID, "yes " + this.getGameState());
+				theServer.sendTo(clientID, "yes");
 				return true;
 			} else if (numPlayers < maxPlayers && !inGame) {
 				theClients.add(clientID);
 				clientActive.add(true);
-				theServer.sendTo(clientID, "yes " + this.getGameState());
+				theServer.sendTo(clientID, "yes");
 				return true;
 			} else if (clientActive.contains(false) && !reserveSeat) {
 				int num = clientActive.indexOf(false);
 				theClients.set(num, clientID);
 				clientActive.set(num, true);
-				theServer.sendTo(clientID, "yes " + this.getGameState());
+				theServer.sendTo(clientID, "yes");
 				return true;
 			} else {
 				theServer.sendTo(clientID, "no server full");

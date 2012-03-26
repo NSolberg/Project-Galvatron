@@ -34,7 +34,7 @@ public class GUILogOnPanel extends JPanel implements ClientUser {
 					app.client.connect("localhost", 1337);
 					if (app.client.isConnected()) {
 						app.client.start();
-						app.client.sendData("user");
+						app.client.sendData(user);
 					} else {
 
 					}
@@ -53,6 +53,8 @@ public class GUILogOnPanel extends JPanel implements ClientUser {
 		// TODO Auto-generated method stub
 		if (string.equals("Connected")) {
 			app.switchView(1);
+		}else{
+			System.out.println(string);
 		}
 	}
 }

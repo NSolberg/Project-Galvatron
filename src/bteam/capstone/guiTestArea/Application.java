@@ -21,10 +21,10 @@ public class Application implements ActionListener {
 	private JMenuBar menubar;
 	private GUIWindow window;
 	private JCheckBoxMenuItem selRes, selMode;
-	private Dimension size;
 	private JPanel[] panels;
 	private JPanel mainpanel;
 	public Client client;
+	public Dimension size;
 
 	public static void main(String[] args) {
 		new Application();
@@ -50,7 +50,7 @@ public class Application implements ActionListener {
 	private void createPanels() {
 		GUIGamePanel gp = new GUIGamePanel(size);
 		GUILogOnPanel lp = new GUILogOnPanel(this);
-		GUIServerPanel sp = new GUIServerPanel();
+		GUIServerPanel sp = new GUIServerPanel(this);
 		panels = new JPanel[3];
 		panels[0] = lp;
 		panels[1] = sp;
@@ -140,12 +140,16 @@ public class Application implements ActionListener {
 		switch (view) {
 		case 0:
 			c1.show(mainpanel, "LogOn");
+			client.switchController((ClientUser) panels[0]);
 			break;
 		case 1:
 			c1.show(mainpanel, "Server");
+			client.switchController((ClientUser) panels[1]);
+			((GUIServerPanel) panels[1]).refresh();
 			break;
 		case 2:
 			c1.show(mainpanel, "Game");
+			client.switchController((ClientUser) panels[2]);
 			break;
 		}
 	}

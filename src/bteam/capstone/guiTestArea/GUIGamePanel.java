@@ -52,7 +52,7 @@ public class GUIGamePanel extends JPanel {
 		//frmRiskOnlinepre.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		//frmRiskOnlinepre.getContentPane().setLayout(null);
 		
-		final GuiMap map = new GuiMap("NorthAmerica",false,(int)(screensize.getWidth()), (int)(screensize.getHeight()));
+		final GuiMap map = new GuiMap("Maps/Earth",false,(int)(screensize.getWidth()), (int)(screensize.getHeight()));
 		//Overiding paintComponent without overiiding class
 		
 		/*JPanel this = new JPanel(){

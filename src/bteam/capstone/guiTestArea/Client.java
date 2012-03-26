@@ -3,7 +3,6 @@ package bteam.capstone.guiTestArea;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.net.UnknownHostException;
 import java.util.Scanner;
 
 /**
@@ -22,6 +21,10 @@ public class Client extends Thread {
 		linked = false;
 		control = controller;
 	}
+	
+	public void switchController(ClientUser controller){
+		control = controller;
+	}
 
 	public void sendData(String data) {
 		out.println(data);
@@ -35,7 +38,7 @@ public class Client extends Thread {
 			linked = true;
 			control.displayData("Link to server established");
 		} catch (Exception e) {
-			e.printStackTrace();
+			control.displayData("Server not avaliable");
 		} 
 	}
 

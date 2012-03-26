@@ -92,7 +92,7 @@ public class FinalTestBuild {
 		frmRiskOnlinepre.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frmRiskOnlinepre.getContentPane().setLayout(null);
 		
-		final GuiMap map = new GuiMap("NorthAmerica",false,frmRiskOnlinepre.getWidth(), frmRiskOnlinepre.getHeight());
+		final GuiMap map = new GuiMap("Earth",false,frmRiskOnlinepre.getWidth(), frmRiskOnlinepre.getHeight());
 		//Overiding paintComponent without overiiding class
 		
 		JPanel ORIGIONPANNLE = new JPanel(){

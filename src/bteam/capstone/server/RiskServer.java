@@ -11,7 +11,6 @@ import java.util.Scanner;
 
 import javax.swing.Timer;
 
-
 /**
  * 
  * @author Austin Langhorne
@@ -108,7 +107,8 @@ public class RiskServer {
 		}
 		String out = "";
 		if (!saved) {
-			out = "GameID     WorldName     Creator     Legacy     Password";
+			// "GameID     WorldName     Creator     Legacy     Password"
+			out = "<list>";
 			for (RiskCore core : Instances) {
 				if (!byUser || byUser && core.getWorldCreator().equals(user)) {
 					out += "\n" + core.getWorldID() + " " + core.getWorldName()
@@ -116,6 +116,7 @@ public class RiskServer {
 							+ core.isLegacy() + " " + core.hasPassword();
 				}
 			}
+			out += "\n</list>";
 		} else {
 			File dir = new File(ClientID);
 			if (!dir.exists()) {
@@ -190,7 +191,7 @@ public class RiskServer {
 			}
 		}
 		if (InstanceID.size() < maxInstances) {
-			File file = new File(gameFile);
+			File file = new File("Maps/" + gameFile);
 			if (file.exists() || gameFile.equals("Default")) {
 				RiskCore core = new RiskCore(this, ClientID, gameFile, legacy,
 						reserve, pass);
@@ -269,27 +270,27 @@ public class RiskServer {
 			if (GameID == -1) {
 				if (cmd.equals("help")) {
 					cmd = "create     creates an instance of a game. Additional options seperated by space:\n";
-					cmd +="           l r p a, where l is for createing a game instance from an existing game file\n";
-					cmd +="           a file name must also be specified after the l. r reserves seats in the game\n";
-					cmd +="           a specifies a new legacy version of risk, p is for requireing a password for\n";
-					cmd +="           entry into the game also followed by a string for the password\n\n";
-					cmd +="list       list the avaliable games on the server. the addition of u followed by a name\n";
-					cmd +="           list only games created by that user that is running, s followed by a name\n";
-					cmd +="           list all avaliable games saved by the calling user(if any exist)\n\n";
-					cmd +="join       followed by an integer representing a currently running game joins the client to\n";
-					cmd +="           the game and the addition of a string after the integer specifies the password to\n";
-					cmd +="           be used to join the game if it has one\n\n";
-					cmd +="exit       disconnects the user from the server\n\n";
-					cmd +="stop       warning after 30 seconds all users will be forcefully dissconnected and games shut\n";
-					cmd +="           down and then the server will close";
+					cmd += "           l r p a, where l is for createing a game instance from an existing game file\n";
+					cmd += "           a file name must also be specified after the l. r reserves seats in the game\n";
+					cmd += "           a specifies a new legacy version of risk, p is for requireing a password for\n";
+					cmd += "           entry into the game also followed by a string for the password\n\n";
+					cmd += "list       list the avaliable games on the server. the addition of u followed by a name\n";
+					cmd += "           list only games created by that user that is running, s followed by a name\n";
+					cmd += "           list all avaliable games saved by the calling user(if any exist)\n\n";
+					cmd += "join       followed by an integer representing a currently running game joins the client to\n";
+					cmd += "           the game and the addition of a string after the integer specifies the password to\n";
+					cmd += "           be used to join the game if it has one\n\n";
+					cmd += "exit       disconnects the user from the server\n\n";
+					cmd += "stop       warning after 30 seconds all users will be forcefully dissconnected and games shut\n";
+					cmd += "           down and then the server will close";
 					out.println(cmd);
 				} else if (cmd.equals("create")) {
-					if(scan.hasNext())
+					if (scan.hasNext())
 						cmd = scan.nextLine();
 					else
 						cmd = "";
 					GameID = CreateGame(ClientID, cmd);
-				} else if (cmd.equals("join")&&scan.hasNext()) {
+				} else if (cmd.equals("join") && scan.hasNext()) {
 					int worldID = scan.nextInt();
 					cmd = "";
 					if (scan.hasNext())

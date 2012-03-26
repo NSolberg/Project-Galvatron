@@ -44,7 +44,7 @@ public class RiskPanel extends JPanel implements ActionListener,
 		s.addActionListener(actionListener);
 		e.addActionListener(actionListener);
 		this.add(p, BorderLayout.SOUTH);
-		map2 = new GuiMap("NorthAmerica", false, 650, 600);
+		map2 = new GuiMap("Earth", false, 650, 600);
 		dragging = false;
 	}
 
