@@ -24,8 +24,8 @@ public class RiskServer {
 	public ArrayList<String> ClientID;
 	public ArrayList<ClientHandler> Clients;
 	// Instances
-	private ArrayList<Integer> InstanceID;
-	private ArrayList<RiskCore> Instances;
+	public ArrayList<Integer> InstanceID;
+	public ArrayList<RiskCore> Instances;
 	// Server
 	private ServerSocket server;
 	private boolean serverClosing;
@@ -199,6 +199,7 @@ public class RiskServer {
 				int num = core.getWorldID();
 				InstanceID.add(num);
 				Instances.add(core);
+				sendList();
 				return JoinGame(ClientID, num, pass);
 			} else {
 				sendTo(ClientID, "no file does not exist");
@@ -207,6 +208,21 @@ public class RiskServer {
 			sendTo(ClientID, "no tables full");
 		}
 		return -1;
+	}
+
+	public void sendList() {
+		String out = "";
+		out = "<list>";
+		for (RiskCore c : Instances) {
+			out += "\n" + c.getWorldID() + " " + c.getWorldName() + " "
+					+ c.getWorldCreator() + " " + c.isLegacy() + " "
+					+ c.hasPassword();
+		}
+		out += "\n</list>";
+		for (ClientHandler c : Clients) {
+			if (c.getGameID() == -1)
+				c.sendData(out);
+		}
 	}
 
 	public void sendTo(String clientID, String data) {
@@ -240,6 +256,10 @@ public class RiskServer {
 
 		public void setGameID(int i) {
 			GameID = i;
+		}
+
+		public int getGameID() {
+			return GameID;
 		}
 
 		public void goodBye() {
@@ -342,7 +362,7 @@ public class RiskServer {
 					if (GameID != -1) {
 						int num = InstanceID.indexOf(GameID);
 						Instances.get(num).sendData(ClientID + " disconect");
-						
+
 					}
 				}
 			}

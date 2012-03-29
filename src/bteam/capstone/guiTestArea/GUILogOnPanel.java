@@ -30,6 +30,7 @@ public class GUILogOnPanel extends JPanel implements ClientUser {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				String user = txtUser.getText();
+				app.userName = user;
 				if (!user.equals("")) {
 					app.client.connect("localhost", 1337);
 					if (app.client.isConnected()) {
@@ -54,6 +55,7 @@ public class GUILogOnPanel extends JPanel implements ClientUser {
 		if (string.equals("Connected")) {
 			app.switchView(1);
 		}else{
+			app.userName = "";
 			System.out.println(string);
 		}
 	}

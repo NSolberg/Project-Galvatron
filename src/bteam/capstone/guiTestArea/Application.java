@@ -27,8 +27,9 @@ public class Application implements ActionListener {
 	public Client client;
 	public Dimension size;
 	public JMenu game;
-	public JMenuItem start,quit;
-	
+	public JMenuItem start, quit;
+	public String userName;
+
 	public static void main(String[] args) {
 		new Application();
 	}
@@ -54,17 +55,20 @@ public class Application implements ActionListener {
 		GUIGamePanel gp = new GUIGamePanel(this);
 		GUILogOnPanel lp = new GUILogOnPanel(this);
 		GUIServerPanel sp = new GUIServerPanel(this);
-		panels = new JPanel[3];
+		GUILobby lobby = new GUILobby(this);
+		panels = new JPanel[4];
 		panels[0] = lp;
 		panels[1] = sp;
 		panels[2] = gp;
+		panels[3] = lobby;
 		mainpanel = new JPanel();
 		mainpanel.setLayout(new CardLayout());
 		mainpanel.add(panels[0], "LogOn");
 		mainpanel.add(panels[1], "Server");
 		mainpanel.add(panels[2], "Game");
+		mainpanel.add(panels[3], "Lobby");
 		CardLayout c1 = (CardLayout) mainpanel.getLayout();
-		c1.show(mainpanel, "Game");
+		c1.show(mainpanel, "LogOn");
 		this.client = new Client(lp);
 	}
 
@@ -117,23 +121,23 @@ public class Application implements ActionListener {
 		start = new JMenuItem("Start");
 		game.add(start);
 		game.add(quit);
-		start.addActionListener(new ActionListener(){
+		start.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
 				client.sendData("start");
 			}
-			
+
 		});
-		quit.addActionListener(new ActionListener(){
+		quit.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				// TODO Auto-generated method stub
 				client.sendData("leave");
 			}
-			
+
 		});
 		menubar.add(game);
 	}
@@ -177,13 +181,18 @@ public class Application implements ActionListener {
 			((GUIServerPanel) panels[1]).refresh();
 			break;
 		case 2:
+			c1.show(mainpanel, "Lobby");
+			client.switchController((ClientUser) panels[3]);
+			((GUILobby) panels[3]).requestState();
+			break;
+		case 3:
 			c1.show(mainpanel, "Game");
 			client.switchController((ClientUser) panels[2]);
 			break;
 		}
 	}
-	
-	public void setMap(String map){
-		((GUIGamePanel)(panels[2])).setMap(map);
+
+	public void setMap(String map) {
+		((GUIGamePanel) (panels[2])).setMap(map);
 	}
 }

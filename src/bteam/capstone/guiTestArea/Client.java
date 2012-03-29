@@ -8,7 +8,7 @@ import java.util.Scanner;
 /**
  * 
  * @author Austin Langhorne
- *
+ * 
  */
 public class Client extends Thread {
 	private Socket client;
@@ -21,8 +21,8 @@ public class Client extends Thread {
 		linked = false;
 		control = controller;
 	}
-	
-	public void switchController(ClientUser controller){
+
+	public void switchController(ClientUser controller) {
 		control = controller;
 	}
 
@@ -36,10 +36,10 @@ public class Client extends Thread {
 			out = new PrintWriter(client.getOutputStream(), true);
 			in = new Scanner(client.getInputStream());
 			linked = true;
-			control.displayData("Link to server established");
+			//control.displayData("Link to server established");
 		} catch (Exception e) {
 			control.displayData("Server not avaliable");
-		} 
+		}
 	}
 
 	public boolean isConnected() {
@@ -54,7 +54,8 @@ public class Client extends Thread {
 			if (data.equals("goodbye")) {
 				linked = false;
 			}
-			control.displayData(data);
+			if (data.length() > 0)
+				control.displayData(data);
 		}
 		control.displayData("Client disconnected from server");
 		in.close();

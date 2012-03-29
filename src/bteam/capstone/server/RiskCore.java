@@ -27,10 +27,10 @@ public class RiskCore extends Thread {
 	private ArrayList<Boolean> clientActive;
 	private int numPlayers;
 	private int maxPlayers;
-	public ArrayList<player> activePlayer = new ArrayList<player>(); 
+	public ArrayList<player> activePlayer = new ArrayList<player>();
 	private player[] thePlayers;
 	// Game Data
-	Stack<RiskCard> cardDeck = new Stack<RiskCard>(); 
+	Stack<RiskCard> cardDeck = new Stack<RiskCard>();
 	private boolean islegacy;
 	private boolean inGame;
 	private boolean reserveSeat;
@@ -42,7 +42,7 @@ public class RiskCore extends Thread {
 	private String worldName;
 	private String worldFile;
 	// Map Data
-	//private Map world;
+	// private Map world;
 	private ArrayList<Integer> resourceCards;
 	private StandardFaction[] originalFac;
 	private AliensFaction alienFac;
@@ -58,8 +58,7 @@ public class RiskCore extends Thread {
 	public ArrayList<Integer> missionAvail = new ArrayList<Integer>();
 	private boolean newMissionCard = true;
 	private int missionInt = -1;
-	
-	
+
 	public RiskCore(RiskServer riskServer, String clientID, String gameFile,
 			boolean legacy, boolean reserve, String pass) {
 		// init start
@@ -80,7 +79,7 @@ public class RiskCore extends Thread {
 		if (true) {
 			worldCreator = clientID;
 			worldID = ran.nextInt(10000000);
-			worldName = gameFile ;
+			worldName = gameFile;
 		} else {
 			File file = new File(gameFile + "/index.txt");
 			try {
@@ -94,62 +93,13 @@ public class RiskCore extends Thread {
 		}
 		// init end
 
-	}
-
-	/**
-	 * pass turn to the next player. Inform players whose turn it is.
-	 */
-	private void passTurn() {
-
-	}
-
-	/**
-	 * If game is not legacy: method does nothing If game is legacy: if player
-	 * has no resourcards skip to scar: player turns in resource cards for a red
-	 * Star, players can buy as many reds stars as they want, red stars are
-	 * worth 4 resources. If player purchases 4th red star they win the game
-	 * immediately. Territory cards turned in are discarded. Coin cards turned
-	 * in are returned to coin pile.
-	 * 
-	 * Steps needed ask player if they want to turn in cards if yes expect
-	 * integers seperated by spaces representing cards being turned in. inform
-	 * all users of changes. if no method ends Scars if player has scar card
-	 * they can play ask if they want to play expect scar number and target from
-	 * player. inform players of changes.
-	 * 
-	 * @param legacy
-	 */
-	private void startOfTurn(boolean legacy) {
-
-	}
-
-	/**
-	 * if not legacy recruit troops if legacy if player not on board join the
-	 * war else recruit troops
-	 * 
-	 * players not on board are eligible to rejoin with half starting troops and
-	 * no HQ as long as there exist a valid starting position. Inform user of
-	 * possible starting locations. expect integer representing starting
-	 * country. inform all of changes
-	 * 
-	 * inform player of available troops to place loop and ask player where to
-	 * place troops until all are place. expect integer representing valid
-	 * country and integer representing number of troops to place.
-	 * 
-	 * @param legacy
-	 */
-	private void joinOrRecruit(boolean legacy) {
-
-	}
-
-	private void expandAndAttack(boolean legacy) {
-
-	}
-
-
-	private String getGameState() {
-		// TODO Auto-generated method stub
-		return null;
+		// for lobby
+		pName = new String[maxPlayers];
+		pColor = new int[maxPlayers];
+		pRdy = new boolean[maxPlayers];
+		colors = new ArrayList<Integer>();
+		for (int i = 0; i < maxPlayers; i++)
+			colors.add(i);
 	}
 
 	public int getWorldID() {
@@ -176,7 +126,7 @@ public class RiskCore extends Thread {
 
 	public void stopCore() {
 		// TODO Auto-generated method stub
-
+		
 	}
 
 	public ArrayList<String> getClients() {
@@ -194,29 +144,66 @@ public class RiskCore extends Thread {
 	 */
 	public boolean JoinGame(String clientID, String pass) {
 		if (password.equals(pass)) {
-			if (reserveSeat && theClients.contains(clientID)) {
+			if (this.canJoin(clientID)) {
 				int num = theClients.indexOf(clientID);
-				clientActive.set(num, true);
-				theServer.sendTo(clientID, "yes "+worldName);
-				return true;
-			} else if (numPlayers < maxPlayers && !inGame) {
-				theClients.add(clientID);
-				clientActive.add(true);
-				theServer.sendTo(clientID, "yes "+worldName);
-				return true;
-			} else if (clientActive.contains(false) && !reserveSeat) {
-				int num = clientActive.indexOf(false);
-				theClients.set(num, clientID);
-				clientActive.set(num, true);
-				theServer.sendTo(clientID, "yes "+worldName);
+				if (num < 0) {
+					theClients.add(clientID);
+					clientActive.add(true);
+					this.addToLobby(clientID);
+				} else {
+					theClients.set(num, clientID);
+					clientActive.set(num, true);
+					this.addToLobby(clientID);
+				}
+				theServer.sendTo(clientID, "yes");
+				String out = null;
+				for (int i = 0; i < maxPlayers; i++) {
+					if (pName[i] != null && pName[i].equals(clientID)) {
+						out = i + " add " + pName[i] + " " + pColor[i] + " "
+								+ pRdy[i];
+						break;
+					}
+				}
+				this.informAll(out);
 				return true;
 			} else {
 				theServer.sendTo(clientID, "no server full");
 			}
+
 		} else {
-			theServer.sendTo(clientID, "no wrong pass");
+			theServer.sendTo(clientID, "Alert no wrong pass");
 		}
 		return false;
+	}
+
+	private boolean canJoin(String clientID) {
+		if (reserveSeat && theClients.contains(clientID)) {
+			return true;
+		} else if (numPlayers < maxPlayers && !inGame) {
+			return true;
+		} else if (clientActive.contains(false) && !reserveSeat) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	private void addToLobby(String client) {
+		for (int i = 0; i < maxPlayers; i++) {
+			if (pName[i] == null) {
+				pName[i] = client;
+				pColor[i] = colors.remove(0);
+				pRdy[i] = false;
+				this.numPlayers++;
+				break;
+			}
+		}
+	}
+
+	private void informAll(String data) {
+		for (int j = 0; j < maxPlayers; j++) {
+			theServer.sendTo(pName[j], data);
+		}
 	}
 
 	/**
@@ -234,35 +221,121 @@ public class RiskCore extends Thread {
 		String client = scan.next();
 		String cmd = scan.next();
 		if (cmd.equals("help")) {
-			cmd = "leave\nstart";
-			theServer.sendTo(client, cmd);
-		} else if (!inGame) {
-			if (cmd.equals("leave")) {
-				int num = theClients.indexOf(client);
-				theClients.remove(num);
-				clientActive.remove(num);
-				num = theServer.ClientID.indexOf(client);
-				theServer.Clients.get(num).setGameID(-1);
-				theServer.sendTo(client, "leftgame");
-			} else if (cmd.equals("start")) {
-				if (worldCreator.equals(client) && numPlayers >= 3)
-					if (numPlayers > 2)
-						inGame = true;
-					else
-						theServer.sendTo(client, "no not enough players");
-				else
-					theServer.sendTo(client, "no not creator");
-			} else {
-				theServer.sendTo(client, "invalid command");
-			}
+
+		} else if (cmd.equals("start")) {
+			this.handleStart(client);
+		} else if (cmd.equals("leave")) {
+			this.handleLeave(client);
+		} else if (cmd.equals("state")) {
+			this.handleState(client);
+		} else if (cmd.equals("col")) {
+			this.handleColor(client);
+		} else if (cmd.equals("rdy")) {
+			this.handleReady(client);
 		} else {
-			if (cmd.equals("leave")) {
-				int num = theClients.indexOf(client);
-				clientActive.set(num, false);
-				num = theServer.ClientID.indexOf(client);
+			theServer.sendTo(client, "Alert invalid command");
+		}
+	}
+
+	String[] pName;
+	int[] pColor;
+	boolean[] pRdy;
+	ArrayList<Integer> colors;
+
+	private void handleStart(String client) {
+		if (worldCreator.equals(client) && numPlayers >= 3)
+			if (numPlayers > 2)
+				inGame = true;
+			else
+				theServer.sendTo(client, "Alert no not enough players");
+		else
+			theServer.sendTo(client, "Alert no not creator");
+	}
+
+	private void handleLeave(String client) {
+		if (!inGame) {
+			int pos = -1;
+			for (int i = 0; i < maxPlayers; i++) {
+				if (pName[i].equals(client)) {
+					pos = i;
+					break;
+				}
+			}
+			if (pos != -1) {
+				if (pName[pos] != null) {
+					informAll(pos + " remove");
+					theServer.sendTo(pName[pos], "leave");
+					pName[pos] = null;
+					colors.add(pColor[pos]);
+				}
+				if (pos == 0) {
+					for (int i = 0; i < maxPlayers; i++) {
+						if (pName[i] != null) {
+							theServer.sendTo(pName[i], "leave");
+							pName[i] = null;
+							theServer.sendTo(pName[i], "Alert Host Left Game");
+						}
+					}
+					int num = theServer.InstanceID.indexOf(this.worldID);
+					theServer.Instances.remove(num);
+					theServer.InstanceID.remove(num);
+					theServer.sendList();
+				}
+				this.theClients.remove(client);
+				this.numPlayers--;
+				int num = theServer.ClientID.indexOf(client);
 				theServer.Clients.get(num).setGameID(-1);
+			}
+		}
+	}
+
+	private void handleState(String client) {
+		if (!inGame) {
+			String out = "map " + this.worldName;
+			if (worldCreator.equals(client)) {
+				out += "\nmaster";
+			}
+			for (int i = 0; i < maxPlayers; i++) {
+				if (pName[i] != null) {
+					out += "\n" + i + " add " + pName[i] + " " + pColor[i]
+							+ " " + pRdy[i];
+				} else {
+					out += "\n" + i + " remove";
+				}
+			}
+			theServer.sendTo(client, out);
+		}
+	}
+
+	private void handleColor(String client) {
+		int num = -1;
+		for (int i = 0; i < maxPlayers; i++) {
+			if (pName[i] != null && pName[i].equals(client)) {
+				num = i;
+				break;
+			}
+		}
+		if (num > -1 && colors.size() > 0) {
+			colors.add(pColor[num]);
+			pColor[num] = colors.remove(0);
+			informAll(num + " col " + pColor[num]);
+		}
+	}
+
+	private void handleReady(String client) {
+		int num = -1;
+		for (int i = 0; i < maxPlayers; i++) {
+			if (pName[i] != null && pName[i].equals(client)) {
+				num = i;
+				break;
+			}
+		}
+		if (num > -1) {
+			pRdy[num] = !pRdy[num];
+			if (pRdy[num]) {
+				informAll(num + " rdy");
 			} else {
-				dataBuffer += data + "\n";
+				informAll(num + " nrdy");
 			}
 		}
 	}
@@ -300,32 +373,38 @@ public class RiskCore extends Thread {
 	private int numofPlayers;
 	private player[] players;
 	private ArrayList<Integer> whosTurn;
+
 	/**
 	 * @author Ian Paterson
 	 * 
-	 * @param legacy: Determines weatehr or not it is standard or legacy
-	 * @description The purpose of this method is to set up the first turn of 
-	 * any Risk standard or Risk Legacy game. Its first function is it takes 
-	 * in the number of players that will be participating and add's them
-	 * too two arrayList's that keep track of who's turn it is and whosPlace which
-	 * keeps track of whos "turn" it is to place troops. If draft cards are active 
-	 * this method becomes far more complicates as we have to go through the 
-	 * various types of draft cards which determine placement order, the amount
-	 * of troops you can place, the turn order for the game to be played, the number
-	 * of "coins" you will receive. Draft cards are selected by random assignment after
-	 * the arraylist of cards is shuffled and they are "dealed out". After a card has
-	 * been assigned it is removed from the array list. IF draft cards are not active,
-	 * then these values are all assigned to their standard values as prescribed by the
-	 * game rules. If it is standard risk then this is far simpler and most of the values 
-	 * are not even needed, they are simply initialized to their standard values. 
+	 * @param legacy
+	 *            : Determines weatehr or not it is standard or legacy
+	 * @description The purpose of this method is to set up the first turn of
+	 *              any Risk standard or Risk Legacy game. Its first function is
+	 *              it takes in the number of players that will be participating
+	 *              and add's them too two arrayList's that keep track of who's
+	 *              turn it is and whosPlace which keeps track of whos "turn" it
+	 *              is to place troops. If draft cards are active this method
+	 *              becomes far more complicates as we have to go through the
+	 *              various types of draft cards which determine placement
+	 *              order, the amount of troops you can place, the turn order
+	 *              for the game to be played, the number of "coins" you will
+	 *              receive. Draft cards are selected by random assignment after
+	 *              the arraylist of cards is shuffled and they are
+	 *              "dealed out". After a card has been assigned it is removed
+	 *              from the array list. IF draft cards are not active, then
+	 *              these values are all assigned to their standard values as
+	 *              prescribed by the game rules. If it is standard risk then
+	 *              this is far simpler and most of the values are not even
+	 *              needed, they are simply initialized to their standard
+	 *              values.
 	 * 
-	 *@TODO The client/server communication needs to be implimented by austin.
-	 *@TODO Implementations of faction assighnment 
-	 *@TODO Other faction ablilites need to be added 
+	 * @TODO The client/server communication needs to be implimented by austin.
+	 * @TODO Implementations of faction assighnment
+	 * @TODO Other faction ablilites need to be added
 	 */
 	public void firstTurnSetup(boolean legacy) {
-		
-		
+
 		ArrayList<Integer> whosPlace = new ArrayList<Integer>();
 		for (int i = 0; i < numofPlayers; i++) {
 			whosTurn.add(i);
@@ -420,28 +499,29 @@ public class RiskCore extends Thread {
 			}
 		}
 	}
-	
+
 	/*
-	 * Ignore, this will form the text based portion.
-	 * ALMOST DONE!
+	 * Ignore, this will form the text based portion. ALMOST DONE!
 	 */
-	
-	
+
 	/**
 	 * 
 	 * TODO finish the code where commented and test
-	 * @param players number of players
+	 * 
+	 * @param players
+	 *            number of players
 	 */
 	public void playGame(int players) {
 		Scanner scan = new Scanner(System.in);
 		intialTurnRisk(players);
 		boolean gameOver = false;
-		boolean rein	 = false;
+		boolean rein = false;
 		int i = 0;
 		while (gameOver != true) {
 			for (i = 0; i < activePlayer.size(); i++) {
 				drawMissionCard();
-				System.out.println(activePlayer.get(i).getName() +"... it is your turn.");
+				System.out.println(activePlayer.get(i).getName()
+						+ "... it is your turn.");
 				writeOut();
 				addTroops(activePlayer.get(i));
 				System.out.println("");
@@ -451,7 +531,8 @@ public class RiskCore extends Thread {
 				if (rein == false) {
 					System.out.println("Would you like to reinforce now?");
 					if (scan.next().equals("yes")) {
-						System.out.println("enter country to move troops from followed by destination and then amount");
+						System.out
+								.println("enter country to move troops from followed by destination and then amount");
 						int country1 = scan.nextInt();
 						int country2 = scan.nextInt();
 						int quant = scan.nextInt();
@@ -459,30 +540,31 @@ public class RiskCore extends Thread {
 						writeOut();
 					}
 				}
-				//Turn in cards? reinforce troops.
+				// Turn in cards? reinforce troops.
 				while (attack) {
 					System.out
 							.println("Enter your country followed by the one you wish to attack");
 					int country1 = scan.nextInt();
 					int country2 = scan.nextInt();
-					attack(world.getCountry(country1),world.getCountry(country2));
+					attack(world.getCountry(country1),
+							world.getCountry(country2));
 					System.out.println("attack another country?");
 					if (scan.next().equals("no")) {
 						attack = false;
 					}
 				}
 				writeOut();
-				for(int l = 0; l< activePlayer.size(); l++){
-					if(isEliminated(activePlayer.get(l))){
+				for (int l = 0; l < activePlayer.size(); l++) {
+					if (isEliminated(activePlayer.get(l))) {
 						activePlayer.remove(l);
 					}
 				}
-				if(activePlayer.size() < 2){
+				if (activePlayer.size() < 2) {
 					gameOver = true;
 				}
-				//Ask to move troops
-				//End of turn next players
-				//If a player is eliminated remove from the list. 
+				// Ask to move troops
+				// End of turn next players
+				// If a player is eliminated remove from the list.
 				if (rein == false) {
 					System.out.println("Would you like to reinforce now?");
 					if (scan.next().equals("yes")) {
@@ -493,24 +575,24 @@ public class RiskCore extends Thread {
 						rein = true;
 					}
 				}
-				
-				for(int k = 0; k < activePlayer.size(); k++){
-					if(activePlayer.get(k).isEliminated() == true){
+
+				for (int k = 0; k < activePlayer.size(); k++) {
+					if (activePlayer.get(k).isEliminated() == true) {
 						activePlayer.remove(k);
 					}
 				}
-				
-				if(activePlayer.size() < 2){
+
+				if (activePlayer.size() < 2) {
 					gameOver = true;
 				}
 			}
-			i =0;
+			i = 0;
 		}
 
 	}
-	
-	private boolean isEliminated(player aPlayer){
-		if(aPlayer.getCountrys().size() < 1){
+
+	private boolean isEliminated(player aPlayer) {
+		if (aPlayer.getCountrys().size() < 1) {
 			return true;
 		} else {
 			return false;
@@ -576,64 +658,84 @@ public class RiskCore extends Thread {
 		}
 
 	}
-	
-	//@SuppressWarnings("unchecked")
+
+	// @SuppressWarnings("unchecked")
 	public void intialTurnRisk(int players) {
-		
-//		for(int k = 0; k< activePlayer.size(); k ++){
-//			activePlayer.get(k).setClientID(theClients.get(k));
-//		}
-		
+
+		// for(int k = 0; k< activePlayer.size(); k ++){
+		// activePlayer.get(k).setClientID(theClients.get(k));
+		// }
+
 		ArrayList<Country> temp = (ArrayList<Country>) world.countrys.clone();
 		Collections.shuffle(temp);
 		for (int i = 0; i < world.countrys.size(); i += players) {
 			int count = 0;
 			for (int j = i; j < players + i; j++) {
 				if (j < 42) {
-					activePlayer.get(count).addCountry(world.countrys.get(temp.get(j).id()).id());
-					world.countrys.get(temp.get(j).id()).setOwner(activePlayer.get(count));
+					activePlayer.get(count).addCountry(
+							world.countrys.get(temp.get(j).id()).id());
+					world.countrys.get(temp.get(j).id()).setOwner(
+							activePlayer.get(count));
 					world.countrys.get(temp.get(j).id()).setTroopQuantity(1);
 					System.out.println(activePlayer.get(count).getName()
 							+ ": one troop added to "
 							+ world.countrys.get(temp.get(j).id())
 									.getCountryName());
-					//sendDataToClient(activePlayer.getClientID,activePlayer.get(count).getName() + ": one troop added to "+ world.countrys.get(temp.get(j).id()).getCountryName());
+					// sendDataToClient(activePlayer.getClientID,activePlayer.get(count).getName()
+					// + ": one troop added to "+
+					// world.countrys.get(temp.get(j).id()).getCountryName());
 					count++;
 				}
 			}
 		}
-	
+
 		switch (players) {
 		case 3:
 			activePlayer.get(0).setTroops(35);
 			activePlayer.get(1).setTroops(35);
 			activePlayer.get(2).setTroops(35);
-			
-			for (int k = 0; k < activePlayer.size(); k++){
-				while(activePlayer.get(k).getTroops() > 0){
-					for(int l = 0; l < activePlayer.get(k).getCountrys().size(); l++){
-						world.countrys.get(activePlayer.get(k).getCountrys().get(l)).setTroopQuantity(world.countrys.get(activePlayer.get(k).getCountrys().get(l)).getTroopQuantity() + 1);
-						activePlayer.get(k).setTroops(activePlayer.get(k).getTroops() - 1);
+
+			for (int k = 0; k < activePlayer.size(); k++) {
+				while (activePlayer.get(k).getTroops() > 0) {
+					for (int l = 0; l < activePlayer.get(k).getCountrys()
+							.size(); l++) {
+						world.countrys.get(
+								activePlayer.get(k).getCountrys().get(l))
+								.setTroopQuantity(
+										world.countrys.get(
+												activePlayer.get(k)
+														.getCountrys().get(l))
+												.getTroopQuantity() + 1);
+						activePlayer.get(k).setTroops(
+								activePlayer.get(k).getTroops() - 1);
 					}
 				}
-				
+
 			}
-			
+
 			break;
 		case 4:
 			activePlayer.get(0).setTroops(30);
 			activePlayer.get(1).setTroops(30);
 			activePlayer.get(2).setTroops(30);
 			activePlayer.get(3).setTroops(30);
-			
-			for (int k = 0; k < activePlayer.size(); k++){
-				while(activePlayer.get(k).getTroops() > 0){
-					for(int l = 0; l < activePlayer.get(k).getCountrys().size(); l++){
-						world.countrys.get(activePlayer.get(k).getCountrys().get(l)).setTroopQuantity(world.countrys.get(activePlayer.get(k).getCountrys().get(l)).getTroopQuantity() + 1);
-						activePlayer.get(k).setTroops(activePlayer.get(k).getTroops() - 1);
+
+			for (int k = 0; k < activePlayer.size(); k++) {
+				while (activePlayer.get(k).getTroops() > 0) {
+					for (int l = 0; l < activePlayer.get(k).getCountrys()
+							.size(); l++) {
+						world.countrys.get(
+								activePlayer.get(k).getCountrys().get(l))
+								.setTroopQuantity(
+										world.countrys.get(
+												activePlayer.get(k)
+														.getCountrys().get(l))
+												.getTroopQuantity() + 1);
+						activePlayer.get(k).setTroops(
+								activePlayer.get(k).getTroops() - 1);
 					}
 				}
-				
+
 			}
 			break;
 
@@ -644,14 +746,22 @@ public class RiskCore extends Thread {
 			activePlayer.get(3).setTroops(25);
 			activePlayer.get(4).setTroops(25);
 
-			for (int k = 0; k < activePlayer.size(); k++){
-				while(activePlayer.get(k).getTroops() > 0){
-					for(int l = 0; l < activePlayer.get(k).getCountrys().size(); l++){
-						world.countrys.get(activePlayer.get(k).getCountrys().get(l)).setTroopQuantity(world.countrys.get(activePlayer.get(k).getCountrys().get(l)).getTroopQuantity() + 1);
-						activePlayer.get(k).setTroops(activePlayer.get(k).getTroops() - 1);
+			for (int k = 0; k < activePlayer.size(); k++) {
+				while (activePlayer.get(k).getTroops() > 0) {
+					for (int l = 0; l < activePlayer.get(k).getCountrys()
+							.size(); l++) {
+						world.countrys.get(
+								activePlayer.get(k).getCountrys().get(l))
+								.setTroopQuantity(
+										world.countrys.get(
+												activePlayer.get(k)
+														.getCountrys().get(l))
+												.getTroopQuantity() + 1);
+						activePlayer.get(k).setTroops(
+								activePlayer.get(k).getTroops() - 1);
 					}
 				}
-				
+
 			}
 			break;
 		case 6:
@@ -662,22 +772,31 @@ public class RiskCore extends Thread {
 			activePlayer.get(4).setTroops(20);
 			activePlayer.get(5).setTroops(20);
 
-			for (int k = 0; k < activePlayer.size(); k++){
-				while(activePlayer.get(k).getTroops() > 0){
-					for(int l = 0; l < activePlayer.get(k).getCountrys().size(); l++){
-						world.countrys.get(activePlayer.get(k).getCountrys().get(l)).setTroopQuantity(world.countrys.get(activePlayer.get(k).getCountrys().get(l)).getTroopQuantity() + 1);
-						activePlayer.get(k).setTroops(activePlayer.get(k).getTroops() - 1);
+			for (int k = 0; k < activePlayer.size(); k++) {
+				while (activePlayer.get(k).getTroops() > 0) {
+					for (int l = 0; l < activePlayer.get(k).getCountrys()
+							.size(); l++) {
+						world.countrys.get(
+								activePlayer.get(k).getCountrys().get(l))
+								.setTroopQuantity(
+										world.countrys.get(
+												activePlayer.get(k)
+														.getCountrys().get(l))
+												.getTroopQuantity() + 1);
+						activePlayer.get(k).setTroops(
+								activePlayer.get(k).getTroops() - 1);
 					}
 				}
-				
+
 			}
 			break;
 		}
 	}
-	
+
 	public void addTroops(player player) {
 		Scanner scan = new Scanner(System.in);
-		int recruitable = world.recruitTroops(player.getCountrys(),player.getName());
+		int recruitable = world.recruitTroops(player.getCountrys(),
+				player.getName());
 		System.out.println("Available troops " + recruitable);
 		System.out.println("Available countrys to reinforce: ");
 		for (int i = 0; i < player.getCountrys().size(); i++) {
@@ -692,13 +811,15 @@ public class RiskCore extends Thread {
 			System.out.println(world.countrys.get(country).getCountryName());
 			System.out.println("How many troops will you reinforce with");
 			int reinforce = scan.nextInt();
-			world.countrys.get(country).setTroopQuantity(world.countrys.get(country).getTroopQuantity() + reinforce); 
-			System.out.println("Added " + reinforce + " to " + world.countrys.get(country).getCountryName());
+			world.countrys.get(country).setTroopQuantity(
+					world.countrys.get(country).getTroopQuantity() + reinforce);
+			System.out.println("Added " + reinforce + " to "
+					+ world.countrys.get(country).getCountryName());
 			recruitable = recruitable - reinforce;
 		}
 
 	}
-	
+
 	/**
 	 * @author Nick Solberg
 	 * @param atkCountry
@@ -1736,17 +1857,18 @@ public class RiskCore extends Thread {
 						+ " you have been defeated, "
 						+ defCountry.getCountryName() + " Now belongs to "
 						+ atkCountry.getOwner().getName());
-				
+
 				atkCountry.getOwner().addCountry(defCountry.id());
 				atkCountry.getOwner().addConquered(defCountry.id());
-				
-//				atkCountry.getOwner().addCard(cardDeck.pop());
-//				if(defCountry.getOwner().getCountrys().size() < 1){
-//					for(int i = 0; i < defCountry.getOwner().getCards().size(); i++){
-//					atkCountry.getOwner().addCard(defCountry.getOwner().getCards().get(i));
-//				
-//					}
-//				}
+
+				// atkCountry.getOwner().addCard(cardDeck.pop());
+				// if(defCountry.getOwner().getCountrys().size() < 1){
+				// for(int i = 0; i < defCountry.getOwner().getCards().size();
+				// i++){
+				// atkCountry.getOwner().addCard(defCountry.getOwner().getCards().get(i));
+				//
+				// }
+				// }
 			}
 
 		}
@@ -1937,7 +2059,7 @@ public class RiskCore extends Thread {
 		}
 		return val;
 	}
-	
+
 	public boolean checkAmphib(player aPlayer) {
 		boolean val = false;
 		// AMPHIBIOUS ONSLAUGHT: Conquer 4+ territories over sea lines this turn
@@ -2019,36 +2141,41 @@ public class RiskCore extends Thread {
 		return dice;
 	}
 
-	public void writeOut(){
-		try{
-	           BufferedWriter bw = new BufferedWriter(new FileWriter("everyturn.txt"));
-	           for(int i = 0; i< activePlayer.size(); i++){
-	        	   //writes player name
-	        	   bw.write(activePlayer.get(i).getName() +": ");
-	        	   bw.newLine();
-	        	   //Write out owned countrys followed by number of troops
-	        	   for(int j = 0; j < activePlayer.get(i).getCountrys().size(); j++){
-	        		   Country temp = world.getCountry(activePlayer.get(i).getCountrys().get(j));
-	        		   bw.write(temp.getCountryName() + ": " + temp.getTroopQuantity() + " |  ");
-	        	   }
-	        	   bw.newLine();
-	        	   bw.write("Country:                 Borders:");
-	        	   bw.newLine();
-	        	   
+	public void writeOut() {
+		try {
+			BufferedWriter bw = new BufferedWriter(new FileWriter(
+					"everyturn.txt"));
+			for (int i = 0; i < activePlayer.size(); i++) {
+				// writes player name
+				bw.write(activePlayer.get(i).getName() + ": ");
+				bw.newLine();
+				// Write out owned countrys followed by number of troops
+				for (int j = 0; j < activePlayer.get(i).getCountrys().size(); j++) {
+					Country temp = world.getCountry(activePlayer.get(i)
+							.getCountrys().get(j));
+					bw.write(temp.getCountryName() + ": "
+							+ temp.getTroopQuantity() + " |  ");
+				}
+				bw.newLine();
+				bw.write("Country:                 Borders:");
+				bw.newLine();
+
 				for (int k = 0; k < activePlayer.get(i).getCountrys().size(); k++) {
-					Country temp = world.getCountry(activePlayer.get(i).getCountrys().get(k));
+					Country temp = world.getCountry(activePlayer.get(i)
+							.getCountrys().get(k));
 					String country = temp.getCountryName();
 					// int m = 25 - bords.length();
 					for (int y = country.length(); y < 25; y++) {
 						country = country.concat(" ");
 					}
-					//writes country
+					// writes country
 					bw.write(country);
 
 					for (int l = 0; l < temp.getCountryBorders().size(); l++) {
 						int borderTemp = temp.getCountryBorders().get(l);
 
-						String bords = world.getCountry(borderTemp).getCountryName();
+						String bords = world.getCountry(borderTemp)
+								.getCountryName();
 						// int m = 25 - bords.length();
 						for (int y = bords.length(); y < 25; y++) {
 							bords = bords.concat(" ");
@@ -2058,14 +2185,15 @@ public class RiskCore extends Thread {
 					}
 					bw.newLine();
 					bw.write("                         ");
-					for (int h = 0; h < temp.getCountryBorders().size(); h++){
+					for (int h = 0; h < temp.getCountryBorders().size(); h++) {
 						int borderTemp = temp.getCountryBorders().get(h);
-						String name = world.getCountry(borderTemp).getOwner().getName();
+						String name = world.getCountry(borderTemp).getOwner()
+								.getName();
 
 						// int m = 25 - bords.length();
 						for (int y = name.length(); y < 25; y++) {
 							name = name.concat(" ");
-							
+
 						}
 						bw.write(name);
 					}
@@ -2074,64 +2202,113 @@ public class RiskCore extends Thread {
 				}
 				bw.newLine();
 			}
-	           
-	           
 
-	           bw.close();
+			bw.close();
 
-	        }catch(Exception e){}
+		} catch (Exception e) {
+		}
 	}
-	String data = "6" + "\n" + 
 
-	"NorthAmerica 	title NONE 0 8	 0 1 2 3 4 5 6 7 8" + "\n" +
-	"SouthAmerica 	title NONE 0 4	 9 10 11 12" + "\n" +
-	"Africa 		title NONE 0 3	 13 14 15 16 17 18 19" + "\n" +
-	"Europe 	 	title NONE 0 5	 20 21 22 23 24 25" + "\n" +
-	"Asia 			title NONE 0 9	 26 27 28 29 30 31 32 33 34 35 36 37" + "\n" +
-	"Australia 		title NONE 0 2	 38 39 40 41" + "\n" +
+	String data = "6"
+			+ "\n"
+			+
 
-	"0Alaska 				\\NONE 0 false 0 faction 0 \\NONE 0 false  34 1 5 " + "\n" +
-	"1NorthwestTerritory 	\\NONE 0 false 0 faction 0 \\NONE 0 false  0 2 4 5" + "\n" +
-	"2GreenLand 			\\NONE 0 false 0 faction 0 \\NONE 0 false  1 4 3 22" + "\n" +
-	"3EasternCanada 		\\NONE 0 false 0 faction 0 \\NONE 0 false  2 4 7" + "\n" +
-	"4Ontario 				\\NONE 0 false 0 faction 0 \\NONE 0 false  1 5 6 7 3 2" + "\n" +
-	"5Alberta 				\\NONE 0 false 0 faction 0 \\NONE 0 false  1 0 6 3" + "\n" +
-	"6WesternUS 			\\NONE 0 false 0 faction 0 \\NONE 0 false  5 4 8 7" + "\n" +
-	"7EasternUS 			\\NONE 0 false 0 faction 0 \\NONE 0 false  3 4 6 8" + "\n" +
-	"8CentralAmerica 		\\NONE 0 false 0 faction 0 \\NONE 0 false  7 6 9" + "\n" +
-	"9Venezuala				\\NONE 0 false 0 faction 0 \\NONE 0 false  8 12 10" + "\n" +
-	"10Peru 				\\NONE 0 false 0 faction 0 \\NONE 0 false  9 11 12" + "\n" +
-	"11Argentina 			\\NONE 0 false 0 faction 0 \\NONE 0 false  10 12" + "\n" +
-	"12Brazil 				\\NONE 0 true 0 faction 50 \\NONE 50 false  9 10 11 13" + "\n" +
-	"13NorthAfrica 			\\NONE 0 true 0 faction 50 \\NONE 50 false  12 14 17 18 19 20" + "\n" +
-	"14CentralAfrica 		\\NONE 0 true 0 faction 50 \\NONE 50 false  13 15 17" + "\n" +
-	"15SouthAfrica 			\\NONE 0 true 0 faction 50 \\NONE 50 false  16 14 17" + "\n" +
-	"16Madagascar 			\\NONE 0 true 0 faction 50 \\NONE 50 false  15 17" + "\n" +
-	"17EastAfrica 			\\NONE 0 true 0 faction 50 \\NONE 50 false  16 15 14 13 18 28" + "\n" +
-	"18Egypt 				\\NONE 0 true 0 faction 50 \\NONE 50 false  19 13 17 28" + "\n" +
-	"19SouthernEurope 		\\NONE 0 true 0 faction 50 \\NONE 50 false  13 18 28 25 24 20" + "\n" +
-	"20WesternEurope 		\\NONE 0 true 0 faction 50 \\NONE 50 false  21 24 19 13" + "\n" +
-	"21GreatBritain 		\\NONE 0 true 0 faction 50 \\NONE 50 false 22 23 24 20" + "\n" +
-	"22IceLand 				\\NONE 0 true 0 faction 50 \\NONE 50 false  2 21 23" + "\n" +
-	"23Scandinavia 			\\NONE 0 true 0 faction 50 \\NONE 50 false  22 21 24 25" + "\n" +
-	"24NorthernEurope 		\\NONE 0 true 0 faction 50 \\NONE 50 false  21 23 20 19 25" + "\n" +
-	"25Russia 				\\NONE 0 true 0 faction 50 \\NONE 50 false  23 24 19 28 27 26" + "\n" +
-	"26Ural 				\\NONE 0 true 0 faction 50 \\NONE 50 false  25 32 31 27" + "\n" +
-	"27Afghanistan 			\\NONE 0 true 0 faction 50 \\NONE 50 false  25 26 31 29 28" + "\n" +
-	"28MiddleEast 			\\NONE 0 true 0 faction 50 \\NONE 50 false  25 19 18 17 29 27" + "\n" +
-	"29India 				\\NONE 0 true 0 faction 50 \\NONE 50 false  28 27 31 30" + "\n" +
-	"30SoutheastAsia		\\NONE 0 true 0 faction 50 \\NONE 50 false  39 31 29" + "\n" +
-	"31China 				\\NONE 0 true 0 faction 50 \\NONE 50 false  30 29 27 26 32 36" + "\n" +
-	"32Siberia 				\\NONE 0 true 0 faction 50 \\NONE 50 false  26 31 36 37 33" + "\n" +
-	"33Yakutsk 				\\NONE 0 true 0 faction 50 \\NONE 50 false  34 37 32" + "\n" +
-	"34Kamchatka 			\\NONE 0 true 0 faction 50 \\NONE 50 false  0 35 33 37 36" + "\n" +
-	"35Japan 				\\NONE 0 true 0 faction 50 \\NONE 50 false  36 34" + "\n" +
-	"36Mongolia 			\\NONE 0 true 0 faction 50 \\NONE 50 false  35 34 37 32 31" + "\n" +
-	"37Irkutsk 				\\NONE 0 true 0 faction 50 \\NONE 50 false 33 32 36 34" + "\n" +
-	"38NewGuinea 			\\NONE 0 true 0 faction 50 \\NONE 50 false  41 40 39" + "\n" +
-	"39Indonesia 			\\NONE 0 true 0 faction 50 \\NONE 50 false  30 38 40" + "\n" +
-	"40WesternAustralia 	\\NONE 0 true 0 faction 50 \\NONE 50 false  41 38 39" + "\n" +
-	"41EasternAustralia 	\\NONE 0 true 0 faction 50 \\NONE 50 false 38 40";
+			"NorthAmerica 	title NONE 0 8	 0 1 2 3 4 5 6 7 8"
+			+ "\n"
+			+ "SouthAmerica 	title NONE 0 4	 9 10 11 12"
+			+ "\n"
+			+ "Africa 		title NONE 0 3	 13 14 15 16 17 18 19"
+			+ "\n"
+			+ "Europe 	 	title NONE 0 5	 20 21 22 23 24 25"
+			+ "\n"
+			+ "Asia 			title NONE 0 9	 26 27 28 29 30 31 32 33 34 35 36 37"
+			+ "\n"
+			+ "Australia 		title NONE 0 2	 38 39 40 41"
+			+ "\n"
+			+
+
+			"0Alaska 				\\NONE 0 false 0 faction 0 \\NONE 0 false  34 1 5 "
+			+ "\n"
+			+ "1NorthwestTerritory 	\\NONE 0 false 0 faction 0 \\NONE 0 false  0 2 4 5"
+			+ "\n"
+			+ "2GreenLand 			\\NONE 0 false 0 faction 0 \\NONE 0 false  1 4 3 22"
+			+ "\n"
+			+ "3EasternCanada 		\\NONE 0 false 0 faction 0 \\NONE 0 false  2 4 7"
+			+ "\n"
+			+ "4Ontario 				\\NONE 0 false 0 faction 0 \\NONE 0 false  1 5 6 7 3 2"
+			+ "\n"
+			+ "5Alberta 				\\NONE 0 false 0 faction 0 \\NONE 0 false  1 0 6 3"
+			+ "\n"
+			+ "6WesternUS 			\\NONE 0 false 0 faction 0 \\NONE 0 false  5 4 8 7"
+			+ "\n"
+			+ "7EasternUS 			\\NONE 0 false 0 faction 0 \\NONE 0 false  3 4 6 8"
+			+ "\n"
+			+ "8CentralAmerica 		\\NONE 0 false 0 faction 0 \\NONE 0 false  7 6 9"
+			+ "\n"
+			+ "9Venezuala				\\NONE 0 false 0 faction 0 \\NONE 0 false  8 12 10"
+			+ "\n"
+			+ "10Peru 				\\NONE 0 false 0 faction 0 \\NONE 0 false  9 11 12"
+			+ "\n"
+			+ "11Argentina 			\\NONE 0 false 0 faction 0 \\NONE 0 false  10 12"
+			+ "\n"
+			+ "12Brazil 				\\NONE 0 true 0 faction 50 \\NONE 50 false  9 10 11 13"
+			+ "\n"
+			+ "13NorthAfrica 			\\NONE 0 true 0 faction 50 \\NONE 50 false  12 14 17 18 19 20"
+			+ "\n"
+			+ "14CentralAfrica 		\\NONE 0 true 0 faction 50 \\NONE 50 false  13 15 17"
+			+ "\n"
+			+ "15SouthAfrica 			\\NONE 0 true 0 faction 50 \\NONE 50 false  16 14 17"
+			+ "\n"
+			+ "16Madagascar 			\\NONE 0 true 0 faction 50 \\NONE 50 false  15 17"
+			+ "\n"
+			+ "17EastAfrica 			\\NONE 0 true 0 faction 50 \\NONE 50 false  16 15 14 13 18 28"
+			+ "\n"
+			+ "18Egypt 				\\NONE 0 true 0 faction 50 \\NONE 50 false  19 13 17 28"
+			+ "\n"
+			+ "19SouthernEurope 		\\NONE 0 true 0 faction 50 \\NONE 50 false  13 18 28 25 24 20"
+			+ "\n"
+			+ "20WesternEurope 		\\NONE 0 true 0 faction 50 \\NONE 50 false  21 24 19 13"
+			+ "\n"
+			+ "21GreatBritain 		\\NONE 0 true 0 faction 50 \\NONE 50 false 22 23 24 20"
+			+ "\n"
+			+ "22IceLand 				\\NONE 0 true 0 faction 50 \\NONE 50 false  2 21 23"
+			+ "\n"
+			+ "23Scandinavia 			\\NONE 0 true 0 faction 50 \\NONE 50 false  22 21 24 25"
+			+ "\n"
+			+ "24NorthernEurope 		\\NONE 0 true 0 faction 50 \\NONE 50 false  21 23 20 19 25"
+			+ "\n"
+			+ "25Russia 				\\NONE 0 true 0 faction 50 \\NONE 50 false  23 24 19 28 27 26"
+			+ "\n"
+			+ "26Ural 				\\NONE 0 true 0 faction 50 \\NONE 50 false  25 32 31 27"
+			+ "\n"
+			+ "27Afghanistan 			\\NONE 0 true 0 faction 50 \\NONE 50 false  25 26 31 29 28"
+			+ "\n"
+			+ "28MiddleEast 			\\NONE 0 true 0 faction 50 \\NONE 50 false  25 19 18 17 29 27"
+			+ "\n"
+			+ "29India 				\\NONE 0 true 0 faction 50 \\NONE 50 false  28 27 31 30"
+			+ "\n"
+			+ "30SoutheastAsia		\\NONE 0 true 0 faction 50 \\NONE 50 false  39 31 29"
+			+ "\n"
+			+ "31China 				\\NONE 0 true 0 faction 50 \\NONE 50 false  30 29 27 26 32 36"
+			+ "\n"
+			+ "32Siberia 				\\NONE 0 true 0 faction 50 \\NONE 50 false  26 31 36 37 33"
+			+ "\n"
+			+ "33Yakutsk 				\\NONE 0 true 0 faction 50 \\NONE 50 false  34 37 32"
+			+ "\n"
+			+ "34Kamchatka 			\\NONE 0 true 0 faction 50 \\NONE 50 false  0 35 33 37 36"
+			+ "\n"
+			+ "35Japan 				\\NONE 0 true 0 faction 50 \\NONE 50 false  36 34"
+			+ "\n"
+			+ "36Mongolia 			\\NONE 0 true 0 faction 50 \\NONE 50 false  35 34 37 32 31"
+			+ "\n"
+			+ "37Irkutsk 				\\NONE 0 true 0 faction 50 \\NONE 50 false 33 32 36 34"
+			+ "\n"
+			+ "38NewGuinea 			\\NONE 0 true 0 faction 50 \\NONE 50 false  41 40 39"
+			+ "\n"
+			+ "39Indonesia 			\\NONE 0 true 0 faction 50 \\NONE 50 false  30 38 40"
+			+ "\n"
+			+ "40WesternAustralia 	\\NONE 0 true 0 faction 50 \\NONE 50 false  41 38 39"
+			+ "\n"
+			+ "41EasternAustralia 	\\NONE 0 true 0 faction 50 \\NONE 50 false 38 40";
 	public Map world = new Map(data);
 }
-

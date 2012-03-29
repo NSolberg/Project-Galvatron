@@ -111,10 +111,6 @@ public class GUIServerPanel extends JPanel implements ClientUser {
 	public void displayData(String string) {
 		// TODO Auto-generated method stub
 		if (string.substring(0,3).equals("yes")) {
-			Scanner scan = new Scanner(string);
-			scan.next();
-			String map = scan.next();
-			app.setMap(map);
 			app.switchView(2);
 		} else if (string.substring(0, 3).equals("no ")) {
 			System.out.println(string);
