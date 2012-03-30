@@ -13,6 +13,7 @@ import java.util.Scanner;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
@@ -25,6 +26,9 @@ public class Application implements ActionListener {
 	private JPanel mainpanel;
 	public Client client;
 	public Dimension size;
+	public JMenu game;
+	public JMenuItem start, quit;
+	public String userName;
 
 	public static void main(String[] args) {
 		new Application();
@@ -48,18 +52,21 @@ public class Application implements ActionListener {
 	}
 
 	private void createPanels() {
-		GUIGamePanel gp = new GUIGamePanel(size);
+		GUIGamePanel gp = new GUIGamePanel(this);
 		GUILogOnPanel lp = new GUILogOnPanel(this);
 		GUIServerPanel sp = new GUIServerPanel(this);
-		panels = new JPanel[3];
+		GUILobby lobby = new GUILobby(this);
+		panels = new JPanel[4];
 		panels[0] = lp;
 		panels[1] = sp;
 		panels[2] = gp;
+		panels[3] = lobby;
 		mainpanel = new JPanel();
 		mainpanel.setLayout(new CardLayout());
 		mainpanel.add(panels[0], "LogOn");
 		mainpanel.add(panels[1], "Server");
 		mainpanel.add(panels[2], "Game");
+		mainpanel.add(panels[3], "Lobby");
 		CardLayout c1 = (CardLayout) mainpanel.getLayout();
 		c1.show(mainpanel, "LogOn");
 		this.client = new Client(lp);
@@ -79,7 +86,7 @@ public class Application implements ActionListener {
 				.getLocalGraphicsEnvironment();
 		GraphicsDevice[] devices = g.getScreenDevices();
 		menubar = new JMenuBar();
-		JMenu file = new JMenu("View");
+		JMenu view = new JMenu("View");
 		JMenu res = new JMenu("Resolution");
 		ArrayList<String> items = new ArrayList<String>();
 		for (DisplayMode mode : devices[0].getDisplayModes()) {
@@ -97,16 +104,42 @@ public class Application implements ActionListener {
 				}
 			}
 		}
-		file.add(res);
+		view.add(res);
 		JCheckBoxMenuItem win = new JCheckBoxMenuItem("Windowed");
 		win.setSelected(true);
 		win.addActionListener(this);
 		selMode = win;
 		JCheckBoxMenuItem full = new JCheckBoxMenuItem("Fullscreen");
 		full.addActionListener(this);
-		file.add(win);
-		file.add(full);
-		menubar.add(file);
+		view.add(win);
+		view.add(full);
+		menubar.add(view);
+
+		game = new JMenu("Game");
+		game.setEnabled(false);
+		quit = new JMenuItem("Quit");
+		start = new JMenuItem("Start");
+		game.add(start);
+		game.add(quit);
+		start.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				client.sendData("start");
+			}
+
+		});
+		quit.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				// TODO Auto-generated method stub
+				client.sendData("leave");
+			}
+
+		});
+		menubar.add(game);
 	}
 
 	@Override
@@ -148,9 +181,18 @@ public class Application implements ActionListener {
 			((GUIServerPanel) panels[1]).refresh();
 			break;
 		case 2:
+			c1.show(mainpanel, "Lobby");
+			client.switchController((ClientUser) panels[3]);
+			((GUILobby) panels[3]).requestState();
+			break;
+		case 3:
 			c1.show(mainpanel, "Game");
 			client.switchController((ClientUser) panels[2]);
 			break;
 		}
+	}
+
+	public void setMap(String map) {
+		((GUIGamePanel) (panels[2])).setMap(map);
 	}
 }

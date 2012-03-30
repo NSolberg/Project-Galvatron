@@ -13,7 +13,7 @@ public class RiskMap {
 	Image Cont;
 	BufferedImage buffer, contBuffer;
 
-	RiskMap() {
+	public RiskMap() {
 		Orig = new ImageIcon("C:/Users/Austin/Desktop/riskMap.png").getImage();
 		Cont = new ImageIcon("C:/Users/Austin/Desktop/riskMapContrast.png")
 				.getImage();

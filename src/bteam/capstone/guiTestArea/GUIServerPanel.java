@@ -110,7 +110,7 @@ public class GUIServerPanel extends JPanel implements ClientUser {
 	@Override
 	public void displayData(String string) {
 		// TODO Auto-generated method stub
-		if (string.equals("yes")) {
+		if (string.substring(0,3).equals("yes")) {
 			app.switchView(2);
 		} else if (string.substring(0, 3).equals("no ")) {
 			System.out.println(string);
