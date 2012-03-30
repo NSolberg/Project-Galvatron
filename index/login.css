@@ -1,9 +1,9 @@
-body {
-	background-image: url('riskTitleScreen.png');
-	background-repeat:no-repeat;
-}
-#forms{
-	border:none;
-	position: relative;
+#form1 {
 	
+	position:absolute; top: 595px; left: 470px;
+	font-size: 20px;
+}
+#form2 {
+	
+	position:absolute; top: 742px; left: 470px;
 }
