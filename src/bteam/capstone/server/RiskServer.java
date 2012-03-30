@@ -195,7 +195,7 @@ public class RiskServer {
 			if (file.exists() || gameFile.equals("Default")) {
 				RiskCore core = new RiskCore(this, ClientID, gameFile, legacy,
 						reserve, pass);
-				core.start();
+				//core.start();
 				int num = core.getWorldID();
 				InstanceID.add(num);
 				Instances.add(core);

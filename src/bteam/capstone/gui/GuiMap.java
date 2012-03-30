@@ -23,6 +23,7 @@ public class GuiMap {
 	private Point cen;
 	private BufferedImage buffer, beforbuffer;
 	private ArrayList<GuiCountry> countries;
+	private ArrayList<String> countryNames;
 	private String[] continents;
 	private boolean inattack;
 
@@ -47,7 +48,6 @@ public class GuiMap {
 				images[0].getHeight(null), BufferedImage.TYPE_4BYTE_ABGR_PRE);
 		buffer = new BufferedImage(images[0].getWidth(null),
 				images[0].getHeight(null), BufferedImage.TYPE_4BYTE_ABGR_PRE);
-		test();
 	}
 
 	private void test() {
@@ -56,6 +56,12 @@ public class GuiMap {
 		countries.get(1).troopCount = 53;
 		countries.get(1).troopColor = 1;
 		//this.enterAttack(0, 1);
+	}
+	
+	public void set(int troopCount, int color, String country){
+		int num = countryNames.indexOf(country);
+		countries.get(num).troopColor = color;
+		countries.get(num).troopCount=troopCount;
 	}
 
 	private void initCards() {
@@ -145,6 +151,7 @@ public class GuiMap {
 
 	private void initFromFile() {
 		countries = new ArrayList<GuiCountry>();
+		countryNames = new ArrayList<String>();
 		File mapInfo = new File(filename + "/map.txt");
 		try {
 			Scanner scan = new Scanner(mapInfo);
@@ -171,6 +178,7 @@ public class GuiMap {
 					GuiCountry gc = new GuiCountry(temp, tbuffer);
 					gc.continent = continents[i];
 					countries.add(gc);
+					countryNames.add(gc.name);
 				}
 			}
 

@@ -32,6 +32,7 @@ public class Continent {
 	 */
 	public Continent(String data) {
 		Scanner scan = new Scanner(data);
+		scan.useDelimiter("/");
 		name = scan.next();
 		title = scan.next();
 		namer = scan.next();

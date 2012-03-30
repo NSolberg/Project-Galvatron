@@ -16,7 +16,6 @@ import java.awt.event.MouseMotionListener;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
@@ -30,12 +29,10 @@ import javax.swing.SwingConstants;
 import javax.swing.Timer;
 import javax.swing.UIManager;
 import javax.swing.border.BevelBorder;
-import javax.swing.border.EtchedBorder;
 import javax.swing.border.SoftBevelBorder;
 import javax.swing.border.TitledBorder;
 
 import bteam.capstone.gui.GuiMap;
-import bteam.capstone.gui.RiskMap;
 
 @SuppressWarnings("serial")
 public class GUIGamePanel extends JPanel implements ClientUser, ActionListener,
@@ -429,7 +426,7 @@ public class GUIGamePanel extends JPanel implements ClientUser, ActionListener,
 	@Override
 	public void displayData(String string) {
 		// TODO Auto-generated method stub
-
+		
 	}
 
 	@Override

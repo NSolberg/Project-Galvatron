@@ -1,49 +1,49 @@
 6
-NorthAmerica title namer 50 502 0 1 2 3 4 5 6 7 8
-SouthAmerica title namer 50 502 9 10 11 12 
-Africa title namer 50 502 13 14 15 16 17 18 19
-Europe title namer 50 502 20 21 22 23 24 25
-Asia title namer 50 502 26 27 28 29 30 31 32 33 34 35 36 37
-Australia title namer 50 502 38 39 40 41
-0Alaska cityName 1 true 1 faction 50 factionHQ 50 false 34 1 5 
-1NorthwestTerritory cityName 1 true 1 faction 50 factionHQ 50 false 0 2 4 5
-2GreenLand cityName 1 true 1 faction 50 factionHQ 50 false  1 4 3 22
-3EasternCanada cityName 1 true 1 faction 50 factionHQ 50 false  2 4 7
-4Ontario cityName 1 true 1 faction 50 factionHQ 50 false  1 5 6 7 3 2
-5Alberta cityName 1 true 1 faction 50 factionHQ 50 false  1 0 6 3
-6WesternUS cityName 1 true 1 faction 50 factionHQ 50 false  5 4 8 7
-7EasternUS cityName 1 true 1 faction 50 factionHQ 50 false  3 4 6 8
-8CentralAmerica cityName 1 true 1 faction 50 factionHQ 50 false  7 6 9
-9Venezuala cityName 1 true 1 faction 50 factionHQ 50 false  8 12 10
-10Peru cityName 1 true 1 faction 50 factionHQ 50 false  9 11 12
-11Argentina cityName 1 true 1 faction 50 factionHQ 50 false  10 12
-12Brazil cityName 1 true 1 faction 50 factionHQ 50 false  9 10 11 13
-13NorthAfrica cityName 1 true 1 faction 50 factionHQ 50 false  12 14 17 18 19 20
-14CentralAfrica cityName 1 true 1 faction 50 factionHQ 50 false  13 15 17
-15SouthAfrica cityName 1 true 1 faction 50 factionHQ 50 false  16 14 17
-16Madagascar cityName 1 true 1 faction 50 factionHQ 50 false  15 17
-17EastAfrica cityName 1 true 1 faction 50 factionHQ 50 false  16 15 14 13 18 28
-18Egypt cityName 1 true 1 faction 50 factionHQ 50 false  19 13 17 28
-19SouthernEurope cityName 1 true 1 faction 50 factionHQ 50 false  13 18 28 25 24 20
-20WesternEurope cityName 1 true 1 faction 50 factionHQ 50 false  21 24 19 13
-21GreatBritain cityName 1 true 1 faction 50 factionHQ 50 false 22 23 24 20
-22IceLand cityName 1 true 1 faction 50 factionHQ 50 false  2 21 23
-23Scandinavia cityName 1 true 1 faction 50 factionHQ 50 false  22 21 24 25
-24NorthernEurope cityName 1 true 1 faction 50 factionHQ 50 false  21 23 20 19 25
-25Russia cityName 1 true 1 faction 50 factionHQ 50 false  23 24 19 28 27 26
-26Ural cityName 1 true 1 faction 50 factionHQ 50 false  25 32 31 27
-27Afghanistan cityName 1 true 1 faction 50 factionHQ 50 false  25 26 31 29 28
-28MiddleEast cityName 1 true 1 faction 50 factionHQ 50 false  25 19 18 17 29 27
-29India cityName 1 true 1 faction 50 factionHQ 50 false  28 27 31 30
-30SoutheastAsia	cityName 1 true 1 faction 50 factionHQ 50 false  39 31 29
-31China cityName 1 true 1 faction 50 factionHQ 50 false  30 29 27 26 32 36
-32Siberia cityName 1 true 1 faction 50 factionHQ 50 false  26 31 36 37 33
-33Yakutsk cityName 1 true 1 faction 50 factionHQ 50 false  34 37 32
-34Kamchatka cityName 1 true 1 faction 50 factionHQ 50 false  0 35 33 37 36
-35Japan cityName 1 true 1 faction 50 factionHQ 50 false  36 34
-36Mongolia cityName 1 true 1 faction 50 factionHQ 50 false  35 34 37 32 31
-37Irkutsk cityName 1 true 1 faction 50 factionHQ 50 false 33 32 36 34
-38NewGuinea cityName 1 true 1 faction 50 factionHQ 50 false  41 40 39
-39Indonesia cityName 1 true 1 faction 50 factionHQ 50 false  30 38 40
-40WesternAustralia cityName 1 true 1 faction 50 factionHQ 50 false  41 38 39
-41EasternAustralia cityName 1 true 1 faction 50 factionHQ 50 false 38 40
+North America/\\NONE/\\NONE/5/0/0/1/2/3/4/5/6/7/8/
+South America/\\NONE/\\NONE/2/0/9/10/11/12/
+Africa/\\NONE/\\NONE/3/0/13/14/15/16/17/18/19/
+Europe/\\NONE/\\NONE/5/0/20/21/22/23/24/25/
+Asia/\\NONE/\\NONE/7/0/26/27/28/29/30/31/32/33/34/35/36/37/
+Australia/\\NONE/\\NONE/2/0/38/39/40/41/
+Alaska/\\NONE/0/false/0/faction/0/\\NONE/0/false/34/1/5/
+Northwest Territory/\\NONE/0/false/0/faction/0/\\NONE/0/false/0/2/4/5/
+GreenLand/\\NONE/0/false/0/faction/0/\\NONE/0/false/1/4/3/22/
+Quebec/\\NONE/0/false/0/faction/0/\\NONE/0/false/2/4/7/
+Ontario/\\NONE/0/false/0/faction/0/\\NONE/0/false/1/5/6/7/3/2/
+Alberta/\\NONE/0/false/0/faction/0/\\NONE/0/false/1/0/6/3/
+WesternUS/\\NONE/0/false/0/faction/0/\\NONE/0/false/5/4/8/7/
+EasternUS/\\NONE/0/false/0/faction/0/\\NONE/0/false/3/4/6/8/
+CentralAmerica/\\NONE/0/false/0/faction/0/\\NONE/0/false/7/6/9/
+Venezuala/\\NONE/0/false/0/faction/0/\\NONE/0/false/8/12/10/
+Peru/\\NONE/0/false/0/faction/0/\\NONE/0/false/9/11/12/
+Argentina/\\NONE/0/false/0/faction/0/\\NONE/0/false/10/12/
+Brazil/\\NONE/1/true/1/faction/50/\\NONE/50/false/9/10/11/13/
+North Africa/\\NONE/1/true/1/faction/50/\\NONE/50/false/12/14/17/18/19/20/
+Central Africa/\\NONE/1/true/1/faction/50/\\NONE/50/false/13/15/17/
+SouthAfrica/\\NONE/1/true/1/faction/50/\\NONE/50/false/16/14/17/
+Madagascar/\\NONE/1/true/1/faction/50/\\NONE/50/false/15/17/
+EastAfrica/\\NONE/1/true/1/faction/50/\\NONE/50/false/16/15/14/13/18/28/
+Egypt/\\NONE/1/true/1/faction/50/\\NONE/50/false/19/13/17/28/
+Southern Europe/\\NONE/1/true/1/faction/50/\\NONE/50/false/13/18/28/25/24/20/
+Western Europe/\\NONE/1/true/1/faction/50/\\NONE/50/false/21/24/19/13/
+Great Britain/\\NONE/1/true/1/faction/50/\\NONE/50/false/22/23/24/20/
+IceLand/\\NONE/1/true/1/faction/50/\\NONE/50/false/2/21/23/
+Scandinavia/\\NONE/1/true/1/faction/50/\\NONE/50/false/22/21/24/25/
+Northern Europe/\\NONE/1/true/1/faction/50/\\NONE/50/false/21/23/20/19/25/
+Russia/\\NONE/1/true/1/faction/50/\\NONE/50/false/23/24/19/28/27/26/
+Ural/\\NONE/1/true/1/faction/50/\\NONE/50/false/25/32/31/27/
+Afghanistan/\\NONE/1/true/1/faction/50/\\NONE/50/false/25/26/31/29/28/
+Middle East/\\NONE/1/true/1/faction/50/\\NONE/50/false/25/19/18/17/29/27/
+India/\\NONE/1/true/1/faction/50/\\NONE/50/false/28/27/31/30/
+Southeast Asia/\\NONE/1/true/1/faction/50/\\NONE/50/false/39/31/29/
+China/\\NONE/1/true/1/faction/50/\\NONE/50/false/30/29/27/26/32/36/
+Siberia/\\NONE/1/true/1/faction/50/\\NONE/50/false/26/31/36/37/33/
+Yakutsk/\\NONE/1/true/1/faction/50/\\NONE/50/false/34/37/32/
+Kamchatka/\\NONE/1/true/1/faction/50/\\NONE/50/false/0/35/33/37/36/
+Japan/\\NONE/1/true/1/faction/50/\\NONE/50/false/36/34/
+Mongolia/\\NONE/1/true/1/faction/50/\\NONE/50/false/35/34/37/32/31/
+Irkutsk/\\NONE/1/true/1/faction/50/\\NONE/50/false/33/32/36/34/
+NewGuinea/\\NONE/1/true/1/faction/50/\\NONE/50/false/41/40/39/
+Indonesia/\\NONE/1/true/1/faction/50/\\NONE/50/false/30/38/40/
+Western Australia/\\NONE/1/true/1/faction/50/\\NONE/50/false/41/38/39/
+Eastern Australia/\\NONE/1/true/1/faction/50/\\NONE/50/false/38/40

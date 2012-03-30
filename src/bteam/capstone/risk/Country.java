@@ -60,7 +60,9 @@ public class Country {
 	 *            controllingFaction_troopQuantity_factionHQ_scarType_island_x
 	 */
 	public Country(String data) {
+		try{
 		Scanner scan = new Scanner(data);
+		scan.useDelimiter("/");
 		this.countryName = scan.next();
 		this.cityName = scan.next();
 		this.cityType = scan.nextInt();
@@ -75,6 +77,9 @@ public class Country {
 		while (scan.hasNext()) {
 			int temp = scan.nextInt();
 			this.countryBorders.add(temp);
+		}
+		}catch(Exception e){
+			System.out.println(data);
 		}
 	}
 
