@@ -122,7 +122,7 @@ public class GUILobby extends JPanel implements ClientUser {
 				this.start.setEnabled(true);
 			} else if (cmd.equals("Alert")) {
 				cmd = scan.nextLine();
-				JOptionPane.showMessageDialog(null, cmd, "Alert", ERROR);
+				//JOptionPane.showMessageDialog(null, cmd, "Alert", ERROR);
 			} else if(cmd.equals("start")){
 				app.setMap(map);
 				GUIGamePanel g = (GUIGamePanel) app.panels[2];

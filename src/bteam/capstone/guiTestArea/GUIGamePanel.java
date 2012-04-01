@@ -143,7 +143,7 @@ public class GUIGamePanel extends JPanel implements ClientUser, ActionListener,
 		JProgressBar progressBar = new JProgressBar();
 		progressBar.setOrientation(SwingConstants.VERTICAL);
 		progressBar.setStringPainted(true);
-		progressBar.setValue(50);
+		progressBar.setValue(20);
 		progressBar.setBounds(0, 0, 181, 70);
 		PlaceTroopPane.add(progressBar);
 
