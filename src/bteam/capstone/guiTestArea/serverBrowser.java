@@ -53,7 +53,7 @@ public class serverBrowser extends JPanel {
 		panel.add(PasswordField);
 		
 		JButton ConfirmGameButton = new JButton("");
-		ConfirmGameButton.setIcon(new ImageIcon(serverBrowser.class.getResource("/Icons For Risk/Actions-dialog-ok-apply-icon.png")));
+		ConfirmGameButton.setIcon(new ImageIcon(serverBrowser.class.getResource("/Icons For Risk/go.png")));
 		ConfirmGameButton.setBounds(452, 18, 213, 82);
 		panel.add(ConfirmGameButton);
 		
