@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
+import bteam.capstone.guiTestArea.GUILogOnPanel;
 import bteam.capstone.risk.Map;
 import bteam.capstone.risk.Play;
 import bteam.capstone.risk.player;
@@ -329,7 +330,8 @@ public class TestPlay {
 	
 
 		//core.intialTurnRisk(5);
-		core.playGame(5);
+		GUILogOnPanel.testInformation();
+		//core.playGame(5);
 
 	}
 	String data = "6" + "\n" + 
