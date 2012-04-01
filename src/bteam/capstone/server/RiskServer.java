@@ -362,7 +362,6 @@ public class RiskServer {
 					if (GameID != -1) {
 						int num = InstanceID.indexOf(GameID);
 						Instances.get(num).sendData(ClientID + " disconect");
-
 					}
 				}
 			}

@@ -21,6 +21,7 @@ public class GUILobby extends JPanel implements ClientUser {
 	private JLabel[] pNames;
 	private JLabel lblMapName;
 	private JButton[] pColor;
+	private int[]     pC;
 	private JButton[] pConfirm;
 	private JButton leave, start;
 	private ImageIcon yes, no;
@@ -46,6 +47,7 @@ public class GUILobby extends JPanel implements ClientUser {
 				if (pNames[num].getText().equals(app.userName))
 					pos = num;
 				int c = scan.nextInt();
+				pC[num] = c;
 				switch (c) {
 				case 0:
 					pColor[num].setBackground(Color.RED);
@@ -123,6 +125,11 @@ public class GUILobby extends JPanel implements ClientUser {
 				JOptionPane.showMessageDialog(null, cmd, "Alert", ERROR);
 			} else if(cmd.equals("start")){
 				app.setMap(map);
+				GUIGamePanel g = (GUIGamePanel) app.panels[2];
+				for (int i=0;i<6;i++){
+					if(pNames[i].getText().length()>0)
+					g.addPlayer(pNames[i].getText(),pC[i]);
+				}
 				app.switchView(3);
 			}
 		}
@@ -161,6 +168,7 @@ public class GUILobby extends JPanel implements ClientUser {
 		playerArea.add(new JLabel("Ready"));
 		pNames = new JLabel[6];
 		pColor = new JButton[6];
+		pC = new int[6];
 		pConfirm = new JButton[6];
 		yes = new ImageIcon(
 				"Icons for Risk/SMALLActions-dialog-ok-apply-icon-1.png");

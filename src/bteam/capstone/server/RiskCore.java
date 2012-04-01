@@ -107,22 +107,102 @@ public class RiskCore extends Thread {
 		playing = true;
 		createPlayers();
 		initMap();
-		this.intialTurnRisk(numPlayers);
+		intialTurnRisk(numPlayers);
 		informAll(this.toString());
+		while (true) {
+			this.informAll("turn " + this.activePlayer.get(0));
+			// cardPhase();
+			recruitPhase();
+			attackPhase();
+			fortifyPhase();
+			drawPhase();
+			passTurn();
+		}
+		declareWinner();
 	}
-	
-	private void createPlayers(){
+
+	private void recruitPhase() {
+		// troops based on territories & countries owned
+		int num = world.recruitTroops(activePlayer.get(0).getCountrys(),
+				activePlayer.get(0).getClientID());
+		// recruited troops added to player supply
+		this.activePlayer.get(0).setTroops(
+				num + this.activePlayer.get(0).getTroops());
+		// current player is informed of the troops to place
+		theServer.sendTo(activePlayer.get(0).getClientID(), "phase recruit "
+				+ activePlayer.get(0).getTroops());
+		// while the current player still has troops
+		while (activePlayer.get(0).getTroops() > 0) {
+			String data = this.getDataFromBuffer();
+			Scanner scan = new Scanner(data);
+			// get player id
+			String cmd = scan.next();
+			// verify player id
+			if (cmd.equals(activePlayer.get(0).getClientID())) {
+				cmd = scan.next();
+				if (cmd.equals("sel")) {
+					String ctry = "";
+					if (scan.hasNext()) {
+						ctry = scan.next();
+						int local = world.getCountryByName(ctry);
+						if (scan.hasNextInt()
+								&& local > -1
+								&& activePlayer.get(0).getCountrys()
+										.contains(local)) {
+							num = scan.nextInt();
+							// increment country troops qty.
+							world.getCountry(local).setTroopQuantity(
+									world.getCountry(local).getTroopQuantity()
+											+ num);
+							// decrement current player troop pool
+							activePlayer.get(0).setTroops(
+									activePlayer.get(0).getTroops() - num);
+							// inform players of changes
+							this.informAll("set "
+									+ activePlayer.get(0).getClientID()
+									+ " "
+									+ world.getCountry(local).getCountryName()
+									+ " "
+									+ world.getCountry(local)
+											.getTroopQuantity());
+							// inform current player of troop decrement
+							theServer.sendTo(activePlayer.get(0).getClientID(),
+									"phase recruit "
+											+ activePlayer.get(0).getTroops());
+						}
+					}
+				}
+			}
+		}
+	}
+
+	private void attackPhase() {
+		// inform current player of phase
+		theServer.sendTo(activePlayer.get(0).getClientID(), "phase attack");
+		String cmd = "";
+		do{
+			String data = this.getDataFromBuffer();
+			Scanner scan = new Scanner(data);
+			//get player id
+			cmd = scan.next();
+			//verify player id
+			if(cmd.equals(activePlayer.get(0).getClientID())){
+				
+			}
+		}while(!cmd.equals("fin"));
+	}
+
+	private void createPlayers() {
 		for (int i = 0; i < maxPlayers; i++) {
 			if (pName[i] != null) {
 				player p = new player();
 				p.setClientID(pName[i]);
-				
 				this.activePlayer.add(p);
 			}
 		}
 	}
-	
-	private void initMap(){
+
+	private void initMap() {
 		try {
 			Scanner scan = new Scanner(new File("Earth.txt"));
 			String out = "";
@@ -246,21 +326,25 @@ public class RiskCore extends Thread {
 	public synchronized void sendData(String data) {
 		Scanner scan = new Scanner(data);
 		String client = scan.next();
-		String cmd = scan.next();
-		if (cmd.equals("help")) {
+		String cmd = scan.nextLine();
+		if (!this.inGame) {
+			if (cmd.equals("help")) {
 
-		} else if (cmd.equals("start")) {
-			this.handleStart(client);
-		} else if (cmd.equals("leave")) {
-			this.handleLeave(client);
-		} else if (cmd.equals("state")) {
-			this.handleState(client);
-		} else if (cmd.equals("col")) {
-			this.handleColor(client);
-		} else if (cmd.equals("rdy")) {
-			this.handleReady(client);
+			} else if (cmd.equals("start")) {
+				this.handleStart(client);
+			} else if (cmd.equals("leave")) {
+				this.handleLeave(client);
+			} else if (cmd.equals("state")) {
+				this.handleState(client);
+			} else if (cmd.equals("col")) {
+				this.handleColor(client);
+			} else if (cmd.equals("rdy")) {
+				this.handleReady(client);
+			} else {
+				theServer.sendTo(client, "Alert invalid command");
+			}
 		} else {
-			theServer.sendTo(client, "Alert invalid command");
+			this.dataBuffer += cmd;
 		}
 	}
 
@@ -397,7 +481,7 @@ public class RiskCore extends Thread {
 	 */
 	public String getDataFromBuffer() {
 		Scanner scan = new Scanner(dataBuffer);
-		String out = scan.next();
+		String out = scan.nextLine();
 		dataBuffer = dataBuffer.substring(out.length());
 		return out;
 	}
@@ -715,6 +799,7 @@ public class RiskCore extends Thread {
 					activePlayer.get(pos).getTroops() - 1);
 			world.countrys.get(c.id()).setOwner(activePlayer.get(pos));
 			world.countrys.get(c.id()).setTroopQuantity(1);
+			// world.
 			pos++;
 			if (pos > this.activePlayer.size() - 1)
 				pos = 0;
@@ -731,6 +816,8 @@ public class RiskCore extends Thread {
 				c.setTroopQuantity(c.getTroopQuantity() + 1);
 			}
 		}
+		// Step 4: Randomize player turns
+		Collections.shuffle(this.activePlayer);
 	}
 
 	public void addTroops(player player) {
@@ -785,7 +872,7 @@ public class RiskCore extends Thread {
 	 */
 	// playTestGui gui = new playTestGui();
 	public void attack(Country atkCountry, Country defCountry) {
-		Scanner inScan = new Scanner(System.in);
+		//Scanner inScan = new Scanner(System.in);
 		String missleTemp = "";
 		int loopUntil = 0;
 		int numAtkDice = 0;
@@ -2254,14 +2341,20 @@ public class RiskCore extends Thread {
 	@Override
 	public String toString() {
 		String out = "";
+		// Step 1: player turns
+		out = "order";
+		for (player p : this.activePlayer) {
+			out += "/" + p.getClientID();
+		}
+
 		for (player p : this.activePlayer) {
 			for (Integer c : p.getCountrys()) {
-				out +="set "+ p.getClientID() + " "
-						+ world.getCountry(c).getCountryName() + " "
-						+ world.getCountry(c).getTroopQuantity() + "\n";
+				out += "\nset/" + p.getClientID() + "/"
+						+ world.getCountry(c).getCountryName() + "/"
+						+ world.getCountry(c).getTroopQuantity();
 			}
 		}
-		
+
 		return out;
 	}
 }

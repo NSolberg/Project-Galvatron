@@ -20,13 +20,14 @@ import javax.swing.JPanel;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 
+import bteam.capstone.gui.GuiMap;
 import bteam.capstone.risk.Map;
 
 public class Application implements ActionListener {
 	private JMenuBar menubar;
 	private GUIWindow window;
 	private JCheckBoxMenuItem selRes, selMode;
-	private JPanel[] panels;
+	public JPanel[] panels;
 	private JPanel mainpanel;
 	public Client client;
 	public Dimension size;
@@ -35,7 +36,7 @@ public class Application implements ActionListener {
 	public String userName;
 
 	public static void main(String[] args) {
-		
+		//GuiMap m = new GuiMap("Maps/Earth",false,800,600);
 		new Application();
 	}
 

@@ -13,6 +13,8 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.util.ArrayList;
+import java.util.Scanner;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -49,8 +51,13 @@ public class GUIGamePanel extends JPanel implements ClientUser, ActionListener,
 	private JPanel CardPane, PlaceTroopPane, AttackPane, MoveTroopPane,
 			EndTurnPane, ChatContainer;
 	private JSlider TroopPlaceSlider;
+	
+	//player data
+	private ArrayList<String> players;
+	private ArrayList<Integer>    color;
+	ArrayList<String> pTurn;
 
-	public GUIGamePanel(Application application) {
+ 	public GUIGamePanel(Application application) {
 		app = application;
 		screensize = app.size;
 		dragging = false;
@@ -426,7 +433,38 @@ public class GUIGamePanel extends JPanel implements ClientUser, ActionListener,
 	@Override
 	public void displayData(String string) {
 		// TODO Auto-generated method stub
-		
+		Scanner scan = new Scanner(string);
+		scan.useDelimiter("/");
+		try{
+		String cmd = scan.next();
+		if(cmd.equals("set")){
+			String name = scan.next();
+			String ctry = scan.next();
+			int count = scan.nextInt();
+			int pos = players.indexOf(name);
+			map.set(count, color.get(pos), ctry);
+			this.repaint();
+		}
+		}catch(Exception e){
+			System.out.println(string);
+			e.printStackTrace();
+		}
+	}
+	
+	public void reset(){
+		players = null;
+		color = null;
+		pTurn = null;
+	}
+	
+	public void addPlayer(String text, int i) {
+		if(this.players == null){
+			players = new ArrayList<String>();
+			this.color = new ArrayList<Integer>();
+			pTurn = new ArrayList<String>();
+		}
+		players.add(text);
+		color.add(i);
 	}
 
 	@Override
@@ -486,5 +524,8 @@ public class GUIGamePanel extends JPanel implements ClientUser, ActionListener,
 			this.repaint();
 		}
 	}
+
+	
+	
 
 }
