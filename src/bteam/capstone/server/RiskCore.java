@@ -23,12 +23,9 @@ public class RiskCore extends Thread {
 	// Server Data
 	private RiskServer theServer;
 	// Player Data
-	private ArrayList<String> theClients;
-	private ArrayList<Boolean> clientActive;
 	private int numPlayers;
 	private int maxPlayers;
 	public ArrayList<player> activePlayer = new ArrayList<player>();
-	private player[] thePlayers;
 	// Game Data
 	Stack<RiskCard> cardDeck = new Stack<RiskCard>();
 	private boolean islegacy;
@@ -64,8 +61,6 @@ public class RiskCore extends Thread {
 		// init start
 		Random ran = new Random();
 		theServer = riskServer;
-		theClients = new ArrayList<String>();
-		clientActive = new ArrayList<Boolean>();
 		numPlayers = 0;
 		maxPlayers = 6;
 		if (legacy)
@@ -102,6 +97,43 @@ public class RiskCore extends Thread {
 			colors.add(i);
 	}
 
+	boolean playing;
+
+	public Map world;
+
+	@Override
+	public void run() {
+		super.run();
+		playing = true;
+		createPlayers();
+		initMap();
+		this.intialTurnRisk(numPlayers);
+		informAll(this.toString());
+	}
+	
+	private void createPlayers(){
+		for (int i = 0; i < maxPlayers; i++) {
+			if (pName[i] != null) {
+				player p = new player();
+				p.setClientID(pName[i]);
+				
+				this.activePlayer.add(p);
+			}
+		}
+	}
+	
+	private void initMap(){
+		try {
+			Scanner scan = new Scanner(new File("Earth.txt"));
+			String out = "";
+			while (scan.hasNext())
+				out += scan.nextLine() + "\n";
+			world = new Map(out);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+	}
+
 	public int getWorldID() {
 		return worldID;
 	}
@@ -126,11 +158,19 @@ public class RiskCore extends Thread {
 
 	public void stopCore() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
-	public ArrayList<String> getClients() {
-		return theClients;
+	public String[] getClients() {
+		String[] out = new String[numPlayers];
+		int pos = 0;
+		for (int i = 0; i < maxPlayers; i++) {
+			if (pName[i] != null) {
+				out[pos] = pName[i];
+				pos++;
+			}
+		}
+		return out;
 	}
 
 	/**
@@ -145,16 +185,7 @@ public class RiskCore extends Thread {
 	public boolean JoinGame(String clientID, String pass) {
 		if (password.equals(pass)) {
 			if (this.canJoin(clientID)) {
-				int num = theClients.indexOf(clientID);
-				if (num < 0) {
-					theClients.add(clientID);
-					clientActive.add(true);
-					this.addToLobby(clientID);
-				} else {
-					theClients.set(num, clientID);
-					clientActive.set(num, true);
-					this.addToLobby(clientID);
-				}
+				this.addToLobby(clientID);
 				theServer.sendTo(clientID, "yes");
 				String out = null;
 				for (int i = 0; i < maxPlayers; i++) {
@@ -177,11 +208,7 @@ public class RiskCore extends Thread {
 	}
 
 	private boolean canJoin(String clientID) {
-		if (reserveSeat && theClients.contains(clientID)) {
-			return true;
-		} else if (numPlayers < maxPlayers && !inGame) {
-			return true;
-		} else if (clientActive.contains(false) && !reserveSeat) {
+		if (numPlayers < maxPlayers && !inGame) {
 			return true;
 		} else {
 			return false;
@@ -244,9 +271,20 @@ public class RiskCore extends Thread {
 
 	private void handleStart(String client) {
 		if (worldCreator.equals(client) && numPlayers >= 3)
-			if (numPlayers > 2)
-				inGame = true;
-			else
+			if (numPlayers > 2) {
+				boolean canStart = true;
+				for (int i = 0; i < maxPlayers; i++) {
+					if (pName[i] != null && !pRdy[i]) {
+						canStart = false;
+						break;
+					}
+				}
+				if (canStart) {
+					this.informAll("start");
+					inGame = true;
+					this.start();
+				}
+			} else
 				theServer.sendTo(client, "Alert no not enough players");
 		else
 			theServer.sendTo(client, "Alert no not creator");
@@ -281,7 +319,6 @@ public class RiskCore extends Thread {
 					theServer.InstanceID.remove(num);
 					theServer.sendList();
 				}
-				this.theClients.remove(client);
 				this.numPlayers--;
 				int num = theServer.ClientID.indexOf(client);
 				theServer.Clients.get(num).setGameID(-1);
@@ -659,137 +696,40 @@ public class RiskCore extends Thread {
 
 	}
 
-	// @SuppressWarnings("unchecked")
+	@SuppressWarnings("unchecked")
 	public void intialTurnRisk(int players) {
 
-		// for(int k = 0; k< activePlayer.size(); k ++){
-		// activePlayer.get(k).setClientID(theClients.get(k));
-		// }
-
+		// Step 1: assign troops to players
+		int numTroops = 35 - 5 * (players - 3);
+		for (player p : this.activePlayer) {
+			p.setTroops(numTroops);
+		}
+		// Step 2: distribute countries to players & add 1 troop from each
+		// player to countries;
 		ArrayList<Country> temp = (ArrayList<Country>) world.countrys.clone();
 		Collections.shuffle(temp);
-		for (int i = 0; i < world.countrys.size(); i += players) {
-			int count = 0;
-			for (int j = i; j < players + i; j++) {
-				if (j < 42) {
-					activePlayer.get(count).addCountry(
-							world.countrys.get(temp.get(j).id()).id());
-					world.countrys.get(temp.get(j).id()).setOwner(
-							activePlayer.get(count));
-					world.countrys.get(temp.get(j).id()).setTroopQuantity(1);
-					System.out.println(activePlayer.get(count).getName()
-							+ ": one troop added to "
-							+ world.countrys.get(temp.get(j).id())
-									.getCountryName());
-					// sendDataToClient(activePlayer.getClientID,activePlayer.get(count).getName()
-					// + ": one troop added to "+
-					// world.countrys.get(temp.get(j).id()).getCountryName());
-					count++;
-				}
-			}
+		int pos = 0;
+		for (Country c : temp) {
+			activePlayer.get(pos).addCountry(c.id());
+			activePlayer.get(pos).setTroops(
+					activePlayer.get(pos).getTroops() - 1);
+			world.countrys.get(c.id()).setOwner(activePlayer.get(pos));
+			world.countrys.get(c.id()).setTroopQuantity(1);
+			pos++;
+			if (pos > this.activePlayer.size() - 1)
+				pos = 0;
 		}
-
-		switch (players) {
-		case 3:
-			activePlayer.get(0).setTroops(35);
-			activePlayer.get(1).setTroops(35);
-			activePlayer.get(2).setTroops(35);
-
-			for (int k = 0; k < activePlayer.size(); k++) {
-				while (activePlayer.get(k).getTroops() > 0) {
-					for (int l = 0; l < activePlayer.get(k).getCountrys()
-							.size(); l++) {
-						world.countrys.get(
-								activePlayer.get(k).getCountrys().get(l))
-								.setTroopQuantity(
-										world.countrys.get(
-												activePlayer.get(k)
-														.getCountrys().get(l))
-												.getTroopQuantity() + 1);
-						activePlayer.get(k).setTroops(
-								activePlayer.get(k).getTroops() - 1);
-					}
-				}
-
+		// Step 3: Randomly distribute remaining player troops among player
+		// countries
+		Random ran = new Random();
+		for (player p : this.activePlayer) {
+			int num = p.getCountrys().size();
+			while (p.getTroops() > 0) {
+				pos = ran.nextInt(num);
+				p.setTroops(p.getTroops() - 1);
+				Country c = world.countrys.get(p.getCountrys().get(pos));
+				c.setTroopQuantity(c.getTroopQuantity() + 1);
 			}
-
-			break;
-		case 4:
-			activePlayer.get(0).setTroops(30);
-			activePlayer.get(1).setTroops(30);
-			activePlayer.get(2).setTroops(30);
-			activePlayer.get(3).setTroops(30);
-
-			for (int k = 0; k < activePlayer.size(); k++) {
-				while (activePlayer.get(k).getTroops() > 0) {
-					for (int l = 0; l < activePlayer.get(k).getCountrys()
-							.size(); l++) {
-						world.countrys.get(
-								activePlayer.get(k).getCountrys().get(l))
-								.setTroopQuantity(
-										world.countrys.get(
-												activePlayer.get(k)
-														.getCountrys().get(l))
-												.getTroopQuantity() + 1);
-						activePlayer.get(k).setTroops(
-								activePlayer.get(k).getTroops() - 1);
-					}
-				}
-
-			}
-			break;
-
-		case 5:
-			activePlayer.get(0).setTroops(25);
-			activePlayer.get(1).setTroops(25);
-			activePlayer.get(2).setTroops(25);
-			activePlayer.get(3).setTroops(25);
-			activePlayer.get(4).setTroops(25);
-
-			for (int k = 0; k < activePlayer.size(); k++) {
-				while (activePlayer.get(k).getTroops() > 0) {
-					for (int l = 0; l < activePlayer.get(k).getCountrys()
-							.size(); l++) {
-						world.countrys.get(
-								activePlayer.get(k).getCountrys().get(l))
-								.setTroopQuantity(
-										world.countrys.get(
-												activePlayer.get(k)
-														.getCountrys().get(l))
-												.getTroopQuantity() + 1);
-						activePlayer.get(k).setTroops(
-								activePlayer.get(k).getTroops() - 1);
-					}
-				}
-
-			}
-			break;
-		case 6:
-			activePlayer.get(0).setTroops(20);
-			activePlayer.get(1).setTroops(20);
-			activePlayer.get(2).setTroops(20);
-			activePlayer.get(3).setTroops(20);
-			activePlayer.get(4).setTroops(20);
-			activePlayer.get(5).setTroops(20);
-
-			for (int k = 0; k < activePlayer.size(); k++) {
-				while (activePlayer.get(k).getTroops() > 0) {
-					for (int l = 0; l < activePlayer.get(k).getCountrys()
-							.size(); l++) {
-						world.countrys.get(
-								activePlayer.get(k).getCountrys().get(l))
-								.setTroopQuantity(
-										world.countrys.get(
-												activePlayer.get(k)
-														.getCountrys().get(l))
-												.getTroopQuantity() + 1);
-						activePlayer.get(k).setTroops(
-								activePlayer.get(k).getTroops() - 1);
-					}
-				}
-
-			}
-			break;
 		}
 	}
 
@@ -2211,9 +2151,7 @@ public class RiskCore extends Thread {
 
 	String data = "6"
 			+ "\n"
-			+
-
-			"NorthAmerica 	title NONE 0 8	 0 1 2 3 4 5 6 7 8"
+			+ "NorthAmerica 	title NONE 0 8	 0 1 2 3 4 5 6 7 8"
 			+ "\n"
 			+ "SouthAmerica 	title NONE 0 4	 9 10 11 12"
 			+ "\n"
@@ -2310,5 +2248,20 @@ public class RiskCore extends Thread {
 			+ "40WesternAustralia 	\\NONE 0 true 0 faction 50 \\NONE 50 false  41 38 39"
 			+ "\n"
 			+ "41EasternAustralia 	\\NONE 0 true 0 faction 50 \\NONE 50 false 38 40";
-	public Map world = new Map(data);
+
+	// public Map world = new Map(data);
+
+	@Override
+	public String toString() {
+		String out = "";
+		for (player p : this.activePlayer) {
+			for (Integer c : p.getCountrys()) {
+				out +="set "+ p.getClientID() + " "
+						+ world.getCountry(c).getCountryName() + " "
+						+ world.getCountry(c).getTroopQuantity() + "\n";
+			}
+		}
+		
+		return out;
+	}
 }

@@ -7,6 +7,8 @@ import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -17,6 +19,8 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
+
+import bteam.capstone.risk.Map;
 
 public class Application implements ActionListener {
 	private JMenuBar menubar;
@@ -31,6 +35,7 @@ public class Application implements ActionListener {
 	public String userName;
 
 	public static void main(String[] args) {
+		
 		new Application();
 	}
 
@@ -183,11 +188,12 @@ public class Application implements ActionListener {
 		case 2:
 			c1.show(mainpanel, "Lobby");
 			client.switchController((ClientUser) panels[3]);
-			((GUILobby) panels[3]).requestState();
+			client.sendData("state");
 			break;
 		case 3:
 			c1.show(mainpanel, "Game");
 			client.switchController((ClientUser) panels[2]);
+			//client.sendData("state");
 			break;
 		}
 	}

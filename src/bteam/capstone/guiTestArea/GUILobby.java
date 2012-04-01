@@ -224,8 +224,4 @@ public class GUILobby extends JPanel implements ClientUser {
 		other.add(start);
 		this.add(other, BorderLayout.SOUTH);
 	}
-
-	public void requestState() {
-		app.client.sendData("state");
-	}
 }
