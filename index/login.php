@@ -12,7 +12,7 @@ function redirect() {
     <script language="JavaScript">
     <!--
 		
-		window.location = "../homepage.html";
+		window.location = "../user.html";
 		
     //-->
     </script>
