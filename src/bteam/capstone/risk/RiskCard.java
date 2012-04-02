@@ -10,7 +10,7 @@ public class RiskCard {
 		depiction = country;
 	}
 	
-	public Country getCountry(Country country){
+	public Country getCountry(){
 		return depiction;
 	}
 	

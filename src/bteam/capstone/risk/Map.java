@@ -12,6 +12,7 @@ import java.util.Scanner;
 public class Map {
 	// Change this later
 	public ArrayList<Country> countrys = new ArrayList<Country>();
+	public ArrayList<String> cNames = new ArrayList<String>();
 	public ArrayList<Continent> continent = new ArrayList<Continent>();
 	//private player sighner;
 	private int freeCountrys=0;
@@ -40,12 +41,18 @@ public class Map {
 		}
 		while (scan.hasNextLine()) {
 			String dataLine = scan.nextLine();
-			countrys.add(new Country(dataLine));
+			Country c = new Country(dataLine);
+			countrys.add(c);
 			countrys.get(id).setId(id);
 			id++;
+			cNames.add(c.getCountryName());
 			//System.out.print(id + " ");
 		}
 		freeCountrys = countrys.size();
+	}
+	
+	public int getCountryByName(String name){
+		return cNames.indexOf(name);
 	}
 
 	/**
