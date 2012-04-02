@@ -330,7 +330,6 @@ public class RiskServer {
 					out.println("invalid command");
 				}
 			} else {
-				System.out.println(InstanceID.size());
 				int num = InstanceID.indexOf(GameID);
 				if (cmd.equals("message")) {
 					if (scan.hasNext()) {

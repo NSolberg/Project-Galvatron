@@ -12,7 +12,7 @@ import java.util.Collection;
 import java.util.Random;
 import java.util.Scanner;
 import java.util.Stack;
-
+@Deprecated
 public class Play {
 	//nicks using this baby
 	public ArrayList<player> playerStack = new ArrayList<player>();
@@ -242,6 +242,7 @@ public class Play {
 	 * City and Fortifications.
 	 */
 	//playTestGui gui = new playTestGui();
+	@Deprecated
 	public void attack(Country atkCountry, Country defCountry, Map map) {
 		Scanner inScan = new Scanner(System.in);
 		String missleTemp = "";

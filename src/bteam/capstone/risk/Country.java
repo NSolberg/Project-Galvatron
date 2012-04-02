@@ -81,6 +81,8 @@ public class Country {
 		}catch(Exception e){
 			System.out.println(data);
 		}
+		cityType = 0;
+		factionHQ = "\\NONE";
 	}
 
 	/**
