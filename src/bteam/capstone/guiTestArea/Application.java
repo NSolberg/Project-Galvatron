@@ -74,7 +74,7 @@ public class Application implements ActionListener {
 		mainpanel.add(panels[2], "Game");
 		mainpanel.add(panels[3], "Lobby");
 		CardLayout c1 = (CardLayout) mainpanel.getLayout();
-		c1.show(mainpanel, "Server");
+		c1.show(mainpanel, "LogOn");
 		this.client = new Client(lp);
 	}
 

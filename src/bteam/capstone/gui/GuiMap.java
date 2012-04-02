@@ -22,8 +22,8 @@ public class GuiMap {
 	private double scale;
 	private Point cen;
 	private BufferedImage buffer, beforbuffer;
-	private ArrayList<GuiCountry> countries;
-	private ArrayList<String> countryNames;
+	public ArrayList<GuiCountry> countries;
+	public ArrayList<String> countryNames;
 	private String[] continents;
 	private boolean inattack;
 
@@ -58,11 +58,50 @@ public class GuiMap {
 		//this.enterAttack(0, 1);
 	}
 	
-	public void set(int troopCount, int color, String country){
+	public void delum(){
+		for(GuiCountry c:countries){
+			c.lum = -1;
+		}
+	}
+	
+	public void normlum(){
+		for(GuiCountry c:countries){
+			c.lum = 0;
+		}
+	}
+	
+	public void lum(String ctry){
+		int pos = this.countryNames.indexOf(ctry);
+		if(pos>-1){
+			this.countries.get(pos).lum = this.countries.get(pos).lum+1;
+		}
+	}
+	
+ 	public void set(int troopCount, int color, String country){
 		int num = countryNames.indexOf(country);
 		countries.get(num).troopColor = color;
 		countries.get(num).troopCount=troopCount;
 	}
+ 	
+ 	public boolean canSelect(int num){
+		int i = countries.get(num).lum;
+ 		if(i>-1)
+ 			return true;
+ 		return false;
+ 	}
+ 	
+ 	public void select(int num) {
+		int i = countries.get(num).lum;
+		if (i == 1)
+			i = 0;
+		else if (i == 0)
+			i = 1;
+		countries.get(num).lum = i;
+	}
+ 	
+ 	public String getCountryName(int val){
+ 		return this.countryNames.get(val);
+ 	}
 
 	private void initCards() {
 		BufferedImage tbuffer = new BufferedImage(images[0].getWidth(null),
@@ -240,17 +279,13 @@ public class GuiMap {
 					(int) (buffer.getHeight() * scale), null);
 		} else {
 			this.drawAttack(g);
+			if(rampup <3700){
+				rampup++;
+			}else if(rampup==3700){
+				this.buildTroops();
+			}
 		}
-	}
-
-	public void select(int num) {
-		int i = countries.get(num).lum;
-		if (i == 1)
-			i = 0;
-		else if (i == 0)
-			i = 1;
-		countries.get(num).lum = i;
-	}
+	}	
 
 	private void drawSelections() {
 		for (int i = 0; i < countries.size(); i++) {
@@ -410,7 +445,7 @@ public class GuiMap {
 	public void enterAttack(int att, int def) {
 		cty1 = att;
 		cty2 = def;
-		rampup = 0;
+		rampup = 4000;
 		inattack = true;
 		buildTroops();
 	}

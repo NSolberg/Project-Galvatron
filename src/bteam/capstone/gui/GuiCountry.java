@@ -6,15 +6,15 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class GuiCountry {
-	int troopCount;
-	int troopColor;
-	String name;
-	Point[] centers;
-	ArrayList<Point> points;
-	int left, top, bottom, right;
-	int lum;
-	int cardvalue;
-	String continent;
+	public int troopCount;
+	public int troopColor;
+	public String name;
+	public Point[] centers;
+	public ArrayList<Point> points;
+	public int left, top, bottom, right;
+	public int lum;
+	public int cardvalue;
+	public String continent;
 
 	public GuiCountry(String data, BufferedImage img) {
 		cardvalue = -1;

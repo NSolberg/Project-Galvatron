@@ -100,5 +100,5 @@ public class GuiTroop {
 		// TODO Auto-generated method stub
 		time = 0;
 	}
-
+	
 }

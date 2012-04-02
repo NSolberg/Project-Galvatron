@@ -19,6 +19,7 @@ import java.util.Scanner;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
@@ -33,6 +34,8 @@ import javax.swing.UIManager;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.SoftBevelBorder;
 import javax.swing.border.TitledBorder;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import bteam.capstone.gui.GuiMap;
 
@@ -50,14 +53,17 @@ public class GUIGamePanel extends JPanel implements ClientUser, ActionListener,
 	private GUICard[] cards;
 	private JPanel CardPane, PlaceTroopPane, AttackPane, MoveTroopPane,
 			EndTurnPane, ChatContainer;
-	private JSlider TroopPlaceSlider;
-	
-	//player data
+	private JSlider TroopPlaceSlider, DiceSlider, NumTroopsMoveSlider;
+	JProgressBar progressBar;
+	JButton RollDiceButton, AttackSkipButton;
+	JTextPane DeffRollDisp, AttackRollDisp;
+	// player data
 	private ArrayList<String> players;
-	private ArrayList<Integer>    color;
+	private ArrayList<Integer> color;
 	ArrayList<String> pTurn;
+	boolean def = false;
 
- 	public GUIGamePanel(Application application) {
+	public GUIGamePanel(Application application) {
 		app = application;
 		screensize = app.size;
 		dragging = false;
@@ -69,6 +75,40 @@ public class GUIGamePanel extends JPanel implements ClientUser, ActionListener,
 		// initialize();
 		init();
 		updateUiPos();
+		// this.Phase.setEnabled(false);
+		Phase.setEnabled(false);
+	}
+
+	private void switchPhase(String p) {
+		this.disablePhases();
+		if (p.equals("card")) {
+			Phase.setEnabledAt(0, true);
+			Phase.setSelectedComponent(CardPane);
+		} else if (p.equals("recruit")) {
+			Phase.setEnabledAt(1, true);
+			Phase.setSelectedComponent(PlaceTroopPane);
+		} else if (p.equals("attack")) {
+			Phase.setEnabledAt(2, true);
+			Phase.setSelectedComponent(AttackPane);
+			this.RollDiceButton.setEnabled(true);
+			this.DiceSlider.setMaximum(3);
+			this.AttackRollDisp.setText("");
+			this.DeffRollDisp.setText("");
+			if (!def)
+				this.AttackSkipButton.setEnabled(true);
+		} else if (p.equals("fortify")) {
+			Phase.setEnabledAt(3, true);
+			Phase.setSelectedComponent(MoveTroopPane);
+		} else if (p.equals("end")) {
+			Phase.setEnabledAt(4, true);
+			Phase.setSelectedComponent(EndTurnPane);
+		}
+	}
+
+	private void disablePhases() {
+		for (int i = 0; i < 5; i++) {
+			Phase.setEnabledAt(i, false);
+		}
 	}
 
 	private void init() {
@@ -140,7 +180,7 @@ public class GUIGamePanel extends JPanel implements ClientUser, ActionListener,
 		Phase.addTab("", new ImageIcon("Icons For Risk/ammo-5-icon.png"),
 				PlaceTroopPane, "Displays the remaining troops\n");
 		PlaceTroopPane.setLayout(null);
-		JProgressBar progressBar = new JProgressBar();
+		progressBar = new JProgressBar();
 		progressBar.setOrientation(SwingConstants.VERTICAL);
 		progressBar.setStringPainted(true);
 		progressBar.setValue(20);
@@ -156,16 +196,30 @@ public class GUIGamePanel extends JPanel implements ClientUser, ActionListener,
 		TroopPlaceSlider.setSnapToTicks(true);
 		TroopPlaceSlider.setPaintTicks(true);
 		TroopPlaceSlider.setPaintLabels(true);
-		TroopPlaceSlider.setMinorTickSpacing(5);
+		TroopPlaceSlider.setMinorTickSpacing(1);
 		TroopPlaceSlider.setMaximum(50);
 		TroopPlaceSlider.setBounds(199, 33, 200, 46);
+		TroopPlaceSlider.addChangeListener(new ChangeListener() {
+
+			@Override
+			public void stateChanged(ChangeEvent e) {
+
+			}
+
+		});
 		PlaceTroopPane.add(TroopPlaceSlider);
 
 		JButton TroopPlaceCommitButton = new JButton();
 		TroopPlaceCommitButton.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
-				System.out.println("TROOP PLACEMENT COMMITED");
+				if (sel1 > -1 && TroopPlaceSlider.getValue() > 0) {
+					app.client.sendData("sel " + map.getCountryName(sel1) + " "
+							+ TroopPlaceSlider.getValue());
+					System.out.println("done");
+					map.select(sel1);
+					sel1 = -1;
+				}
 			}
 		});
 		TroopPlaceCommitButton.setIcon(new ImageIcon(
@@ -180,7 +234,7 @@ public class GUIGamePanel extends JPanel implements ClientUser, ActionListener,
 				AttackPane, null);
 		AttackPane.setLayout(null);
 
-		JSlider DiceSlider = new JSlider();
+		DiceSlider = new JSlider();
 		DiceSlider.setFocusTraversalKeysEnabled(false);
 		DiceSlider.setSnapToTicks(true);
 		DiceSlider.setPaintTicks(true);
@@ -196,22 +250,24 @@ public class GUIGamePanel extends JPanel implements ClientUser, ActionListener,
 		lblNumberOfTroops.setBounds(42, 44, 184, 15);
 		AttackPane.add(lblNumberOfTroops);
 
-		JButton RollDiceButton = new JButton("");
+		RollDiceButton = new JButton("");
 		RollDiceButton.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				System.out.println("NUMDICE ROLLED");
+				app.client.sendData("atk " + DiceSlider.getValue());
+				RollDiceButton.setEnabled(false);
+				AttackSkipButton.setEnabled(false);
 			}
 		});
 		RollDiceButton.setIcon(new ImageIcon("Icons For Risk/dice-icon.png"));
 		RollDiceButton.setBounds(218, 6, 113, 70);
 		AttackPane.add(RollDiceButton);
 
-		JTextPane DeffRollDisp = new JTextPane();
+		DeffRollDisp = new JTextPane();
 		DeffRollDisp.setBounds(343, 22, 40, 37);
 		AttackPane.add(DeffRollDisp);
 
-		JTextPane AttackRollDisp = new JTextPane();
+		AttackRollDisp = new JTextPane();
 		AttackRollDisp.setBounds(408, 22, 40, 37);
 		AttackPane.add(AttackRollDisp);
 
@@ -225,10 +281,12 @@ public class GUIGamePanel extends JPanel implements ClientUser, ActionListener,
 		lblAttk.setBounds(408, 64, 57, 15);
 		AttackPane.add(lblAttk);
 
-		JButton AttackSkipButton = new JButton("");
+		AttackSkipButton = new JButton("");
 		AttackSkipButton.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
+				if (!def && !map.inAttack())
+					app.client.sendData("fin");
 				System.out.println("ATTACK PHASE SKIPPED");
 			}
 		});
@@ -262,19 +320,21 @@ public class GUIGamePanel extends JPanel implements ClientUser, ActionListener,
 		PlaceTroopNation2Disp.setBounds(112, 29, 82, 23);
 		MoveTroopPane.add(PlaceTroopNation2Disp);
 
-		JSlider NumTroopsMoveSlider = new JSlider();
-		NumTroopsMoveSlider.setMinorTickSpacing(5);
+		NumTroopsMoveSlider = new JSlider();
+		//NumTroopsMoveSlider.setMinorTickSpacing(5);
 		NumTroopsMoveSlider.setPaintTicks(true);
 		NumTroopsMoveSlider.setSnapToTicks(true);
 		NumTroopsMoveSlider.setPaintLabels(true);
 		NumTroopsMoveSlider.setBounds(211, 31, 200, 21);
+		NumTroopsMoveSlider.setMajorTickSpacing(1);
 		MoveTroopPane.add(NumTroopsMoveSlider);
 
 		JButton CommitTroopMove = new JButton("");
 		CommitTroopMove.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				System.out.println("TROOP REDEPLOY COMMITED");
+				if(sel1!=-1&&sel2!=-1)
+					app.client.sendData("for "+NumTroopsMoveSlider.getValue());
 			}
 		});
 		CommitTroopMove.setIcon(new ImageIcon(
@@ -286,7 +346,7 @@ public class GUIGamePanel extends JPanel implements ClientUser, ActionListener,
 		SkipTroopMoveButton.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				System.out.println("TROOP REDEPLOYMENT SKIPPED");
+				app.client.sendData("fin");
 			}
 		});
 		SkipTroopMoveButton.setIcon(new ImageIcon(
@@ -434,31 +494,118 @@ public class GUIGamePanel extends JPanel implements ClientUser, ActionListener,
 	public void displayData(String string) {
 		// TODO Auto-generated method stub
 		Scanner scan = new Scanner(string);
-		scan.useDelimiter("/");
-		try{
-		String cmd = scan.next();
-		if(cmd.equals("set")){
-			String name = scan.next();
-			String ctry = scan.next();
-			int count = scan.nextInt();
-			int pos = players.indexOf(name);
-			map.set(count, color.get(pos), ctry);
-			this.repaint();
-		}
-		}catch(Exception e){
+		try {
+			String cmd = scan.next();
+			if (cmd.equals("set")) {
+				scan.useDelimiter("/");
+				String name = scan.next();
+				name = name.substring(1);
+				String ctry = scan.next();
+				int count = scan.nextInt();
+				int pos = players.indexOf(name);
+				map.set(count, color.get(pos), ctry);
+			} else if (cmd.equals("turn")) {
+				String p = scan.next();
+				if (app.userName.equals(p))
+					Phase.setEnabled(true);
+				else
+					Phase.setEnabled(false);
+			} else if (cmd.equals("phase")) {
+				cmd = scan.next();
+				if (cmd.equals("recruit")) {
+					this.switchPhase("recruit");
+					int val = scan.nextInt();
+					this.progressBar.setValue(val);
+					this.TroopPlaceSlider.setValue(0);
+					this.TroopPlaceSlider.setMaximum(val);
+					sel1 = -1;
+				} else if (cmd.equals("attack")) {
+					this.switchPhase("attack");
+					def = false;
+					sel1 = -1;
+					sel2 = -1;
+				} else if (cmd.equals("fortify")) {
+					this.switchPhase("fortify");
+				}
+
+			} else if (cmd.equals("delum")) {
+				this.map.delum();
+			} else if (cmd.equals("normlum")) {
+				this.map.normlum();
+				this.repaint();
+			} else if (cmd.equals("lum")) {
+				cmd = scan.next();
+				while (scan.hasNext())
+					cmd += " " + scan.next();
+				this.map.lum(cmd);
+			} else if (cmd.equals("lum2")) {
+				cmd = scan.next();
+				while (scan.hasNext())
+					cmd += " " + scan.next();
+				this.map.lum(cmd);
+				this.map.lum(cmd);
+			} else if (cmd.equals("paint")) {
+				this.repaint();
+			} else if (cmd.equals("atk")) {
+				scan.useDelimiter("/");
+				String u1 = scan.next();
+				u1 = u1.substring(1);
+				String u2 = scan.next();
+				String c1 = scan.next();
+				String c2 = scan.next();
+				if (u1.equals(app.userName) || u2.equals(app.userName)) {
+					map.enterAttack(map.countryNames.indexOf(c1),
+							map.countryNames.indexOf(c2));
+					if (u2.equals(app.userName)) {
+						this.switchPhase("attack");
+						int val = map.countries.get(map.countryNames
+								.indexOf(c2)).troopCount;
+						if (val > 2)
+							val = 2;
+						this.DiceSlider.setMaximum(val);
+						def = true;
+					} else {
+						int val = map.countries.get(sel1).troopCount;
+						if (val > 4)
+							val = 4;
+						val--;
+						this.DiceSlider.setMaximum(val);
+					}
+				}
+			} else if (cmd.equals("dmg")) {
+				int n1 = scan.nextInt();
+				int n2 = scan.nextInt();
+				if (!def) {
+					this.RollDiceButton.setEnabled(true);
+					this.AttackSkipButton.setEnabled(true);
+				}
+				this.AttackRollDisp.setText(n1 + "");
+				this.DeffRollDisp.setText(n2 + "");
+				map.play();
+			} else if (cmd.equals("win")) {
+				JOptionPane.showMessageDialog(null, "You Won the Match");
+				map.exitAttack();
+				this.switchPhase("attack");
+				sel1 = -1;
+				sel2 = -1;
+			} else if (cmd.equals("lose")) {
+				JOptionPane.showMessageDialog(null, "You Lost the Match");
+				map.exitAttack();
+			}
+		} catch (Exception e) {
 			System.out.println(string);
 			e.printStackTrace();
 		}
 	}
-	
-	public void reset(){
+
+	public void reset() {
 		players = null;
 		color = null;
 		pTurn = null;
 	}
-	
+
 	public void addPlayer(String text, int i) {
-		if(this.players == null){
+		if (this.players == null) {
 			players = new ArrayList<String>();
 			this.color = new ArrayList<Integer>();
 			pTurn = new ArrayList<String>();
@@ -499,6 +646,10 @@ public class GUIGamePanel extends JPanel implements ClientUser, ActionListener,
 		local = e.getPoint();
 	}
 
+	int sel1 = -1, sel2 = -1, sel3 = -1;
+	boolean recruit = false;
+	boolean attack = true;
+
 	@Override
 	public void mouseReleased(MouseEvent e) {
 		if (!dragging) {
@@ -508,7 +659,50 @@ public class GUIGamePanel extends JPanel implements ClientUser, ActionListener,
 					sel = num;
 				else if (sel == num)
 					sel = 42;
-				map.select(num);
+				// map.select(num);
+				if (map.canSelect(num)) {
+					if (Phase.isEnabledAt(1)) {
+						map.select(num);
+						if (sel1 == -1) {
+							sel1 = num;
+						} else {
+							sel1 = -1;
+						}
+					} else if (Phase.isEnabledAt(2)) {
+						map.select(num);
+						if (sel1 == -1) {
+							sel1 = num;
+							int val = map.countries.get(sel1).troopCount;
+							if (val > 4)
+								val = 4;
+							val--;
+							this.DiceSlider.setMaximum(val);
+						} else if (sel1 == num)
+							sel1 = -1;
+						else if (sel2 == -1)
+							sel2 = num;
+						else if (sel2 == num)
+							sel2 = -1;
+						app.client.sendData("sel " + map.getCountryName(num));
+					} else if (Phase.isEnabledAt(3)) {
+						map.select(num);
+						if (sel1 == -1) {
+							sel1 = num;
+							int val = map.countries.get(sel1).troopCount;
+							if (val > 4)
+								val = 4;
+							val--;
+							this.NumTroopsMoveSlider.setMaximum(val-1);
+						} else if (sel1 == num)
+							sel1 = -1;
+						else if (sel2 == -1)
+							sel2 = num;
+						else if (sel2 == num)
+							sel2 = -1;
+						app.client.sendData("sel " + map.getCountryName(num));
+					}
+
+				}
 				this.repaint();
 			}
 		}
@@ -524,8 +718,5 @@ public class GUIGamePanel extends JPanel implements ClientUser, ActionListener,
 			this.repaint();
 		}
 	}
-
-	
-	
 
 }

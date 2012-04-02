@@ -85,6 +85,7 @@ public class GUILobby extends JPanel implements ClientUser {
 				pConfirm[num].setIcon(no);
 			} else if (cmd.equals("col")) {
 				int c = scan.nextInt();
+				pC[num] = c;
 				switch (c) {
 				case 0:
 					pColor[num].setBackground(Color.RED);
