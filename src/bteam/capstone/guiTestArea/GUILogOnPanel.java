@@ -15,7 +15,7 @@ public class GUILogOnPanel extends JPanel implements ClientUser {
 	private Object dbms;
 	// JDBC driver name and database URL
 	static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
-	static final String DB_URL = "jdbc:mysql://127.0.0.1:8000/legacy";
+	static final String DB_URL = "jdbc:mysql://lampd.vf.cnu.edu:3306;legacy";
 
 	// Database credentials
 	static final String USER = "root";
