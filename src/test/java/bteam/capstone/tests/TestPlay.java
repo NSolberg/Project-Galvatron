@@ -330,7 +330,7 @@ public class TestPlay {
 	
 
 		//core.intialTurnRisk(5);
-		GUILogOnPanel.testInformation();
+		//GUILogOnPanel.testInformation();
 		//core.playGame(5);
 
 	}
