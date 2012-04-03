@@ -15,11 +15,11 @@ public class GUILogOnPanel extends JPanel implements ClientUser {
 	private Object dbms;
 	// JDBC driver name and database URL
 	static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
-	static final String DB_URL = "jdbc:mysql://lampd.vf.cnu.edu:3306;legacy";
+	static final String DB_URL = "jdbc:mysql://lampd.vf.cnu.edu:3306/legacy";
 
 	// Database credentials
-	static final String USER = "root";
-	static final String PASS = "498";
+	static final String USER = "ns";
+	static final String PASS = "password";
 	private static boolean Val = true;
 	private static String users;
 	private static String passs;
