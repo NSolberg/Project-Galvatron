@@ -171,6 +171,7 @@ public class Application implements ActionListener {
 				int n2 = scan.nextInt();
 				this.size = new Dimension(n1, n2);
 				this.window.changeSize(this.size);
+				((GUIGamePanel)this.panels[3]).updateUI();
 			}
 		}
 	}

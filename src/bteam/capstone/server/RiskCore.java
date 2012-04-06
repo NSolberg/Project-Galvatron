@@ -58,7 +58,7 @@ public class RiskCore extends Thread {
 	private int missionInt = -1;
 
 	public RiskCore(RiskServer riskServer, String clientID, String gameFile,
-			boolean legacy, boolean reserve, String pass) {
+			boolean legacy, boolean reserve, String pass, String name) {
 		// init start
 		Random ran = new Random();
 		theServer = riskServer;
@@ -75,7 +75,7 @@ public class RiskCore extends Thread {
 		if (true) {
 			worldCreator = clientID;
 			worldID = ran.nextInt(10000000);
-			worldName = gameFile;
+			worldName = name;
 		} else {
 			File file = new File(gameFile + "/index.txt");
 			try {
@@ -711,7 +711,7 @@ public class RiskCore extends Thread {
 
 	private void handleState(String client) {
 		if (!inGame) {
-			String out = "map " + this.worldName;
+			String out = "map " + this.worldFile;
 			if (worldCreator.equals(client)) {
 				out += "\nmaster";
 			}
@@ -2667,5 +2667,10 @@ public class RiskCore extends Thread {
 		out += "\npaint";
 
 		return out;
+	}
+
+	public String getGameFile() {
+		// TODO Auto-generated method stub
+		return this.worldFile;
 	}
 }

@@ -111,9 +111,10 @@ public class RiskServer {
 			out = "<list>";
 			for (RiskCore core : Instances) {
 				if (!byUser || byUser && core.getWorldCreator().equals(user)) {
-					out += "\n" + core.getWorldID() + " " + core.getWorldName()
+					out += "\n" + core.getWorldID() + " " + core.getGameFile()
 							+ " " + core.getWorldCreator() + " "
-							+ core.isLegacy() + " " + core.hasPassword();
+							+ core.isLegacy() + " " + core.hasPassword() + " "
+							+ core.getWorldName();
 				}
 			}
 			out += "\n</list>";
@@ -177,6 +178,7 @@ public class RiskServer {
 		boolean legacy = false;
 		String gameFile = "Default";
 		String pass = "";
+		String name = "";
 		Scanner scan = new Scanner(Options);
 		while (scan.hasNext()) {
 			String temp = scan.next();
@@ -188,14 +190,17 @@ public class RiskServer {
 				pass = scan.next();
 			} else if (temp.equals("a")) {
 				legacy = true;
+			} else if (temp.equals("n")) {
+				name = scan.nextLine();
+				name = name.substring(1);
 			}
 		}
 		if (InstanceID.size() < maxInstances) {
 			File file = new File("Maps/" + gameFile);
 			if (file.exists() || gameFile.equals("Default")) {
 				RiskCore core = new RiskCore(this, ClientID, gameFile, legacy,
-						reserve, pass);
-				//core.start();
+						reserve, pass, name);
+				// core.start();
 				int num = core.getWorldID();
 				InstanceID.add(num);
 				Instances.add(core);

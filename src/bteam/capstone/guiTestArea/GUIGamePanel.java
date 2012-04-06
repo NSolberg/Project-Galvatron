@@ -81,6 +81,8 @@ public class GUIGamePanel extends JPanel implements ClientUser, ActionListener,
 		// Phase.setEnabled(false);
 		this.switchPhase("begin");
 	}
+	
+	
 
 	private void switchPhase(String p) {
 		this.disablePhases();
@@ -138,8 +140,10 @@ public class GUIGamePanel extends JPanel implements ClientUser, ActionListener,
 		// create card Pane
 		CardPane = new JPanel();
 		CardPane.setForeground(SystemColor.menu);
-		Phase.addTab("\n", new ImageIcon(
-				"Icons For Risk/referee-cards-icon.png"), CardPane, null);
+		Image img= new ImageIcon("Icons For Risk/card.png").getImage();
+		img = img.getScaledInstance(48, 48, java.awt.Image.SCALE_SMOOTH);
+		
+		Phase.addTab("\n", new ImageIcon(img), CardPane, null);
 		CardPane.setLayout(null);
 		// create cards
 		cards = new GUICard[9];
@@ -452,6 +456,7 @@ public class GUIGamePanel extends JPanel implements ClientUser, ActionListener,
 					int pos = players.indexOf(name);
 					swap(pos,i);
 				}
+				this.populatePlayerPane();
 			} else if (cmd.equals("set")) {
 				scan.useDelimiter("/");
 				String name = scan.next();
