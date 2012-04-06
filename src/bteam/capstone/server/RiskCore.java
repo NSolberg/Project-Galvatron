@@ -14,6 +14,7 @@ import java.util.Stack;
 import bteam.capstone.faction.AliensFaction;
 import bteam.capstone.faction.MutantFaction;
 import bteam.capstone.faction.StandardFaction;
+import bteam.capstone.guiTestArea.PhaseMethods;
 import bteam.capstone.risk.Country;
 import bteam.capstone.risk.Map;
 import bteam.capstone.risk.RiskCard;
@@ -141,6 +142,42 @@ public class RiskCore extends Thread {
 		return true;
 	}
 
+	/**
+	 * 0 = all territories owned 1 = all territories with more than one troop 2
+	 * = territories bordering the first 3 = same as 2 except those matching
+	 * first 4 = only the two territories passed in
+	 * 
+	 * @param type
+	 */
+	private void setUpLum(int type, String ctry1, String ctry2) {
+		player p = activePlayer.get(0);
+		String out = "delum";
+		if (type < 2)
+			for (int i : p.getCountrys()) {
+				if (type == 0 || type == 1
+						&& world.getCountry(i).getTroopQuantity() > 1)
+					out += "\nlum " + world.getCountry(i).getCountryName();
+			}
+		else {
+			Country c = world.getCountry(world.getCountryByName(ctry1));
+			for (int i : c.getCountryBorders())
+				if (type == 2
+						&& world.getCountry(i).getOwner().getClientID()
+								.equals(activePlayer.get(0).getClientID())
+						|| type == 3
+						&& !world.getCountry(i).getOwner().getClientID()
+								.equals(activePlayer.get(0).getClientID()))
+					out += "\nlum " + world.getCountry(i).getCountryName();
+		}
+
+		if (ctry1.length() > 0)
+			out += "\nlum2 " + ctry1;
+		if (ctry2.length() > 0)
+			out += "\nlum2 " + ctry2;
+		out += "\npaint";
+		theServer.sendTo(p.getClientID(), out);
+	}
+
 	private void recruitPhase() {
 		// troops based on territories & countries owned
 		int num = world.recruitTroops(activePlayer.get(0).getCountrys(),
@@ -151,13 +188,9 @@ public class RiskCore extends Thread {
 		// current player is informed of the troops to place
 		theServer.sendTo(activePlayer.get(0).getClientID(), "phase recruit "
 				+ activePlayer.get(0).getTroops());
-		String id = activePlayer.get(0).getClientID();
-		theServer.sendTo(id, "delum");
-		for (int i : activePlayer.get(0).getCountrys()) {
-			theServer.sendTo(id, "lum " + world.getCountry(i).getCountryName());
-		}
-		theServer.sendTo(id, "paint");
+		this.setUpLum(0, "", "");
 		// while the current player still has troops
+		String ctry = "";
 		while (activePlayer.get(0).getTroops() > 0) {
 			String data = this.getDataFromBuffer();
 			if (data.length() > 0) {
@@ -165,45 +198,32 @@ public class RiskCore extends Thread {
 				String cmd = scan.next();
 				// cmd = scan.next();
 				if (cmd.equals("sel")) {
-					String ctry = "";
-					if (scan.hasNext()) {
-						ctry = scan.next();
-						int local = world.getCountryByName(ctry);
-						while (local < 0) {
-							ctry += " " + scan.next();
-							local = world.getCountryByName(ctry);
-						}
-						if (scan.hasNextInt()
-								&& local > -1
-								&& activePlayer.get(0).getCountrys()
-										.contains(local)) {
-							num = scan.nextInt();
-							// increment country troops qty.
-							world.getCountry(local).setTroopQuantity(
-									world.getCountry(local).getTroopQuantity()
-											+ num);
-							// decrement current player troop pool
-							activePlayer.get(0).setTroops(
-									activePlayer.get(0).getTroops() - num);
-							// inform players of changes
-							this.informAll("set "
-									+ activePlayer.get(0).getClientID()
-									+ "/"
-									+ world.getCountry(local).getCountryName()
-									+ "/"
-									+ world.getCountry(local)
-											.getTroopQuantity());
-							// inform current player of troop decrement
-							theServer.sendTo(activePlayer.get(0).getClientID(),
-									"phase recruit "
-											+ activePlayer.get(0).getTroops());
-							informAll("paint");
-						}
+					String temp = scan.nextLine();
+					temp = temp.substring(1);
+					if (ctry.equals("")) {
+						ctry = temp;
+						this.setUpLum(4, ctry, "");
+					} else {
+						ctry = "";
+						this.setUpLum(0, "", "");
 					}
+				} else if (cmd.equals("for") && ctry.length() > 0) {
+					int amt = scan.nextInt();
+					int local = world.getCountryByName(ctry);
+					Country c = world.getCountry(local);
+					c.setTroopQuantity(c.getTroopQuantity() + amt);
+					activePlayer.get(0).setTroops(
+							activePlayer.get(0).getTroops() - amt);
+					this.informAll("set " + activePlayer.get(0).getClientID()
+							+ "/" + world.getCountry(local).getCountryName()
+							+ "/" + world.getCountry(local).getTroopQuantity());
+					// inform current player of troop decrement
+					theServer.sendTo(activePlayer.get(0).getClientID(),
+							"phase recruit " + activePlayer.get(0).getTroops());
+					informAll("paint");
 				}
 			}
 		}
-
 		theServer.sendTo(activePlayer.get(0).getClientID(), "normlum");
 	}
 
@@ -211,12 +231,7 @@ public class RiskCore extends Thread {
 		// inform current player of phase
 		String id = activePlayer.get(0).getClientID();
 		theServer.sendTo(id, "phase attack");
-		theServer.sendTo(id, "delum");
-		for (int i : activePlayer.get(0).getCountrys()) {
-			if (world.getCountry(i).getTroopQuantity() > 1)
-				theServer.sendTo(id, "lum "
-						+ world.getCountry(i).getCountryName());
-		}
+		this.setUpLum(1, "", "");
 		String cmd = "";
 		String ctry1 = "", ctry2 = "";
 		do {
@@ -225,91 +240,34 @@ public class RiskCore extends Thread {
 				Scanner scan = new Scanner(data);
 				cmd = scan.next();
 				if (cmd.equals("sel")) {
-					if (ctry1.equals("")) {
-						ctry1 = scan.next();
-						int local = world.getCountryByName(ctry1);
-						while (local < 0) {
-							ctry1 += " " + scan.next();
-							local = world.getCountryByName(ctry1);
-						}
-						theServer.sendTo(id, "delum");
-						Country c = world.getCountry(world
-								.getCountryByName(ctry1));
-						theServer.sendTo(id, "lum2 " + c.getCountryName());
-						for (int i : c.getCountryBorders()) {
-							if (!world.getCountry(i).getOwner().getClientID()
-									.equals(id))
-								theServer.sendTo(id,
-										"lum "
-												+ world.getCountry(i)
-														.getCountryName());
-						}
+					String temp = scan.nextLine();
+					temp = temp.substring(1);
+					if (ctry1.length() == 0 || ctry2.equals(temp)) {
+						if (ctry1.length() == 0)
+							ctry1 = temp;
+						else
+							ctry2 = "";
+						this.setUpLum(3, ctry1, ctry2);
+					} else if (ctry1.equals(temp)) {
+						ctry1 = "";
+						ctry2 = "";
+						this.setUpLum(1, "", "");
 					} else if (ctry2.equals("")) {
-						ctry2 = scan.next();
-						int local = world.getCountryByName(ctry2);
-						while (local < 0) {
-							ctry2 += " " + scan.next();
-							local = world.getCountryByName(ctry2);
-						}
-						if (ctry1.equals(ctry2)) {
-							theServer.sendTo(id, "delum");
-							for (int i : activePlayer.get(0).getCountrys()) {
-								if (world.getCountry(i).getTroopQuantity() > 1)
-									theServer.sendTo(id, "lum "
-											+ world.getCountry(i)
-													.getCountryName());
-							}
-							ctry1 = "";
-							ctry2 = "";
-						} else {
-							theServer.sendTo(id, "delum");
-							theServer.sendTo(id, "lum " + ctry1);
-							theServer.sendTo(id, "lum " + ctry2);
-
-						}
-					} else {
-						String in = scan.next();
-						int local = world.getCountryByName(in);
-						while (local < 0) {
-							in += " " + scan.next();
-							local = world.getCountryByName(in);
-						}
-						if (in.equals(ctry1)) {
-							theServer.sendTo(id, "delum");
-							for (int i : activePlayer.get(0).getCountrys()) {
-								if (world.getCountry(i).getTroopQuantity() > 1)
-									theServer.sendTo(id, "lum "
-											+ world.getCountry(i)
-													.getCountryName());
-							}
-							ctry1 = "";
-							ctry2 = "";
-						} else {
-							theServer.sendTo(id, "delum");
-							Country c = world.getCountry(world
-									.getCountryByName(ctry1));
-							theServer.sendTo(id, "lum2 " + c.getCountryName());
-							for (int i : c.getCountryBorders()) {
-								if (!world.getCountry(i).getOwner()
-										.getClientID().equals(id))
-									theServer.sendTo(id, "lum "
-											+ world.getCountry(i)
-													.getCountryName());
-							}
-							ctry2 = "";
-						}
+						ctry2 = temp;
+						this.setUpLum(4, ctry1, ctry2);
 					}
 				} else if (cmd.equals("atk")) {
 					int num1 = scan.nextInt();
 					int num2 = -1;
-					String name1 = world
-							.getCountry(world.getCountryByName(ctry1))
-							.getOwner().getClientID();
-					String name2 = world
-							.getCountry(world.getCountryByName(ctry2))
-							.getOwner().getClientID();
-					informAll("atk " + name1 + "/" + name2 + "/" + ctry1 + "/"
-							+ ctry2);
+					Country c1 = world
+							.getCountry(world.getCountryByName(ctry1));
+					Country c2 = world
+							.getCountry(world.getCountryByName(ctry2));
+					player p1 = c1.getOwner();
+					player p2 = c2.getOwner();
+					informAll("atk " + p1.getClientID() + "/"
+							+ p2.getClientID() + "/" + c1.getCountryName()
+							+ "/" + c2.getCountryName());
 					while (num2 == -1) {
 						data = this.getDataFromBuffer();
 						scan = new Scanner(data);
@@ -318,36 +276,47 @@ public class RiskCore extends Thread {
 							num2 = scan.nextInt();
 						}
 					}
-					boolean win = atk(ctry1, ctry2, num1, num2);
-					if (win) {
-						theServer.sendTo(id, "delum");
-						for (int i : activePlayer.get(0).getCountrys()) {
-							if (world.getCountry(i).getTroopQuantity() > 1)
-								theServer.sendTo(id,
-										"lum "
-												+ world.getCountry(i)
-														.getCountryName());
+					// roll dice & get damage
+					int[] dmg = PhaseMethods.attack(num1, num2);
+					// deal damage to player troops
+					PhaseMethods.dealDamage(dmg, c1, c2);
+					// inform players of damage dealt
+					theServer.sendTo(p1.getClientID(), "dmg " + dmg[0] + " "
+							+ dmg[1]);
+					theServer.sendTo(p2.getClientID(), "dmg " + dmg[0] + " "
+							+ dmg[1]);
+					boolean combatOver = false;
+					if (c1.getTroopQuantity() == 1) {
+						// TODO handle attack loss
+						theServer.sendTo(p1.getClientID(), "lose");
+						theServer.sendTo(p2.getClientID(), "win");
+						combatOver = true;
+					} else if (c2.getTroopQuantity() == 0) {
+						// TODO handle defense loss
+						theServer.sendTo(p1.getClientID(), "win");
+						theServer.sendTo(p2.getClientID(), "lose");
+						PhaseMethods.conquer(world,
+								world.getCountryByName(ctry1),
+								world.getCountryByName(ctry2), p1, p2);
+						combatOver = true;
+						conq = true;
+						if (p2.getCountrys().size() == 0) {
+							theServer.sendTo(p2.getClientID(), "conquered");
+							if (gameOver())
+								cmd = "fin";
 						}
+					}
+					// inform players of change to countries
+					String out = "set " + c1.getOwner().getClientID() + "/"
+							+ c1.getCountryName() + "/" + c1.getTroopQuantity();
+					out += "\nset " + c2.getOwner().getClientID() + "/"
+							+ c2.getCountryName() + "/" + c2.getTroopQuantity();
+					out += "\npaint";
+					informAll(out);
+					if (combatOver) {
 						ctry1 = "";
 						ctry2 = "";
-						if (activePlayer.get(0).getCards().size() > 4
-								&& !gameOver()) {
-							theServer.sendTo(activePlayer.get(0).getClientID(),
-									"normlum");
-							cardPhase();
-							recruitPhase();
-							theServer.sendTo(id, "phase attack");
-							theServer.sendTo(id, "delum");
-							for (int i : activePlayer.get(0).getCountrys()) {
-								if (world.getCountry(i).getTroopQuantity() > 1)
-									theServer.sendTo(id, "lum "
-											+ world.getCountry(i)
-													.getCountryName());
-							}
-						}
-						if (gameOver()) {
-							cmd = "fin";
-						}
+						this.setUpLum(1, ctry1, ctry2);
 					}
 				} else if (cmd.equals("end")) {
 					String id2 = world
@@ -355,97 +324,19 @@ public class RiskCore extends Thread {
 							.getOwner().getClientID();
 					theServer.sendTo(id, "end");
 					theServer.sendTo(id2, "end");
-					theServer.sendTo(id, "delum");
-					for (int i : activePlayer.get(0).getCountrys()) {
-						if (world.getCountry(i).getTroopQuantity() > 1)
-							theServer.sendTo(id, "lum "
-									+ world.getCountry(i).getCountryName());
-					}
 					ctry1 = "";
 					ctry2 = "";
+					this.setUpLum(1, ctry1, ctry2);
 				}
-				theServer.sendTo(id, "paint");
 			}
 		} while (!cmd.equals("fin"));
 		theServer.sendTo(activePlayer.get(0).getClientID(), "normlum");
 	}
 
-	private boolean atk(String ctry1, String ctry2, int d1, int d2) {
-		boolean win = false;
-		Random ran = new Random();
-		int[] at = new int[d1];
-		for (int i = 0; i < at.length; i++) {
-			at[i] = ran.nextInt(6);
-		}
-		int[] dt = new int[d2];
-		for (int i = 0; i < dt.length; i++) {
-			dt[i] = ran.nextInt(6);
-		}
-		at = sort(at);
-		dt = sort(dt);
-		int al = 0;
-		int dl = 0;
-		for (int i = 0; i < dt.length; i++) {
-			if (at[i] > dt[i])
-				al++;
-			else
-				dl++;
-		}
-		int n1 = world.getCountryByName(ctry1);
-		int n2 = world.getCountryByName(ctry2);
-		world.getCountry(n1).setTroopQuantity(
-				world.getCountry(n1).getTroopQuantity() - al);
-		world.getCountry(n2).setTroopQuantity(
-				world.getCountry(n2).getTroopQuantity() - dl);
-		if (world.getCountry(n2).getTroopQuantity() == 0) {
-			world.getCountry(n2).setTroopQuantity(
-					world.getCountry(n1).getTroopQuantity() - 1);
-			world.getCountry(n1).setTroopQuantity(1);
-			String id1 = activePlayer.get(0).getClientID();
-			String id2 = world.getCountry(n2).getOwner().getClientID();
-			theServer.sendTo(id2, "lose");
-			theServer.sendTo(id1, "win");
-			player p2 = world.getCountry(n2).getOwner();
-			p2.removeCountrys(n2);
-			world.getCountry(n2).setOwner(activePlayer.get(0));
-			activePlayer.get(0).addCountry(n2);
-			if (p2.getCountrys().size() == 0) {
-				for (RiskCard c : p2.getCards())
-					activePlayer.get(0).addCard(c);
-				theServer.sendTo(id2, "conquered");
-				for (int i = 0; i < activePlayer.size(); i++) {
-					if (activePlayer.get(0).getClientID()
-							.equals(p2.getClientID())) {
-						activePlayer.remove(i);
-						break;
-					}
-				}
-			}
-			conq = true;
-			win = true;
-		} else {
-			String id1 = activePlayer.get(0).getClientID();
-			String id2 = world.getCountry(n2).getOwner().getClientID();
-			theServer.sendTo(id2, "dmg " + al + " " + dl);
-			theServer.sendTo(id1, "dmg " + al + " " + dl);
-		}
-		informAll("set " + world.getCountry(n1).getOwner().getClientID() + "/"
-				+ world.getCountry(n1).getCountryName() + "/"
-				+ world.getCountry(n1).getTroopQuantity());
-		informAll("set " + world.getCountry(n2).getOwner().getClientID() + "/"
-				+ world.getCountry(n2).getCountryName() + "/"
-				+ world.getCountry(n2).getTroopQuantity());
-		informAll("paint");
-		return win;
-	}
-
 	private void fortifyPhase() {
 		String id = activePlayer.get(0).getClientID();
 		theServer.sendTo(id, "phase fortify");
-		theServer.sendTo(id, "delum");
-		for (int i : activePlayer.get(0).getCountrys()) {
-			theServer.sendTo(id, "lum " + world.getCountry(i).getCountryName());
-		}
+		this.setUpLum(0, "", "");
 		String cmd = "";
 		String ctry1 = "", ctry2 = "";
 		do {
@@ -454,45 +345,30 @@ public class RiskCore extends Thread {
 			if (scan.hasNext()) {
 				cmd = scan.next();
 				if (cmd.equals("sel")) {
+					String temp = scan.nextLine();
+					temp = temp.substring(1);
 					if (ctry1.equals("")) {
-						ctry1 = scan.next();
-						theServer.sendTo(id, "delum");
-						for (int i : world.getCountry(
-								world.getCountryByName(ctry1))
-								.getCountryBorders()) {
-							if (activePlayer.get(0).getCountrys().contains(i)) {
-								theServer.sendTo(id,
-										"lum "
-												+ world.getCountry(i)
-														.getCountryName());
-							}
-						}
-					} else {
-						ctry2 = scan.next();
-						if (ctry1.equals(ctry2)) {
-							theServer.sendTo(id, "delum");
-							for (int i : activePlayer.get(0).getCountrys()) {
-								theServer.sendTo(id,
-										"lum "
-												+ world.getCountry(i)
-														.getCountryName());
-							}
-							ctry1 = "";
-							ctry2 = "";
-						} else {
-							theServer.sendTo(id, "delum");
-							theServer.sendTo(id, "lum " + ctry1);
-							theServer.sendTo(id, "lum " + ctry2);
-						}
+						ctry1 = temp;
+						this.setUpLum(2, ctry1, ctry2);
+					} else if (ctry1.equals(temp)) {
+						ctry2 = "";
+						ctry1 = "";
+						this.setUpLum(0, ctry1, ctry2);
+					} else if (ctry2.equals("")) {
+						ctry2 = temp;
+						this.setUpLum(4, ctry1, ctry2);
+					} else if (ctry2.equals(temp)) {
+						ctry2 = "";
+						this.setUpLum(2, ctry1, ctry2);
 					}
 				} else if (cmd.equals("for")) {
 					int num = scan.nextInt();
 					int n1 = world.getCountryByName(ctry1);
 					int n2 = world.getCountryByName(ctry2);
-					world.getCountry(n1).setTroopQuantity(
-							world.getCountry(n1).getTroopQuantity() - num);
-					world.getCountry(n2).setTroopQuantity(
-							world.getCountry(n2).getTroopQuantity() + num);
+					if (num > 0)
+						world.moveToops(n1, n2, num);
+					else
+						world.moveToops(n2, n1, num * -1);
 					informAll("set "
 							+ world.getCountry(n1).getOwner().getClientID()
 							+ "/" + world.getCountry(n1).getCountryName() + "/"
@@ -501,6 +377,7 @@ public class RiskCore extends Thread {
 							+ world.getCountry(n2).getOwner().getClientID()
 							+ "/" + world.getCountry(n2).getCountryName() + "/"
 							+ world.getCountry(n2).getTroopQuantity());
+					informAll("paint");
 					cmd = "fin";
 				}
 			}
@@ -538,26 +415,20 @@ public class RiskCore extends Thread {
 						switch (sets) {
 						case 1:
 							aPlayer.setTroops(aPlayer.getTroops() + 4);
-							// 4
 							break;
 						case 2:
-							// 6+
 							aPlayer.setTroops(aPlayer.getTroops() + 6);
 							break;
 						case 3:
-							// 8
 							aPlayer.setTroops(aPlayer.getTroops() + 8);
 							break;
 						case 4:
-							// 10
 							aPlayer.setTroops(aPlayer.getTroops() + 10);
 							break;
 						case 5:
-							// 12
 							aPlayer.setTroops(aPlayer.getTroops() + 12);
 							break;
 						case 6:
-							// 15
 							aPlayer.setTroops(aPlayer.getTroops() + 15);
 							break;
 						}
@@ -610,6 +481,7 @@ public class RiskCore extends Thread {
 		for (int i = 0; i < maxPlayers; i++) {
 			if (pName[i] != null) {
 				player p = new player();
+				p.connected = true;
 				p.setClientID(pName[i]);
 				this.activePlayer.add(p);
 			}
@@ -742,7 +614,18 @@ public class RiskCore extends Thread {
 		String client = scan.next();
 		String cmd = scan.nextLine();
 		cmd = cmd.substring(1);
-		if (!this.inGame) {
+		if (cmd.equals("disconect")) {
+			if(!inGame)
+				handleLeave(client);
+			else{
+				for(player p: activePlayer){
+					if(p.getClientID().equals(client)){
+						p.connected = false;
+						break;
+					}
+				}
+			}
+		} else if (!this.inGame) {
 			if (cmd.equals("help")) {
 
 			} else if (cmd.equals("start")) {
@@ -820,7 +703,8 @@ public class RiskCore extends Thread {
 				}
 				this.numPlayers--;
 				int num = theServer.ClientID.indexOf(client);
-				theServer.Clients.get(num).setGameID(-1);
+				if (num > -1)
+					theServer.Clients.get(num).setGameID(-1);
 			}
 		}
 	}
@@ -2768,7 +2652,7 @@ public class RiskCore extends Thread {
 	public String toString() {
 		String out = "";
 		// Step 1: player turns
-		out = "order";
+		out = "order ";
 		for (player p : this.activePlayer) {
 			out += "/" + p.getClientID();
 		}

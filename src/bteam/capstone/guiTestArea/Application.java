@@ -60,7 +60,7 @@ public class Application implements ActionListener {
 	private void createPanels() {
 		GUIGamePanel gp = new GUIGamePanel(this);
 		GUILogOnPanel lp = new GUILogOnPanel(this);
-		GUIServerPanel sp = new GUIServerPanel(this);
+		serverBrowser sp = new serverBrowser(this);
 		GUILobby lobby = new GUILobby(this);
 		panels = new JPanel[4];
 		panels[0] = lp;
@@ -184,7 +184,7 @@ public class Application implements ActionListener {
 		case 1:
 			c1.show(mainpanel, "Server");
 			client.switchController((ClientUser) panels[1]);
-			((GUIServerPanel) panels[1]).refresh();
+			((serverBrowser) panels[1]).refresh();
 			break;
 		case 2:
 			c1.show(mainpanel, "Lobby");

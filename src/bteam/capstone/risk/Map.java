@@ -14,8 +14,8 @@ public class Map {
 	public ArrayList<Country> countrys = new ArrayList<Country>();
 	public ArrayList<String> cNames = new ArrayList<String>();
 	public ArrayList<Continent> continent = new ArrayList<Continent>();
-	//private player sighner;
-	private int freeCountrys=0;
+	// private player sighner;
+	private int freeCountrys = 0;
 
 	/**
 	 * Receives a string representation of the structure of the class for its
@@ -29,8 +29,9 @@ public class Map {
 	 *            each country separated by newlines.
 	 */
 	int id = 0;
+
 	public Map(String data) {
-		
+
 		Scanner scan = new Scanner(data);
 		int numCont = scan.nextInt();
 		scan.nextLine();
@@ -46,12 +47,12 @@ public class Map {
 			countrys.get(id).setId(id);
 			id++;
 			cNames.add(c.getCountryName());
-			//System.out.print(id + " ");
+			// System.out.print(id + " ");
 		}
 		freeCountrys = countrys.size();
 	}
-	
-	public int getCountryByName(String name){
+
+	public int getCountryByName(String name) {
 		return cNames.indexOf(name);
 	}
 
@@ -74,12 +75,12 @@ public class Map {
 		return data;
 	}
 
-	public boolean hasFreeCountry(){
-		if(freeCountrys==0)
+	public boolean hasFreeCountry() {
+		if (freeCountrys == 0)
 			return false;
 		return true;
-	}	
-	
+	}
+
 	/**
 	 * To be used for fortification of territories, expanding into new
 	 * territories, and for post attack phase when all troops have been removed
@@ -98,7 +99,7 @@ public class Map {
 	 */
 	public void moveToops(int countryOne, int countryTwo, int troopQuantity) {
 		Country temp = countrys.get(countryOne);
-		placeTroops(countryTwo, troopQuantity, temp.getControllingFaction());
+		placeTroops(countryTwo, troopQuantity, temp.getOwner());
 		removeTroops(countryOne, troopQuantity);
 	}
 
@@ -130,13 +131,15 @@ public class Map {
 	 * @param Faction
 	 *            faction placing troops
 	 */
-	public void placeTroops(int country, int troopQuantity, String Faction) {
+	public void placeTroops(int country, int troopQuantity, player Owner) {
 		Country temp = countrys.get(country);
-		if(temp.getControllingFaction().equals("\\NONE")){
+		if (temp.getControllingFaction().equals("\\NONE")) {
 			freeCountrys--;
 		}
-		temp.setControllingFaction(Faction);
+		temp.setOwner(Owner);
 		temp.setTroopQuantity(temp.getTroopQuantity() + troopQuantity);
+		if (!Owner.getCountrys().contains(country))
+			Owner.addCountry(country);
 	}
 
 	/**
@@ -336,15 +339,13 @@ public class Map {
 		}
 		return out;
 	}
-/*
- * Ignore this, leaving it here incase
-	public int numCountries() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-*/
 
-	//TODO add variable and alter constructor and tostring to include this
+	/*
+	 * Ignore this, leaving it here incase public int numCountries() { // TODO
+	 * Auto-generated method stub return 0; }
+	 */
+
+	// TODO add variable and alter constructor and tostring to include this
 	public boolean isFirstGame() {
 		// TODO Auto-generated method stub
 		return false;

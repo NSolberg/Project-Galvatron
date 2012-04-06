@@ -42,7 +42,7 @@ India/1/1450/690
 Irkutsk/1/1600/360
 Japan/1/1820/485
 Kamchatka/1/1780/180
-Middle East/1/1330/720
+Middle East/1/1240/680
 Mongolia/1/1620/465
 Siam/1/1610/750
 Siberia/1/1470/240

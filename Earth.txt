@@ -10,7 +10,7 @@ Northwest Territory/\\NONE/0/false/0/faction/0/\\NONE/0/false/0/2/4/5/
 Greenland/\\NONE/0/false/0/faction/0/\\NONE/0/false/1/4/3/22/
 Quebec/\\NONE/0/false/0/faction/0/\\NONE/0/false/2/4/7/
 Ontario/\\NONE/0/false/0/faction/0/\\NONE/0/false/1/5/6/7/3/2/
-Alberta/\\NONE/0/false/0/faction/0/\\NONE/0/false/1/0/6/3/
+Alberta/\\NONE/0/false/0/faction/0/\\NONE/0/false/1/0/4/6/
 Western United States/\\NONE/0/false/0/faction/0/\\NONE/0/false/5/4/8/7/
 Eastern United States/\\NONE/0/false/0/faction/0/\\NONE/0/false/3/4/6/8/
 Central America/\\NONE/0/false/0/faction/0/\\NONE/0/false/7/6/9/

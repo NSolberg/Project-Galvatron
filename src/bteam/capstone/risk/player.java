@@ -26,6 +26,7 @@ public class player {
 	private int setsRedeemed;
 	private String clientID;
 	private boolean eliminated = false;
+	public boolean connected  = true;
 	
 	/**
 	 * Constructor for creating a new player given a string of data.
