@@ -1,8 +1,11 @@
 package bteam.capstone.gui;
+import java.applet.Applet;
+import java.applet.AudioClip;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
+import java.net.URL;
 import java.util.Random;
 
 public class GuiTroop {
@@ -15,14 +18,17 @@ public class GuiTroop {
 	BufferedImage buffer;
 	int time = -1;
 	int shift = 25;
+	AudioClip sound;
 	public boolean reverse;
 
 	public GuiTroop(Image image, int type, int num, int color) {
+		URL url = getClass().getResource("sounds/gunfire.mp3");
+		sound = Applet.newAudioClip(url);
 		this.color = color;
 		img = image;
 		this.type = type;
 		ran = new Random();
-		shiftTime = ran.nextInt(100);
+		shiftTime = ran.nextInt(45);
 		y = num * 100;
 		x = type * 100;
 		this.num = num;
@@ -82,11 +88,12 @@ public class GuiTroop {
 		if (time > -1) {
 			time++;
 			if (time == shiftTime) {
+				sound.play();
 				if(this.reverse){
 					x -=shift;
 				}else
 					x+=shift;
-			}else if(time==shiftTime+1){
+			}else if(time==shiftTime+5){
 				time = -1;
 				if(this.reverse)
 					x+=shift;

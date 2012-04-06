@@ -41,8 +41,8 @@ import javax.swing.event.ChangeListener;
 import bteam.capstone.gui.GuiMap;
 
 @SuppressWarnings("serial")
-public class GUIGamePanel extends JPanel implements ClientUser, ActionListener,
-		MouseListener, MouseMotionListener {
+public class GUIGamePanel extends JPanel implements ClientUser, MouseListener,
+		MouseMotionListener {
 	private Dimension screensize;
 	private Application app;
 	private GuiMap map;
@@ -72,17 +72,12 @@ public class GUIGamePanel extends JPanel implements ClientUser, ActionListener,
 		sel = -1;
 		this.addMouseListener(this);
 		this.addMouseMotionListener(this);
-		Timer t = new Timer((int) (1000 / 30), this);
-		t.start();
-		// initialize();
 		init();
-		updateUiPos();
+		updateUiPos(app.fullscreen);
 		// this.Phase.setEnabled(false);
 		// Phase.setEnabled(false);
 		this.switchPhase("begin");
 	}
-	
-	
 
 	private void switchPhase(String p) {
 		this.disablePhases();
@@ -140,9 +135,9 @@ public class GUIGamePanel extends JPanel implements ClientUser, ActionListener,
 		// create card Pane
 		CardPane = new JPanel();
 		CardPane.setForeground(SystemColor.menu);
-		Image img= new ImageIcon("Icons For Risk/card.png").getImage();
+		Image img = new ImageIcon("Icons For Risk/card.png").getImage();
 		img = img.getScaledInstance(48, 48, java.awt.Image.SCALE_SMOOTH);
-		
+
 		Phase.addTab("\n", new ImageIcon(img), CardPane, null);
 		CardPane.setLayout(null);
 		// create cards
@@ -409,20 +404,25 @@ public class GUIGamePanel extends JPanel implements ClientUser, ActionListener,
 		scrollPane.setViewportView(ServerChat);
 	}
 
-	private void updateUiPos() {
-		Phase.setLocation(app.size.width - Phase.getWidth()
-				- Phase.getInsets().right, app.size.height - Phase.getHeight()
-				- Phase.getInsets().top * 3 - 3);
-		ChatContainer.setLocation(
-				0,
-				app.size.height - ChatContainer.getHeight()
-						- ChatContainer.getInsets().top * 3 - 3);
+	public void updateUiPos(boolean full) {
+		if (!full) {
+			Phase.setLocation(
+					app.size.width - Phase.getWidth() - Phase.getInsets().right,
+					app.size.height - Phase.getHeight() - Phase.getInsets().top
+							* 3 - 3);
+			ChatContainer.setLocation(
+					0,
+					app.size.height - ChatContainer.getHeight()
+							- ChatContainer.getInsets().top * 3 - 3);
+		}
+		if (map != null)
+			map.setSize(app.size.width, app.size.height);
 	}
 
 	private JTextField ChatField;
 
 	public void setMap(String map) {
-		this.map = new GuiMap("Maps/" + map, false, app.size.width,
+		this.map = new GuiMap(this,"Maps/" + map, false, app.size.width,
 				app.size.height);
 	}
 
@@ -454,7 +454,7 @@ public class GUIGamePanel extends JPanel implements ClientUser, ActionListener,
 				for (int i = 0; i < players.size(); i++) {
 					String name = scan.next();
 					int pos = players.indexOf(name);
-					swap(pos,i);
+					swap(pos, i);
 				}
 				this.populatePlayerPane();
 			} else if (cmd.equals("set")) {
@@ -533,20 +533,28 @@ public class GUIGamePanel extends JPanel implements ClientUser, ActionListener,
 			} else if (cmd.equals("dmg")) {
 				int n1 = scan.nextInt();
 				int n2 = scan.nextInt();
+				map.play(n1,n2);
+				while(map.playing){					
+				}
 				if (!def) {
 					this.RollDiceButton.setEnabled(true);
 					this.AttackSkipButton.setEnabled(true);
 				}
 				this.AttackRollDisp.setText(n1 + "");
 				this.DeffRollDisp.setText(n2 + "");
-				map.play();
 			} else if (cmd.equals("win")) {
 				JOptionPane.showMessageDialog(null, "You Won the Match");
 				map.exitAttack();
 				this.switchPhase("attack");
+				if(def){
+					this.switchPhase("begin");
+				}
 			} else if (cmd.equals("lose")) {
 				JOptionPane.showMessageDialog(null, "You Lost the Match");
 				map.exitAttack();
+				if(def){
+					this.switchPhase("begin");
+				}
 			} else if (cmd.equals("end")) {
 				map.exitAttack();
 				if (def) {
@@ -654,16 +662,5 @@ public class GUIGamePanel extends JPanel implements ClientUser, ActionListener,
 			}
 		}
 		dragging = false;
-		if (map.inAttack()) {
-			map.play();
-		}
 	}
-
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		if (map != null && map.inAttack()) {
-			this.repaint();
-		}
-	}
-
 }

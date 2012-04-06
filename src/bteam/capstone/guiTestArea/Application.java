@@ -35,6 +35,7 @@ public class Application implements ActionListener {
 	public JMenu game;
 	public JMenuItem start, quit;
 	public String userName;
+	public boolean fullscreen = false;
 
 	public static void main(String[] args) {
 		//GuiMap m = new GuiMap("Maps/Earth",false,800,600);
@@ -159,20 +160,23 @@ public class Application implements ActionListener {
 				this.selMode = m;
 				if (this.selMode.getText().equals("Fullscreen")) {
 					this.createWindow(true);
+					fullscreen = true;
 				} else {
 					window.exitFullscreen();
 					this.createWindow(false);
+					fullscreen = false;
 				}
+				
 			} else {
 				this.selRes.setSelected(false);
 				this.selRes = (JCheckBoxMenuItem) e.getSource();
 				Scanner scan = new Scanner(selRes.getText());
 				int n1 = scan.nextInt();
-				int n2 = scan.nextInt();
+				int n2 = scan.nextInt(); 
 				this.size = new Dimension(n1, n2);
 				this.window.changeSize(this.size);
-				((GUIGamePanel)this.panels[3]).updateUI();
 			}
+			((GUIGamePanel)this.panels[2]).updateUiPos(fullscreen);
 		}
 	}
 

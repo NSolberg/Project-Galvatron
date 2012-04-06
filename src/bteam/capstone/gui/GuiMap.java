@@ -1,10 +1,13 @@
 package bteam.capstone.gui;
+
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Point;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -12,6 +15,8 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 import javax.swing.ImageIcon;
+import javax.swing.JPanel;
+import javax.swing.Timer;
 
 public class GuiMap {
 	private String filename;
@@ -26,15 +31,16 @@ public class GuiMap {
 	public ArrayList<String> countryNames;
 	private String[] continents;
 	private boolean inattack;
+	private JPanel panel;
 
 	private int cty1, cty2;
 
-	public GuiMap(String Filename, boolean Legacy, int SCREENWIDTH,
-			int SCREENHEIGHT) {
+	public GuiMap(JPanel panel, String Filename, boolean Legacy,
+			int SCREENWIDTH, int SCREENHEIGHT) {
+		this.panel = panel;
 		filename = Filename;
 		legacy = Legacy;
-		sWid = SCREENWIDTH;
-		sHit = SCREENHEIGHT;
+		this.setSize(SCREENWIDTH, SCREENHEIGHT);
 		scale = 1.0;
 		inattack = false;
 		cty1 = -1;
@@ -50,47 +56,52 @@ public class GuiMap {
 				images[0].getHeight(null), BufferedImage.TYPE_4BYTE_ABGR_PRE);
 	}
 
+	public void setSize(int w, int h) {
+		sWid = w;
+		sHit = h;
+	}
+
 	private void test() {
 		countries.get(0).troopCount = 70;
 		countries.get(0).troopColor = 0;
 		countries.get(1).troopCount = 53;
 		countries.get(1).troopColor = 1;
-		//this.enterAttack(0, 1);
+		// this.enterAttack(0, 1);
 	}
-	
-	public void delum(){
-		for(GuiCountry c:countries){
+
+	public void delum() {
+		for (GuiCountry c : countries) {
 			c.lum = -1;
 		}
 	}
-	
-	public void normlum(){
-		for(GuiCountry c:countries){
+
+	public void normlum() {
+		for (GuiCountry c : countries) {
 			c.lum = 0;
 		}
 	}
-	
-	public void lum(String ctry){
+
+	public void lum(String ctry) {
 		int pos = this.countryNames.indexOf(ctry);
-		if(pos>-1){
-			this.countries.get(pos).lum = this.countries.get(pos).lum+1;
+		if (pos > -1) {
+			this.countries.get(pos).lum = this.countries.get(pos).lum + 1;
 		}
 	}
-	
- 	public void set(int troopCount, int color, String country){
+
+	public void set(int troopCount, int color, String country) {
 		int num = countryNames.indexOf(country);
 		countries.get(num).troopColor = color;
-		countries.get(num).troopCount=troopCount;
+		countries.get(num).troopCount = troopCount;
 	}
- 	
- 	public boolean canSelect(int num){
+
+	public boolean canSelect(int num) {
 		int i = countries.get(num).lum;
- 		if(i>-1)
- 			return true;
- 		return false;
- 	}
- 	
- 	public void select(int num) {
+		if (i > -1)
+			return true;
+		return false;
+	}
+
+	public void select(int num) {
 		int i = countries.get(num).lum;
 		if (i == 1)
 			i = 0;
@@ -98,10 +109,10 @@ public class GuiMap {
 			i = 1;
 		countries.get(num).lum = i;
 	}
- 	
- 	public String getCountryName(int val){
- 		return this.countryNames.get(val);
- 	}
+
+	public String getCountryName(int val) {
+		return this.countryNames.get(val);
+	}
 
 	private void initCards() {
 		BufferedImage tbuffer = new BufferedImage(images[0].getWidth(null),
@@ -278,14 +289,9 @@ public class GuiMap {
 					(int) (buffer.getWidth() * scale),
 					(int) (buffer.getHeight() * scale), null);
 		} else {
-			this.drawAttack(g);
-			if(rampup <3700){
-				rampup++;
-			}else if(rampup==3700){
-				this.buildTroops();
-			}
+			drawAttack(g);
 		}
-	}	
+	}
 
 	private void drawSelections() {
 		for (int i = 0; i < countries.size(); i++) {
@@ -445,15 +451,15 @@ public class GuiMap {
 	public void enterAttack(int att, int def) {
 		cty1 = att;
 		cty2 = def;
-		rampup = 4000;
 		inattack = true;
-		buildTroops();
+		buildTroops(0,0);
+		panel.repaint();
 	}
 
-	public void buildTroops() {
+	public void buildTroops(int n1, int n2) {
 		GuiCountry c1 = countries.get(cty1);
 		GuiCountry c2 = countries.get(cty2);
-		int soldiers = c1.troopCount;
+		int soldiers = c1.troopCount-1-n1;
 		int calvery = 0;
 		int tank = 0;
 		if (soldiers > 5) {
@@ -464,17 +470,17 @@ public class GuiMap {
 			tank = calvery / 5 / 2;
 			calvery = calvery - tank * 2;
 		}
-		gtroops = new ArrayList<GuiTroop>();
+		atroop = new ArrayList<GuiTroop>();
 		for (int i = 0; i < tank && i < 5; i++) {
-			gtroops.add(new GuiTroop(images[4], 0, i, c1.troopColor));
+			atroop.add(new GuiTroop(images[4], 0, i, c1.troopColor));
 		}
 		for (int i = 0; i < calvery && i < 5; i++) {
-			gtroops.add(new GuiTroop(images[3], 1, i, c1.troopColor));
+			atroop.add(new GuiTroop(images[3], 1, i, c1.troopColor));
 		}
 		for (int i = 0; i < soldiers && i < 5; i++) {
-			gtroops.add(new GuiTroop(images[2], 2, i, c1.troopColor));
+			atroop.add(new GuiTroop(images[2], 2, i, c1.troopColor));
 		}
-		soldiers = c2.troopCount;
+		soldiers = c2.troopCount-n2;
 		calvery = 0;
 		tank = 0;
 		if (soldiers > 5) {
@@ -485,41 +491,72 @@ public class GuiMap {
 			tank = calvery / 5 / 2;
 			calvery = calvery - tank * 2;
 		}
+		dtroop = new ArrayList<GuiTroop>();
 		for (int i = 0; i < tank && i < 5; i++) {
 			GuiTroop tr = new GuiTroop(images[4], 0, i, c2.troopColor);
 			tr.reverse = true;
 			tr.x = sWid;
-			gtroops.add(tr);
+			dtroop.add(tr);
 		}
 		for (int i = 0; i < calvery && i < 5; i++) {
 			GuiTroop tr = new GuiTroop(images[3], 1, i, c2.troopColor);
 			tr.reverse = true;
 			tr.x = sWid - 100;
-			gtroops.add(tr);
+			dtroop.add(tr);
 		}
 		for (int i = 0; i < soldiers && i < 5; i++) {
 			GuiTroop tr = new GuiTroop(images[2], 2, i, c2.troopColor);
 			tr.reverse = true;
 			tr.x = sWid - 200;
-			gtroops.add(tr);
+			dtroop.add(tr);
 		}
 	}
 
-	int rampup = -1;
-	ArrayList<GuiTroop> gtroops;
+	ArrayList<GuiTroop> atroop;
+	ArrayList<GuiTroop> dtroop;
 
 	public void drawAttack(Graphics g) {
-		g.drawImage(images[5], 0, 0, null);
-
-		for (GuiTroop gt : gtroops) {
-			gt.drawMe(g);
+		Graphics temp = this.beforbuffer.getGraphics();
+		temp.drawImage(images[5], 0, 0, null);
+		for (GuiTroop gt : atroop) {
+			gt.drawMe(temp);
 		}
+		for (GuiTroop gt : dtroop) {
+			gt.drawMe(temp);
+		}
+		g.drawImage(beforbuffer, 0, 0, null);
 	}
 
-	public void play() {
-		for(GuiTroop gt: gtroops){
+	int num;
+	Timer t;
+
+	public boolean playing;
+	int diff1, diff2;
+	public void play(int ad, int dd) {
+		playing = true;
+		num = 0;
+		diff1 =ad;
+		diff2 = dd;
+		t = new Timer(30, new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				num++;
+				if (num == 50){
+					t.stop();
+					playing = false;
+					buildTroops(diff1,diff2);
+				}
+				panel.repaint();
+			}
+
+		});
+		t.start();
+		for (GuiTroop gt : atroop) {
 			gt.play();
 		}
-		rampup = 0;
+		for (GuiTroop gt : dtroop) {
+			gt.play();
+		}
 	}
 }

@@ -316,8 +316,8 @@ public class TestPlay {
 	
 	@Test
 	public void testNicksBasicRisk(){
-		RiskCore core = new RiskCore(null, data, data, false, false, data);
-		player cPlayer = new player("PlayerChuck  0 0 0 0");
+		//RiskCore core = new RiskCore(null, data, data, false, false, data);
+		/*player cPlayer = new player("PlayerChuck  0 0 0 0");
 		player dPlayer = new player("PlayerDave 0 0 0 0");
 		player ePlayer = new player("PlayerEllen  0 0 0 0");
 		player fPlayer = new player("PlayerFred  0 0 0 0");
@@ -326,7 +326,7 @@ public class TestPlay {
 		core.activePlayer.add(dPlayer);
 		core.activePlayer.add(ePlayer);
 		core.activePlayer.add(fPlayer);
-		core.activePlayer.add(gPlayer);
+		core.activePlayer.add(gPlayer);*/
 	
 
 		//core.intialTurnRisk(5);
