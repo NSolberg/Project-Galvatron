@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Random;
 
@@ -22,7 +23,7 @@ public class GuiTroop {
 	public boolean reverse;
 
 	public GuiTroop(Image image, int type, int num, int color) {
-		URL url = getClass().getResource("sounds/gunfire.mp3");
+		URL url =getClass().getResource("gunfire.mp3");
 		sound = Applet.newAudioClip(url);
 		this.color = color;
 		img = image;

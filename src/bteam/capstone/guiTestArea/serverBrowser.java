@@ -109,10 +109,9 @@ public class serverBrowser extends JPanel implements ClientUser {
 		buttonPanel.add(CreateGameButton);
 		
 		JButton ConfirmGameButton = new JButton("");
-		ImageIcon icon = new ImageIcon("Icons For Risk/go.png");
-		Image img = icon.getImage();
+		Image img = app.graphics.joinWar;
 		img = img.getScaledInstance(200, 70, java.awt.Image.SCALE_SMOOTH);
-		icon = new ImageIcon(img);
+		ImageIcon icon = new ImageIcon(img);
 		ConfirmGameButton.setBounds(452, 18, 200, 82);
 		ConfirmGameButton.setIcon(icon);
 		buttonPanel.add(ConfirmGameButton);	

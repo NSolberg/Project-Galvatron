@@ -135,7 +135,7 @@ public class GUIGamePanel extends JPanel implements ClientUser, MouseListener,
 		// create card Pane
 		CardPane = new JPanel();
 		CardPane.setForeground(SystemColor.menu);
-		Image img = new ImageIcon("Icons For Risk/card.png").getImage();
+		Image img = app.graphics.phaseCard;
 		img = img.getScaledInstance(48, 48, java.awt.Image.SCALE_SMOOTH);
 
 		Phase.addTab("\n", new ImageIcon(img), CardPane, null);
@@ -149,8 +149,7 @@ public class GUIGamePanel extends JPanel implements ClientUser, MouseListener,
 		}
 		// create buttons
 		JButton TurnInButton = new JButton("");
-		TurnInButton.setIcon(new ImageIcon(
-				"Icons For Risk/SMALLActions-dialog-ok-apply-icon-1.png"));
+		TurnInButton.setIcon(new ImageIcon(app.graphics.okCheck));
 		TurnInButton.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
@@ -169,8 +168,7 @@ public class GUIGamePanel extends JPanel implements ClientUser, MouseListener,
 				System.out.println("SKIPPED CARD TURN IN");
 			}
 		});
-		SkipTurnInButton.setIcon(new ImageIcon(
-				"Icons For Risk/SMALLAlarm-Error-icon-1.png"));
+		SkipTurnInButton.setIcon(new ImageIcon(app.graphics.cancel));
 		SkipTurnInButton.setFont(new Font("Stencil", Font.BOLD, 14));
 		SkipTurnInButton.setSize(75, 35);
 		SkipTurnInButton.setLocation(
@@ -180,7 +178,7 @@ public class GUIGamePanel extends JPanel implements ClientUser, MouseListener,
 
 	private void createPlaceTroopPane() {
 		PlaceTroopPane = new JPanel();
-		Phase.addTab("", new ImageIcon("Icons For Risk/ammo-5-icon.png"),
+		Phase.addTab("", new ImageIcon(app.graphics.phaseTroops),
 				PlaceTroopPane, "Displays the remaining troops\n");
 		PlaceTroopPane.setLayout(null);
 		progressBar = new JProgressBar();
@@ -215,15 +213,14 @@ public class GUIGamePanel extends JPanel implements ClientUser, MouseListener,
 				}
 			}
 		});
-		TroopPlaceCommitButton.setIcon(new ImageIcon(
-				"Icons For Risk/Actions-dialog-ok-apply-icon.png"));
+		TroopPlaceCommitButton.setIcon(new ImageIcon(app.graphics.okCheck));
 		TroopPlaceCommitButton.setBounds(420, 5, 125, 70);
 		PlaceTroopPane.add(TroopPlaceCommitButton);
 	}
 
 	private void createAttackPane() {
 		AttackPane = new JPanel();
-		Phase.addTab("", new ImageIcon("Icons For Risk/Peters-Sword-icon.png"),
+		Phase.addTab("", new ImageIcon(app.graphics.phaseAttack),
 				AttackPane, null);
 		AttackPane.setLayout(null);
 
@@ -254,7 +251,7 @@ public class GUIGamePanel extends JPanel implements ClientUser, MouseListener,
 				AttackSkipButton.setEnabled(false);
 			}
 		});
-		RollDiceButton.setIcon(new ImageIcon("Icons For Risk/dice-icon.png"));
+		RollDiceButton.setIcon(new ImageIcon(app.graphics.dice));
 		RollDiceButton.setBounds(218, 6, 113, 70);
 		AttackPane.add(RollDiceButton);
 
@@ -287,15 +284,14 @@ public class GUIGamePanel extends JPanel implements ClientUser, MouseListener,
 						app.client.sendData("end");
 			}
 		});
-		AttackSkipButton.setIcon(new ImageIcon(
-				"Icons For Risk/Alarm-Error-icon.png"));
+		AttackSkipButton.setIcon(new ImageIcon(app.graphics.cancel));
 		AttackSkipButton.setBounds(472, 6, 70, 70);
 		AttackPane.add(AttackSkipButton);
 	}
 
 	private void createMoveTroopPane() {
 		MoveTroopPane = new JPanel();
-		Phase.addTab("", new ImageIcon("Icons For Risk/world-icon.png"),
+		Phase.addTab("", new ImageIcon(app.graphics.phaseFortify),
 				MoveTroopPane, null);
 		MoveTroopPane.setLayout(null);
 
@@ -334,8 +330,7 @@ public class GUIGamePanel extends JPanel implements ClientUser, MouseListener,
 				app.client.sendData("for " + NumTroopsMoveSlider.getValue());
 			}
 		});
-		CommitTroopMove.setIcon(new ImageIcon(
-				"Icons For Risk/SMALLActions-dialog-ok-apply-icon-1.png"));
+		CommitTroopMove.setIcon(new ImageIcon(app.graphics.okCheck));
 		CommitTroopMove.setBounds(440, 5, 100, 35);
 		MoveTroopPane.add(CommitTroopMove);
 
@@ -346,16 +341,14 @@ public class GUIGamePanel extends JPanel implements ClientUser, MouseListener,
 				app.client.sendData("fin");
 			}
 		});
-		SkipTroopMoveButton.setIcon(new ImageIcon(
-				"Icons For Risk/SMALLAlarm-Error-icon-1.png"));
+		SkipTroopMoveButton.setIcon(new ImageIcon(app.graphics.cancel));
 		SkipTroopMoveButton.setBounds(440, 40, 100, 35);
 		MoveTroopPane.add(SkipTroopMoveButton);
 	}
 
 	private void createEndTurnPane() {
 		EndTurnPane = new JPanel();
-		Phase.addTab("", new ImageIcon(
-				"Icons For Risk/FUCKINGTINYActions-arrow-right-icon.png"),
+		Phase.addTab("", new ImageIcon(app.graphics.phaseBegin),
 				EndTurnPane, null);
 		EndTurnPane.setLayout(null);
 	}
@@ -363,7 +356,7 @@ public class GUIGamePanel extends JPanel implements ClientUser, MouseListener,
 	private void populatePlayerPane() {
 		EndTurnPane.removeAll();
 		for (int i = 0; i < players.size(); i++) {
-			GUIAvatarPanel p = new GUIAvatarPanel(players.get(i), color.get(i));
+			GUIAvatarPanel p = new GUIAvatarPanel(players.get(i), color.get(i), app.graphics.avatar);
 			p.setLocation(i * (1 + p.getWidth()), 0);
 			EndTurnPane.add(p);
 		}

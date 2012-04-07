@@ -1,7 +1,10 @@
 
 package bteam.capstone.guiTestArea;
 
+import java.applet.Applet;
+import java.applet.AudioClip;
 import java.awt.CardLayout;
+import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.DisplayMode;
 import java.awt.GraphicsDevice;
@@ -10,6 +13,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -36,6 +42,7 @@ public class Application implements ActionListener {
 	public JMenuItem start, quit;
 	public String userName;
 	public boolean fullscreen = false;
+	public RiskGraphics graphics;
 
 	public static void main(String[] args) {
 		//GuiMap m = new GuiMap("Maps/Earth",false,800,600);
@@ -43,6 +50,8 @@ public class Application implements ActionListener {
 	}
 
 	public Application() {
+			//line below opens web page
+			//java.awt.Desktop.getDesktop().browse(java.net.URI.create("http://www.google.com"));
 		try {
 			for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
 				if ("Nimbus".equals(info.getName())) {
@@ -53,6 +62,7 @@ public class Application implements ActionListener {
 		} catch (Exception e) {
 
 		}
+		graphics = new RiskGraphics();
 		createMenu();
 		size = new Dimension(800, 600);
 		createPanels();

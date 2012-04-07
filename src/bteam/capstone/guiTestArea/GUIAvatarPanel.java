@@ -13,10 +13,10 @@ import javax.swing.border.TitledBorder;
 
 @SuppressWarnings("serial")
 public class GUIAvatarPanel extends JPanel {
-	Image AvatarImage = new ImageIcon("Icons For Risk/army-officer-icon.png")
-			.getImage();
+	Image AvatarImage;
 
-	public GUIAvatarPanel(String Name, int c) {
+	public GUIAvatarPanel(String Name, int c, Image avatar) {
+		AvatarImage = avatar;
 		this.setLayout(null);
 		this.setOpaque(false);
 		this.setBorder(new TitledBorder(null, Name, TitledBorder.LEADING,

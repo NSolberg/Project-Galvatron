@@ -1,5 +1,8 @@
 package bteam.capstone.guiTestArea;
 
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.*;
@@ -23,76 +26,73 @@ public class GUILogOnPanel extends JPanel implements ClientUser {
 	private static boolean Val = true;
 	private static String users;
 	private static String passs;
+	private JButton btnLog;
+	private JTextField txtPass,txtUser;
+	private int prewid;	
 
-	public static boolean testInformation(){
-		  Connection conn = null;
-		  Statement stmt = null;
-		   try{
-		      //STEP 2: Register JDBC driver
-			   Class.forName("sun.jdbc.odbc.JdbcOdbcDriver");
+ 	public static boolean testInformation() {
+		Connection conn = null;
+		Statement stmt = null;
+		try {
+			// STEP 2: Register JDBC driver
+			Class.forName("sun.jdbc.odbc.JdbcOdbcDriver");
 
-		      //STEP 3: Open a connection
-		      System.out.println("Connecting to database...");
-		      conn = DriverManager.getConnection(DB_URL,USER,PASS);
+			// STEP 3: Open a connection
+			System.out.println("Connecting to database...");
+			conn = DriverManager.getConnection(DB_URL, USER, PASS);
 
-		      //STEP 4: Execute a query
-		      System.out.println("Creating statement...");
-		      stmt = conn.createStatement();
-		      String sql;
-		      sql = "SELECT userName, password FROM Employees";
-		      ResultSet rs = stmt.executeQuery(sql);
+			// STEP 4: Execute a query
+			System.out.println("Creating statement...");
+			stmt = conn.createStatement();
+			String sql;
+			sql = "SELECT userName, password FROM Employees";
+			ResultSet rs = stmt.executeQuery(sql);
 
-		      //STEP 5: Extract data from result set
-		      while(rs.next()){
-		         //Retrieve by column name
-		         users  = rs.getString("user");
-		         passs = rs.getString("password");
-		         String email = rs.getString("last");
-		         int key = rs.getInt("key");
-		         System.out.println(users + " ");
-		      }
-		      //STEP 6: Clean-up environment
-		      rs.close();
-		      stmt.close();
-		      conn.close();
-		   }catch(SQLException se){
-		      //Handle errors for JDBC
-		      se.printStackTrace();
-		   }catch(Exception e){
-		      //Handle errors for Class.forName
-		      e.printStackTrace();
-		   }finally{
-		      //finally block used to close resources
-		      try{
-		         if(stmt!=null)
-		            stmt.close();
-		      }catch(SQLException se2){
-		      }// nothing we can do
-		      try{
-		         if(conn!=null)
-		            conn.close();
-		      }catch(SQLException se){
-		         se.printStackTrace();
-		      }//end finally try
-		   }//end tr
-		
-		
+			// STEP 5: Extract data from result set
+			while (rs.next()) {
+				// Retrieve by column name
+				users = rs.getString("user");
+				passs = rs.getString("password");
+				String email = rs.getString("last");
+				int key = rs.getInt("key");
+				System.out.println(users + " ");
+			}
+			// STEP 6: Clean-up environment
+			rs.close();
+			stmt.close();
+			conn.close();
+		} catch (SQLException se) {
+			// Handle errors for JDBC
+			se.printStackTrace();
+		} catch (Exception e) {
+			// Handle errors for Class.forName
+			e.printStackTrace();
+		} finally {
+			// finally block used to close resources
+			try {
+				if (stmt != null)
+					stmt.close();
+			} catch (SQLException se2) {
+			}// nothing we can do
+			try {
+				if (conn != null)
+					conn.close();
+			} catch (SQLException se) {
+				se.printStackTrace();
+			}// end finally try
+		}// end tr
+
 		return Val;
 	}
-	
+
 	public GUILogOnPanel(final Application app) {
 		this.app = app;
 		this.setLayout(null);
-		JLabel lblUser = new JLabel("User Name:");
-		lblUser.setBounds(0, 0, 75, 25);
-		JLabel lblPass = new JLabel("Password :");
-		lblPass.setBounds(0, 30, 75, 25);
-		final JTextField txtUser = new JTextField();
-		txtUser.setBounds(80, 0, 100, 25);
-		JTextField txtPass = new JTextField();
-		txtPass.setBounds(80, 30, 100, 25);
-		JButton btnLog = new JButton("Log On");
-		btnLog.setBounds(200, 30, 100, 25);
+		txtUser = new JTextField();
+		//txtUser.setBorder(null);
+		txtPass = new JTextField();
+		//txtPass.setBorder(null);
+		btnLog = new JButton("Log On");
 		btnLog.addActionListener(new ActionListener() {
 
 			@Override
@@ -110,11 +110,26 @@ public class GUILogOnPanel extends JPanel implements ClientUser {
 				}
 			}
 		});
-		this.add(lblUser);
 		this.add(txtUser);
-		this.add(lblPass);
 		this.add(txtPass);
 		this.add(btnLog);
+		this.reposition();
+	}
+	
+	public void reposition(){
+		prewid = app.size.width;
+		double diffh = (double) (app.size.width)
+				/ app.graphics.logOnPage.getWidth(null);
+		double diffv = (double) (app.size.height)
+				/ app.graphics.logOnPage.getHeight(null);
+		txtUser.setFont(new Font("Ariel", Font.PLAIN, (int)(24*diffv)));
+		txtUser.setSize((int) (402 * diffh), (int)(75*diffv));
+		txtUser.setLocation((int) (547 * diffh), (int)(565*diffv));
+		txtPass.setFont(new Font("Ariel", Font.PLAIN, (int)(24*diffv)));
+		txtPass.setSize((int) (402 * diffh), (int)(75*diffv));
+		txtPass.setLocation((int) (542 * diffh), (int)((565+140)*diffv));
+		btnLog.setSize((int) (402 * diffh), (int)(75*diffv));
+		btnLog.setLocation((int) (547 * diffh), (int)((565+140*2)*diffv));
 	}
 
 	@Override
@@ -122,9 +137,22 @@ public class GUILogOnPanel extends JPanel implements ClientUser {
 		// TODO Auto-generated method stub
 		if (string.equals("Connected")) {
 			app.switchView(1);
-		}else{
+		} else {
 			app.userName = "";
 			System.out.println(string);
 		}
+	}
+
+	@Override
+	protected void paintComponent(Graphics g) {
+		super.paintComponent(g);
+		if(app.size.width!=prewid){
+			reposition();
+		}
+		g.setColor(Color.WHITE);
+		g.fillRect(0, 0, app.size.width, app.size.height);
+		g.drawImage(app.graphics.logOnPage, 0, 0, app.size.width,
+				app.size.height, 0, 0, app.graphics.logOnPage.getWidth(null),
+				app.graphics.logOnPage.getHeight(null), null);
 	}
 }

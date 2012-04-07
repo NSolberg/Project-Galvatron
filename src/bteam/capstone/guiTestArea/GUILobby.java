@@ -171,9 +171,8 @@ public class GUILobby extends JPanel implements ClientUser {
 		pColor = new JButton[6];
 		pC = new int[6];
 		pConfirm = new JButton[6];
-		yes = new ImageIcon(
-				"Icons for Risk/SMALLActions-dialog-ok-apply-icon-1.png");
-		no = new ImageIcon("Icons for Risk/SMALLAlarm-Error-icon-1.png");
+		yes = new ImageIcon(app.graphics.okCheck);
+		no = new ImageIcon(app.graphics.cancel);
 		for (int i = 0; i < 6; i++) {
 			pNames[i] = new JLabel();
 			pNames[i].setPreferredSize(new Dimension(400, 30));
