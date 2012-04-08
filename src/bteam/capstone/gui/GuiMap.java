@@ -18,10 +18,11 @@ import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
+import bteam.capstone.guiTestArea.MapLoader;
+
 public class GuiMap {
 	private String filename;
 	private boolean legacy;
-	private Image[] images;
 	private ArrayList<Image> cards;
 	private int sWid, sHit;
 	private double scale;
@@ -32,28 +33,31 @@ public class GuiMap {
 	private String[] continents;
 	private boolean inattack;
 	private JPanel panel;
-
+	private MapLoader loader;
 	private int cty1, cty2;
 
-	public GuiMap(JPanel panel, String Filename, boolean Legacy,
+	public GuiMap(JPanel panel, MapLoader loader, boolean Legacy,
 			int SCREENWIDTH, int SCREENHEIGHT) {
 		this.panel = panel;
-		filename = Filename;
+		this.loader = loader;
+		filename = loader.filename;
 		legacy = Legacy;
 		this.setSize(SCREENWIDTH, SCREENHEIGHT);
 		scale = 1.0;
 		inattack = false;
 		cty1 = -1;
 		cty2 = -1;
-		initImages();
+		//initImages();
 		initFromFile();
 		initCards();
-		cen = new Point(images[0].getWidth(null) / 2,
-				images[0].getHeight(null) / 2);
-		beforbuffer = new BufferedImage(images[0].getWidth(null),
-				images[0].getHeight(null), BufferedImage.TYPE_4BYTE_ABGR_PRE);
-		buffer = new BufferedImage(images[0].getWidth(null),
-				images[0].getHeight(null), BufferedImage.TYPE_4BYTE_ABGR_PRE);
+		cen = new Point(loader.images[0].getWidth(null) / 2,
+				loader.images[0].getHeight(null) / 2);
+		beforbuffer = new BufferedImage(loader.images[0].getWidth(null),
+				loader.images[0].getHeight(null),
+				BufferedImage.TYPE_4BYTE_ABGR_PRE);
+		buffer = new BufferedImage(loader.images[0].getWidth(null),
+				loader.images[0].getHeight(null),
+				BufferedImage.TYPE_4BYTE_ABGR_PRE);
 	}
 
 	public void setSize(int w, int h) {
@@ -115,10 +119,12 @@ public class GuiMap {
 	}
 
 	private void initCards() {
-		BufferedImage tbuffer = new BufferedImage(images[0].getWidth(null),
-				images[0].getHeight(null), BufferedImage.TYPE_4BYTE_ABGR_PRE);
+		BufferedImage tbuffer = new BufferedImage(
+				loader.images[0].getWidth(null),
+				loader.images[0].getHeight(null),
+				BufferedImage.TYPE_4BYTE_ABGR_PRE);
 		Graphics g = tbuffer.getGraphics();
-		g.drawImage(images[0], 0, 0, null);
+		g.drawImage(loader.images[0], 0, 0, null);
 		g.dispose();
 
 		cards = new ArrayList<Image>();
@@ -155,10 +161,11 @@ public class GuiMap {
 			g.drawString(t.name, 300 / 2 - w / 2, 25);
 			g.drawImage(temp, 25, 30, 250, 205, 0, 0, temp.getWidth(),
 					temp.getHeight(), null);
-			g.drawImage(images[2 + pos], 25, 215, 250, 410, 0, 0,
-					images[2 + pos].getWidth(null),
-					images[2 + pos].getHeight(null), null);
+			g.drawImage(loader.images[2 + pos], 25, 215, 250, 410, 0, 0,
+					loader.images[2 + pos].getWidth(null),
+					loader.images[2 + pos].getHeight(null), null);
 			cards.add(card);
+			loader.progress++;
 		}
 		if (!legacy) {
 			for (int i = 0; i < 2; i++) {
@@ -167,17 +174,18 @@ public class GuiMap {
 				g = card.getGraphics();
 				g.setColor(Color.WHITE);
 				g.fillRect(0, 0, card.getWidth(), card.getHeight());
-				g.drawImage(images[2], 50, 3, 250, 138, 0, 0,
-						images[2].getWidth(null), images[2].getHeight(null),
-						null);
-				g.drawImage(images[3], 50, 143, 250, 278, 0, 0,
-						images[3].getWidth(null), images[3].getHeight(null),
-						null);
-				g.drawImage(images[4], 50, 283, 250, 418, 0, 0,
-						images[4].getWidth(null), images[4].getHeight(null),
-						null);
+				g.drawImage(loader.images[2], 50, 3, 250, 138, 0, 0,
+						loader.images[2].getWidth(null),
+						loader.images[2].getHeight(null), null);
+				g.drawImage(loader.images[3], 50, 143, 250, 278, 0, 0,
+						loader.images[3].getWidth(null),
+						loader.images[3].getHeight(null), null);
+				g.drawImage(loader.images[4], 50, 283, 250, 418, 0, 0,
+						loader.images[4].getWidth(null),
+						loader.images[4].getHeight(null), null);
 				g.dispose();
 				cards.add(card);
+				loader.progress++;
 			}
 		}
 	}
@@ -186,7 +194,7 @@ public class GuiMap {
 		return cards.get(num);
 	}
 
-	private void initImages() {
+	/*private void initImages() {
 		if (!legacy) {
 			images = new Image[6];
 			images[0] = new ImageIcon(filename + "/map.png").getImage();
@@ -197,7 +205,7 @@ public class GuiMap {
 			images[5] = new ImageIcon(filename + "/battleground.png")
 					.getImage();
 		}
-	}
+	}*/
 
 	private void initFromFile() {
 		countries = new ArrayList<GuiCountry>();
@@ -212,11 +220,11 @@ public class GuiMap {
 			num = scan.nextInt();
 			scan.nextLine();
 			continents = new String[num];
-			BufferedImage tbuffer = new BufferedImage(images[0].getWidth(null),
-					images[0].getHeight(null),
+			BufferedImage tbuffer = new BufferedImage(loader.images[0].getWidth(null),
+					loader.images[0].getHeight(null),
 					BufferedImage.TYPE_4BYTE_ABGR_PRE);
 			Graphics g = tbuffer.getGraphics();
-			g.drawImage(images[0], 0, 0, null);
+			g.drawImage(loader.images[0], 0, 0, null);
 			g.dispose();
 			for (int i = 0; i < num; i++) {
 				String s = scan.nextLine();
@@ -306,12 +314,12 @@ public class GuiMap {
 		g.setColor(Color.BLACK);
 		Font f = new Font("Times New Roman", Font.BOLD, 30);
 		g.setFont(f);
-		int wid = images[1].getWidth(null);
-		int hit = images[1].getHeight(null);
+		int wid = loader.images[1].getWidth(null);
+		int hit = loader.images[1].getHeight(null);
 		for (int i = 0; i < countries.size(); i++) {
 			int x = countries.get(i).centers[0].x - wid / 5 / 2;
 			int y = countries.get(i).centers[0].y - hit / 5;
-			g.drawImage(images[1], x, y, wid / 5 + x, hit / 5 + y, 0, 0, wid,
+			g.drawImage(loader.images[1], x, y, wid / 5 + x, hit / 5 + y, 0, 0, wid,
 					hit, null);
 			switch (countries.get(i).troopColor) {
 			case 6:
@@ -351,7 +359,7 @@ public class GuiMap {
 		Graphics g = beforbuffer.getGraphics();
 		g.setColor(Color.BLUE);
 		g.fillRect(0, 0, beforbuffer.getWidth(), beforbuffer.getHeight());
-		g.drawImage(images[0], 0, 0, null);
+		g.drawImage(loader.images[0], 0, 0, null);
 		drawSelections();
 		drawMarkers(g);
 		g.dispose();
@@ -429,7 +437,6 @@ public class GuiMap {
 			y = y - buffer.getHeight();
 		}
 		Point temp = new Point((int) x, (int) y);
-		System.out.println(temp);
 		for (int i = 0; i < countries.size(); i++) {
 			if (countries.get(i).points.contains(temp)) {
 				return i;
@@ -452,14 +459,14 @@ public class GuiMap {
 		cty1 = att;
 		cty2 = def;
 		inattack = true;
-		buildTroops(0,0);
+		buildTroops(0, 0);
 		panel.repaint();
 	}
 
 	public void buildTroops(int n1, int n2) {
 		GuiCountry c1 = countries.get(cty1);
 		GuiCountry c2 = countries.get(cty2);
-		int soldiers = c1.troopCount-1-n1;
+		int soldiers = c1.troopCount - 1 - n1;
 		int calvery = 0;
 		int tank = 0;
 		if (soldiers > 5) {
@@ -472,15 +479,15 @@ public class GuiMap {
 		}
 		atroop = new ArrayList<GuiTroop>();
 		for (int i = 0; i < tank && i < 5; i++) {
-			atroop.add(new GuiTroop(images[4], 0, i, c1.troopColor));
+			atroop.add(new GuiTroop(loader.images[4], 0, i, c1.troopColor));
 		}
 		for (int i = 0; i < calvery && i < 5; i++) {
-			atroop.add(new GuiTroop(images[3], 1, i, c1.troopColor));
+			atroop.add(new GuiTroop(loader.images[3], 1, i, c1.troopColor));
 		}
 		for (int i = 0; i < soldiers && i < 5; i++) {
-			atroop.add(new GuiTroop(images[2], 2, i, c1.troopColor));
+			atroop.add(new GuiTroop(loader.images[2], 2, i, c1.troopColor));
 		}
-		soldiers = c2.troopCount-n2;
+		soldiers = c2.troopCount - n2;
 		calvery = 0;
 		tank = 0;
 		if (soldiers > 5) {
@@ -493,19 +500,19 @@ public class GuiMap {
 		}
 		dtroop = new ArrayList<GuiTroop>();
 		for (int i = 0; i < tank && i < 5; i++) {
-			GuiTroop tr = new GuiTroop(images[4], 0, i, c2.troopColor);
+			GuiTroop tr = new GuiTroop(loader.images[4], 0, i, c2.troopColor);
 			tr.reverse = true;
 			tr.x = sWid;
 			dtroop.add(tr);
 		}
 		for (int i = 0; i < calvery && i < 5; i++) {
-			GuiTroop tr = new GuiTroop(images[3], 1, i, c2.troopColor);
+			GuiTroop tr = new GuiTroop(loader.images[3], 1, i, c2.troopColor);
 			tr.reverse = true;
 			tr.x = sWid - 100;
 			dtroop.add(tr);
 		}
 		for (int i = 0; i < soldiers && i < 5; i++) {
-			GuiTroop tr = new GuiTroop(images[2], 2, i, c2.troopColor);
+			GuiTroop tr = new GuiTroop(loader.images[2], 2, i, c2.troopColor);
 			tr.reverse = true;
 			tr.x = sWid - 200;
 			dtroop.add(tr);
@@ -517,7 +524,7 @@ public class GuiMap {
 
 	public void drawAttack(Graphics g) {
 		Graphics temp = this.beforbuffer.getGraphics();
-		temp.drawImage(images[5], 0, 0, null);
+		temp.drawImage(loader.images[5], 0, 0, null);
 		for (GuiTroop gt : atroop) {
 			gt.drawMe(temp);
 		}
@@ -532,20 +539,21 @@ public class GuiMap {
 
 	public boolean playing;
 	int diff1, diff2;
+
 	public void play(int ad, int dd) {
 		playing = true;
 		num = 0;
-		diff1 =ad;
+		diff1 = ad;
 		diff2 = dd;
 		t = new Timer(30, new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				num++;
-				if (num == 50){
+				if (num == 50) {
 					t.stop();
 					playing = false;
-					buildTroops(diff1,diff2);
+					buildTroops(diff1, diff2);
 				}
 				panel.repaint();
 			}

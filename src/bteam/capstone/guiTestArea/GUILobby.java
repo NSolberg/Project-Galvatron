@@ -21,7 +21,7 @@ public class GUILobby extends JPanel implements ClientUser {
 	private JLabel[] pNames;
 	private JLabel lblMapName;
 	private JButton[] pColor;
-	private int[]     pC;
+	private int[] pC;
 	private JButton[] pConfirm;
 	private JButton leave, start;
 	private ImageIcon yes, no;
@@ -123,15 +123,15 @@ public class GUILobby extends JPanel implements ClientUser {
 				this.start.setEnabled(true);
 			} else if (cmd.equals("Alert")) {
 				cmd = scan.nextLine();
-				//JOptionPane.showMessageDialog(null, cmd, "Alert", ERROR);
-			} else if(cmd.equals("start")){
-				app.setMap(map);
-				GUIGamePanel g = (GUIGamePanel) app.panels[2];
-				for (int i=0;i<6;i++){
-					if(pNames[i].getText().length()>0)
-					g.addPlayer(pNames[i].getText(),pC[i]);
+				// JOptionPane.showMessageDialog(null, cmd, "Alert", ERROR);
+			} else if (cmd.equals("start")) {
+				app.gameFile = map;
+				String[] names = new String[pNames.length];
+				for (int i = 0; i < 6; i++) {
+					names[i] = pNames[i].getText();
 				}
-				app.switchView(3);
+				app.switchView(4);
+				((MapLoader) app.panels[4]).loadMap(map, names, pC);
 			}
 		}
 	}
@@ -177,7 +177,7 @@ public class GUILobby extends JPanel implements ClientUser {
 			pNames[i] = new JLabel();
 			pNames[i].setPreferredSize(new Dimension(400, 30));
 			pColor[i] = new JButton();
-			pColor[i].setName(i+"");
+			pColor[i].setName(i + "");
 			pColor[i].setPreferredSize(new Dimension(50, 50));
 			pColor[i].setMaximumSize(new Dimension(50, 50));
 			pColor[i].setMinimumSize(new Dimension(50, 50));
@@ -186,19 +186,19 @@ public class GUILobby extends JPanel implements ClientUser {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					JButton b = (JButton) e.getSource();
-					if (b.getName().equals(pos+""))
+					if (b.getName().equals(pos + ""))
 						app.client.sendData("col");
 				}
 			});
 			pConfirm[i] = new JButton();
-			pConfirm[i].setName(i+"");
+			pConfirm[i].setName(i + "");
 			pConfirm[i].setIcon(no);
 			pConfirm[i].setEnabled(false);
 			pConfirm[i].addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					JButton b = (JButton) e.getSource();
-					if (b.getName().equals(pos+""))
+					if (b.getName().equals(pos + ""))
 						app.client.sendData("rdy");
 				}
 			});
@@ -212,7 +212,7 @@ public class GUILobby extends JPanel implements ClientUser {
 	private void createOtherButtons() {
 		JPanel other = new JPanel();
 		leave = new JButton("leave");
-		leave.addActionListener(new ActionListener(){
+		leave.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -221,12 +221,12 @@ public class GUILobby extends JPanel implements ClientUser {
 		});
 		start = new JButton("start game");
 		start.setEnabled(false);
-		start.addActionListener(new ActionListener(){
+		start.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				app.client.sendData("start");
-			}			
+			}
 		});
 		other.add(leave);
 		other.add(start);

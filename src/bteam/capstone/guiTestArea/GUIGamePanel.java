@@ -220,8 +220,8 @@ public class GUIGamePanel extends JPanel implements ClientUser, MouseListener,
 
 	private void createAttackPane() {
 		AttackPane = new JPanel();
-		Phase.addTab("", new ImageIcon(app.graphics.phaseAttack),
-				AttackPane, null);
+		Phase.addTab("", new ImageIcon(app.graphics.phaseAttack), AttackPane,
+				null);
 		AttackPane.setLayout(null);
 
 		DiceSlider = new JSlider();
@@ -348,15 +348,16 @@ public class GUIGamePanel extends JPanel implements ClientUser, MouseListener,
 
 	private void createEndTurnPane() {
 		EndTurnPane = new JPanel();
-		Phase.addTab("", new ImageIcon(app.graphics.phaseBegin),
-				EndTurnPane, null);
+		Phase.addTab("", new ImageIcon(app.graphics.phaseBegin), EndTurnPane,
+				null);
 		EndTurnPane.setLayout(null);
 	}
 
 	private void populatePlayerPane() {
 		EndTurnPane.removeAll();
 		for (int i = 0; i < players.size(); i++) {
-			GUIAvatarPanel p = new GUIAvatarPanel(players.get(i), color.get(i), app.graphics.avatar);
+			GUIAvatarPanel p = new GUIAvatarPanel(players.get(i), color.get(i),
+					app.graphics.avatar);
 			p.setLocation(i * (1 + p.getWidth()), 0);
 			EndTurnPane.add(p);
 		}
@@ -414,9 +415,8 @@ public class GUIGamePanel extends JPanel implements ClientUser, MouseListener,
 
 	private JTextField ChatField;
 
-	public void setMap(String map) {
-		this.map = new GuiMap(this,"Maps/" + map, false, app.size.width,
-				app.size.height);
+	public void setMap(MapLoader map) {
+		this.map = new GuiMap(this, map, false, app.size.width, app.size.height);
 	}
 
 	@Override
@@ -450,6 +450,8 @@ public class GUIGamePanel extends JPanel implements ClientUser, MouseListener,
 					swap(pos, i);
 				}
 				this.populatePlayerPane();
+				((MapLoader) app.panels[4]).progress++;
+				System.out.println("I should be loaded "+((MapLoader) app.panels[4]).progress);
 			} else if (cmd.equals("set")) {
 				scan.useDelimiter("/");
 				String name = scan.next();
@@ -526,8 +528,8 @@ public class GUIGamePanel extends JPanel implements ClientUser, MouseListener,
 			} else if (cmd.equals("dmg")) {
 				int n1 = scan.nextInt();
 				int n2 = scan.nextInt();
-				map.play(n1,n2);
-				while(map.playing){					
+				map.play(n1, n2);
+				while (map.playing) {
 				}
 				if (!def) {
 					this.RollDiceButton.setEnabled(true);
@@ -539,13 +541,13 @@ public class GUIGamePanel extends JPanel implements ClientUser, MouseListener,
 				JOptionPane.showMessageDialog(null, "You Won the Match");
 				map.exitAttack();
 				this.switchPhase("attack");
-				if(def){
+				if (def) {
 					this.switchPhase("begin");
 				}
 			} else if (cmd.equals("lose")) {
 				JOptionPane.showMessageDialog(null, "You Lost the Match");
 				map.exitAttack();
-				if(def){
+				if (def) {
 					this.switchPhase("begin");
 				}
 			} else if (cmd.equals("end")) {
@@ -580,6 +582,7 @@ public class GUIGamePanel extends JPanel implements ClientUser, MouseListener,
 	}
 
 	public void addPlayer(String text, int i) {
+		System.out.println(text);
 		if (this.players == null) {
 			players = new ArrayList<String>();
 			this.color = new ArrayList<Integer>();

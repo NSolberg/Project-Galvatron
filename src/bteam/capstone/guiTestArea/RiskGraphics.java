@@ -16,6 +16,7 @@ public class RiskGraphics {
 	public Image okCheck;
 	public Image cancel;
 	public Image avatar;
+	public Image loadtitle;
 	
 	
 	public RiskGraphics(){
@@ -33,6 +34,7 @@ public class RiskGraphics {
 		okCheck = loadImage("Icons For Risk/SMALLActions-dialog-ok-apply-icon-1.png");
 		cancel = loadImage("Icons For Risk/SMALLAlarm-Error-icon-1.png");
 		avatar = loadImage("Icons For Risk/army-officer-icon.png");
+		loadtitle = loadImage("Icons For Risk/risk.png");
 	}
 	
 	private Image loadImage(String location){

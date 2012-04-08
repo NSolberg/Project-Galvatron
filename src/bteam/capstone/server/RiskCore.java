@@ -615,11 +615,11 @@ public class RiskCore extends Thread {
 		String cmd = scan.nextLine();
 		cmd = cmd.substring(1);
 		if (cmd.equals("disconect")) {
-			if(!inGame)
+			if (!inGame)
 				handleLeave(client);
-			else{
-				for(player p: activePlayer){
-					if(p.getClientID().equals(client)){
+			else {
+				for (player p : activePlayer) {
+					if (p.getClientID().equals(client)) {
 						p.connected = false;
 						break;
 					}
@@ -2652,17 +2652,18 @@ public class RiskCore extends Thread {
 	public String toString() {
 		String out = "";
 		// Step 1: player turns
-		out = "order ";
-		for (player p : this.activePlayer) {
-			out += "/" + p.getClientID();
-		}
-
+		out = "";
 		for (player p : this.activePlayer) {
 			for (Integer c : p.getCountrys()) {
 				out += "\nset " + p.getClientID() + "/"
 						+ world.getCountry(c).getCountryName() + "/"
 						+ world.getCountry(c).getTroopQuantity();
 			}
+		}
+
+		out += "\norder ";
+		for (player p : this.activePlayer) {
+			out += "/" + p.getClientID();
 		}
 		out += "\npaint";
 

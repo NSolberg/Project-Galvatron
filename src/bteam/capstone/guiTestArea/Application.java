@@ -43,6 +43,7 @@ public class Application implements ActionListener {
 	public String userName;
 	public boolean fullscreen = false;
 	public RiskGraphics graphics;
+	public String gameFile = "";
 
 	public static void main(String[] args) {
 		//GuiMap m = new GuiMap("Maps/Earth",false,800,600);
@@ -74,17 +75,19 @@ public class Application implements ActionListener {
 		GUILogOnPanel lp = new GUILogOnPanel(this);
 		serverBrowser sp = new serverBrowser(this);
 		GUILobby lobby = new GUILobby(this);
-		panels = new JPanel[4];
+		panels = new JPanel[5];
 		panels[0] = lp;
 		panels[1] = sp;
 		panels[2] = gp;
 		panels[3] = lobby;
+		panels[4] = new MapLoader(this);
 		mainpanel = new JPanel();
 		mainpanel.setLayout(new CardLayout());
 		mainpanel.add(panels[0], "LogOn");
 		mainpanel.add(panels[1], "Server");
 		mainpanel.add(panels[2], "Game");
 		mainpanel.add(panels[3], "Lobby");
+		mainpanel.add(panels[4], "LoadMap");
 		CardLayout c1 = (CardLayout) mainpanel.getLayout();
 		c1.show(mainpanel, "LogOn");
 		this.client = new Client(lp);
@@ -209,13 +212,17 @@ public class Application implements ActionListener {
 			break;
 		case 3:
 			c1.show(mainpanel, "Game");
-			client.switchController((ClientUser) panels[2]);
+			//client.switchController((ClientUser) panels[2]);
 			//client.sendData("state");
+			break;
+		case 4:
+			c1.show(mainpanel, "LoadMap");
+			client.switchController((ClientUser) panels[2]);
 			break;
 		}
 	}
 
-	public void setMap(String map) {
+	public void setMap(MapLoader map) {
 		((GUIGamePanel) (panels[2])).setMap(map);
 	}
 }

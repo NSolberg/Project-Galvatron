@@ -23,8 +23,8 @@ public class GuiTroop {
 	public boolean reverse;
 
 	public GuiTroop(Image image, int type, int num, int color) {
-		URL url =getClass().getResource("gunfire.mp3");
-		sound = Applet.newAudioClip(url);
+		/*URL url =getClass().getResource("gunfire.mp3");
+		sound = Applet.newAudioClip(url);*/
 		this.color = color;
 		img = image;
 		this.type = type;
@@ -89,7 +89,7 @@ public class GuiTroop {
 		if (time > -1) {
 			time++;
 			if (time == shiftTime) {
-				sound.play();
+				//sound.play();
 				if(this.reverse){
 					x -=shift;
 				}else
