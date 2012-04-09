@@ -112,8 +112,15 @@ public class RiskCore extends Thread {
 		createPlayers();
 		initMap();
 		intialTurnRisk(numPlayers);
+		this.intialRandomRiskCardDeck();
 		informAll(this.toString());
-
+		player p = activePlayer.get(0);
+		giveCard(p);
+		giveCard(p);
+		giveCard(p);
+		giveCard(p);
+		giveCard(p);
+		theServer.sendTo(p.getClientID(), "paint");
 		while (!gameOver()) {
 			conq = false;
 			this.informAll("turn " + this.activePlayer.get(0).getClientID()); //
@@ -124,16 +131,20 @@ public class RiskCore extends Thread {
 				fortifyPhase();
 				if (conq)
 					if (this.cardDeck.size() > 0) {
-						RiskCard card = cardDeck.pop();
-						this.activePlayer.get(0).addCard(card);
-						theServer.sendTo(activePlayer.get(0).getClientID(),
-								"card a " + card.getCountry().getCountryName());
+						giveCard(activePlayer.get(0));
 					}
 
 				activePlayer.add(activePlayer.remove(0));
 			}
 		}
 		theServer.sendTo(activePlayer.get(0).getClientID(), "Victory");
+	}
+
+	public void giveCard(player p) {
+		RiskCard card = cardDeck.pop();
+		p.addCard(card);
+		theServer.sendTo(p.getClientID(), "card a "
+				+ card.getName());
 	}
 
 	private boolean gameOver() {
@@ -387,68 +398,95 @@ public class RiskCore extends Thread {
 
 	private void cardPhase() {
 		String id = activePlayer.get(0).getClientID();
-		if (activePlayer.get(0).getCards().size() > 2) {
-			theServer.sendTo(id, "phase card");
-			String cmd = "";
-			do {
-				String data = this.getDataFromBuffer();
-				Scanner scan = new Scanner(data);
-				cmd = scan.next();
-				if (cmd.equals("trade")) {
-					String c1, c2, c3;
-					c1 = scan.next();
-					c2 = scan.next();
-					c3 = scan.next();
-					int ca1 = -1, ca2 = -1, ca3 = -1;
-					for (int i = 0; i < activePlayer.get(0).getCards().size(); i++) {
-						String temp = activePlayer.get(0).getCards().get(i)
-								.getCountry().getCountryName();
-						if (temp.equals(c1))
-							ca1 = i;
-						else if (temp.equals(c2))
-							ca2 = i;
-						else if (temp.equals(c3))
-							ca3 = i;
-					}
-					if (validSet(ca1, ca2, ca3)) {
-						player aPlayer = activePlayer.get(0);
-						switch (sets) {
-						case 1:
-							aPlayer.setTroops(aPlayer.getTroops() + 4);
-							break;
-						case 2:
-							aPlayer.setTroops(aPlayer.getTroops() + 6);
-							break;
-						case 3:
-							aPlayer.setTroops(aPlayer.getTroops() + 8);
-							break;
-						case 4:
-							aPlayer.setTroops(aPlayer.getTroops() + 10);
-							break;
-						case 5:
-							aPlayer.setTroops(aPlayer.getTroops() + 12);
-							break;
-						case 6:
-							aPlayer.setTroops(aPlayer.getTroops() + 15);
-							break;
-						}
+		theServer.sendTo(id, "phase card");
 
-						if (aPlayer.getSets() > 6) {
-							aPlayer.setTroops(aPlayer.getTroops() + 15 + 5
-									* (aPlayer.getSets() - 6));
-						}
+		String cmd = "";
+		do {
+			if (activePlayer.get(0).getCards().size() == 0)
+				cmd = "fin";
+			String data = this.getDataFromBuffer();
+			Scanner scan = new Scanner(data);
+			if (scan.hasNext()) {
+				cmd = scan.next();
+
+				if (cmd.equals("trade")) {
+					scan.useDelimiter("/");
+					scan.next();
+					String c1, c2, c3;
+					int ca1 = -1, ca2 = -1, ca3 = -1;
+					c1 = scan.next();
+					ca1 = scan.nextInt();
+					c2 = scan.next();
+					ca2 = scan.nextInt();
+					c3 = scan.next();
+					ca3 = scan.nextInt();
+					if (validSet(ca1, ca2, ca3)) {
+						turnInset(getSet(c1, c2, c3));
+						player p = activePlayer.get(0);
+						p.setTroops(p.getTroops() + getSetBonus());
 						sets++;
-						aPlayer.getCards().remove(ca1);
-						aPlayer.getCards().remove(ca2);
-						aPlayer.getCards().remove(ca3);
-						theServer.sendTo(aPlayer.getClientID(), "troops "
-								+ aPlayer.getTroops());
-						theServer.sendTo(aPlayer.getClientID(), "card r " + c1
-								+ " " + c2 + " " + c3);
+						theServer.sendTo(p.getClientID(), "card r " + c1);
+						theServer.sendTo(p.getClientID(), "card r " + c2);
+						theServer.sendTo(p.getClientID(), "card r " + c3);
 					}
 				}
-			} while (!cmd.equals("fin")
-					|| activePlayer.get(0).getCards().size() > 4);
+			}
+		} while (!cmd.equals("fin")
+				|| activePlayer.get(0).getCards().size() > 4);
+		theServer.sendTo(activePlayer.get(0).getClientID(), "normlum");
+	}
+
+	public int getSetBonus() {
+		switch (sets) {
+		case 0:
+			return 4;
+		case 1:
+			return 8;
+		case 2:
+			return 10;
+		case 3:
+			return 12;
+		case 4:
+			return 15;
+		}
+		return (15 + 5 * (sets - 5));
+	}
+
+	public RiskCard getCard(String country) {
+		player p = activePlayer.get(0);
+		for (RiskCard c : p.getCards()) {
+			if (c.getName().equals(country)) {
+				return c;
+			}
+		}
+		return null;
+	}
+
+	public RiskCard[] getSet(String c1, String c2, String c3) {
+		RiskCard[] out = new RiskCard[3];
+		out[0] = getCard(c1);
+		out[1] = getCard(c2);
+		out[2] = getCard(c3);
+		return out;
+	}
+
+	public void turnInset(RiskCard[] set) {
+		player p = activePlayer.get(0);
+		for (RiskCard c : set) {
+			if (c.getCountry() != null) {
+				int pos = world.getCountryByName(c.getCountry()
+						.getCountryName());
+				if (p.getCountrys().contains(pos)) {
+					world.getCountry(pos).setTroopQuantity(
+							world.getCountry(pos).getTroopQuantity() + 2);
+				}
+			}
+			for (int i = 0; i < p.getCards().size(); i++) {
+				if (p.getCards().get(i).getName().equals(c.getName())) {
+					p.getCards().remove(i);
+					break;
+				}
+			}
 		}
 	}
 
@@ -1028,6 +1066,8 @@ public class RiskCore extends Thread {
 			cardDeck.add(new RiskCard(2, world.countrys.get(i + 1)));
 			cardDeck.add(new RiskCard(3, world.countrys.get(i + 2)));
 		}
+		cardDeck.add(new RiskCard(0, null));
+		cardDeck.add(new RiskCard(0, null));
 
 		Collections.shuffle(cardDeck);
 

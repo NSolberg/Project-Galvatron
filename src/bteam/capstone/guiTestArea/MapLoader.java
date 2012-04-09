@@ -11,6 +11,7 @@ import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.Timer;
 
+@SuppressWarnings("serial")
 public class MapLoader extends JPanel {
 	public int progress;
 	public Image[] images;
@@ -29,7 +30,7 @@ public class MapLoader extends JPanel {
 		pbar = new JProgressBar();
 		pbar.setMaximum(50);
 		pbar.setValue(0);
-		pbar.setb
+
 		pbar.setSize(app.size.width / 3 * 2, 50);
 		pbar.setLocation(app.size.width / 2 - pbar.size().width / 2,
 				app.size.height / 2 + pbar.size().height);
@@ -54,17 +55,19 @@ public class MapLoader extends JPanel {
 				app.graphics.loadtitle.getHeight(null), null);
 	}
 
+	Timer t;
 	public void loadMap(String file, String[] pNames, int[] pC) {
 		filename = "Maps/" + file;
 		pbar.setValue(0);
 		progress = 0;
-		Timer t = new Timer(100, new ActionListener() {
+		t = new Timer(100, new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				pbar.setValue(progress);
-				if (pbar.getMaximum() == progress) {
+				if (pbar.getMaximum() <= progress) {
 					app.switchView(3);
+					t.stop();
 				}
 			}
 

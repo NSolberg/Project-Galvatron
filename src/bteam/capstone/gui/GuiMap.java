@@ -14,7 +14,6 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
@@ -23,7 +22,7 @@ import bteam.capstone.guiTestArea.MapLoader;
 public class GuiMap {
 	private String filename;
 	private boolean legacy;
-	private ArrayList<Image> cards;
+	public ArrayList<Image> cards;
 	private int sWid, sHit;
 	private double scale;
 	private Point cen;
@@ -63,14 +62,6 @@ public class GuiMap {
 	public void setSize(int w, int h) {
 		sWid = w;
 		sHit = h;
-	}
-
-	private void test() {
-		countries.get(0).troopCount = 70;
-		countries.get(0).troopColor = 0;
-		countries.get(1).troopCount = 53;
-		countries.get(1).troopColor = 1;
-		// this.enterAttack(0, 1);
 	}
 
 	public void delum() {
@@ -118,6 +109,7 @@ public class GuiMap {
 		return this.countryNames.get(val);
 	}
 
+	public ArrayList<Integer> cardType;
 	private void initCards() {
 		BufferedImage tbuffer = new BufferedImage(
 				loader.images[0].getWidth(null),
@@ -126,7 +118,8 @@ public class GuiMap {
 		Graphics g = tbuffer.getGraphics();
 		g.drawImage(loader.images[0], 0, 0, null);
 		g.dispose();
-
+		
+		cardType = new ArrayList<Integer>();
 		cards = new ArrayList<Image>();
 		int pos = 0;
 
@@ -165,10 +158,12 @@ public class GuiMap {
 					loader.images[2 + pos].getWidth(null),
 					loader.images[2 + pos].getHeight(null), null);
 			cards.add(card);
+			cardType.add(pos);
 			loader.progress++;
 		}
 		if (!legacy) {
-			for (int i = 0; i < 2; i++) {
+			for (int i = 0; i < 1; i++) {
+				cardType.add(3);
 				BufferedImage card = new BufferedImage(300, 420,
 						BufferedImage.TYPE_4BYTE_ABGR_PRE);
 				g = card.getGraphics();

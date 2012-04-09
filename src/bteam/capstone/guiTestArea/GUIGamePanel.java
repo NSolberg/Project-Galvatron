@@ -82,6 +82,10 @@ public class GUIGamePanel extends JPanel implements ClientUser, MouseListener,
 	private void switchPhase(String p) {
 		this.disablePhases();
 		if (p.equals("card")) {
+			for (GUICard c : cards) {
+				c.setSelected(false);
+			}
+			this.numcards = 0;
 			Phase.setEnabledAt(1, true);
 			Phase.setSelectedComponent(CardPane);
 		} else if (p.equals("recruit")) {
@@ -146,6 +150,7 @@ public class GUIGamePanel extends JPanel implements ClientUser, MouseListener,
 			cards[i] = new GUICard();
 			CardPane.add(cards[i]);
 			cards[i].setLocation(0 + i * (2 + cards[i].getWidth()), 2);
+			cards[i].addMouseListener(this);
 		}
 		// create buttons
 		JButton TurnInButton = new JButton("");
@@ -153,6 +158,20 @@ public class GUIGamePanel extends JPanel implements ClientUser, MouseListener,
 		TurnInButton.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
+				if (numcards == 3) {
+					String out = "trade ";
+					for (GUICard c : cards) {
+						if (c.getSelected()) {
+							if (c.getType() == 3) {
+								out += "/wild/" + 0;
+							} else {
+								out += "/" + c.getName() + "/"
+										+ (c.getType() + 1);
+							}
+						}
+					}
+					app.client.sendData(out);
+				}
 				System.out.println("CARDS TURNED IN");
 			}
 		});
@@ -165,6 +184,7 @@ public class GUIGamePanel extends JPanel implements ClientUser, MouseListener,
 		SkipTurnInButton.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
+				app.client.sendData("fin");
 				System.out.println("SKIPPED CARD TURN IN");
 			}
 		});
@@ -364,6 +384,9 @@ public class GUIGamePanel extends JPanel implements ClientUser, MouseListener,
 		EndTurnPane.repaint();
 	}
 
+	private JTextArea ServerChat;
+	private JTextField ChatField;
+
 	private void createChatPane() {
 		ChatContainer = new JPanel();
 		ChatContainer.setOpaque(false);
@@ -383,7 +406,9 @@ public class GUIGamePanel extends JPanel implements ClientUser, MouseListener,
 		SayButton.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				System.out.println("CHAT MESSEGE SENT");
+				String msg = ChatField.getText();
+				ChatField.setText("");
+				app.client.sendData("message " + msg);
 			}
 		});
 		SayButton.setBounds(161, 20, 50, 27);
@@ -393,7 +418,7 @@ public class GUIGamePanel extends JPanel implements ClientUser, MouseListener,
 		scrollPane.setBounds(6, 46, 205, 138);
 		ChatContainer.add(scrollPane);
 
-		JTextArea ServerChat = new JTextArea();
+		ServerChat = new JTextArea();
 		ServerChat.setLineWrap(true);
 		scrollPane.setViewportView(ServerChat);
 	}
@@ -412,8 +437,6 @@ public class GUIGamePanel extends JPanel implements ClientUser, MouseListener,
 		if (map != null)
 			map.setSize(app.size.width, app.size.height);
 	}
-
-	private JTextField ChatField;
 
 	public void setMap(MapLoader map) {
 		this.map = new GuiMap(this, map, false, app.size.width, app.size.height);
@@ -435,6 +458,34 @@ public class GUIGamePanel extends JPanel implements ClientUser, MouseListener,
 		color.set(two, c);
 	}
 
+	public void addCard(String country) {
+		for (int i = 0; i < cards.length; i++) {
+			if (cards[i].getName().length() == 0) {
+				Image img;
+				int type;
+				if (country.equals("wild")) {
+					type = 3;
+					img = this.map.cards.get(42);
+				} else {
+					int pos = this.map.countryNames.indexOf(country);
+					img = this.map.cards.get(pos);
+					type = this.map.cardType.get(pos);
+				}
+				cards[i].setImg(img, country, type);
+				break;
+			}
+		}
+	}
+
+	public void removeCard(String country) {
+		for (int i = 0; i < cards.length; i++) {
+			if (cards[i].getName().equals(country)) {
+				cards[i].setImg(null, "", -1);
+				break;
+			}
+		}
+	}
+
 	@Override
 	public void displayData(String string) {
 		// TODO Auto-generated method stub
@@ -451,7 +502,8 @@ public class GUIGamePanel extends JPanel implements ClientUser, MouseListener,
 				}
 				this.populatePlayerPane();
 				((MapLoader) app.panels[4]).progress++;
-				System.out.println("I should be loaded "+((MapLoader) app.panels[4]).progress);
+				System.out.println("I should be loaded "
+						+ ((MapLoader) app.panels[4]).progress);
 			} else if (cmd.equals("set")) {
 				scan.useDelimiter("/");
 				String name = scan.next();
@@ -476,7 +528,13 @@ public class GUIGamePanel extends JPanel implements ClientUser, MouseListener,
 				this.populatePlayerPane();
 			} else if (cmd.equals("phase")) {
 				cmd = scan.next();
-				if (cmd.equals("recruit")) {
+				if (cmd.equals("card")) {
+					this.switchPhase("card");
+					for (GUICard c : cards) {
+						c.setSelected(false);
+					}
+					this.repaint();
+				} else if (cmd.equals("recruit")) {
 					this.switchPhase("recruit");
 					int val = scan.nextInt();
 					this.progressBar.setValue(val);
@@ -558,6 +616,19 @@ public class GUIGamePanel extends JPanel implements ClientUser, MouseListener,
 				} else {
 					this.RollDiceButton.setEnabled(true);
 				}
+			} else if (cmd.equals("card")) {
+				cmd = scan.next();
+				String name = scan.nextLine();
+				name = name.substring(1);
+				if (cmd.equals("a")) {
+					this.addCard(name);
+				} else {
+					this.removeCard(name);
+				}
+			} else if (cmd.equals("message")) {
+				String msg = scan.nextLine();
+				msg = msg.substring(1) + "\n";
+				this.ServerChat.append(msg);
 			}
 		} catch (Exception e) {
 			System.out.println(string);
@@ -607,8 +678,32 @@ public class GUIGamePanel extends JPanel implements ClientUser, MouseListener,
 	public void mouseMoved(MouseEvent e) {
 	}
 
+	int numcards = 0;
+
 	@Override
 	public void mouseClicked(MouseEvent e) {
+		if (e.getSource() instanceof GUICard) {
+			GUICard c = (GUICard) e.getSource();
+			if (c.getName().length() > 0) {
+				if (numcards == 3) {
+					if (c.getSelected()) {
+						c.select();
+						numcards--;
+					}
+				} else {
+					if (c.getSelected()) {
+						c.select();
+						numcards--;
+					} else {
+						c.select();
+						numcards++;
+					}
+
+				}
+			}
+			c.repaint();
+			System.out.println(c.getName());
+		}
 	}
 
 	@Override

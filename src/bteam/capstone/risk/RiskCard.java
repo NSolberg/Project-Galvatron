@@ -14,6 +14,12 @@ public class RiskCard {
 		return depiction;
 	}
 	
+	public String getName(){
+		if(type==0)
+			return "wild";
+		return depiction.getCountryName();
+	}
+	
 	public int getType(){
 		return type;
 	}

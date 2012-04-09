@@ -339,6 +339,7 @@ public class RiskServer {
 				if (cmd.equals("message")) {
 					if (scan.hasNext()) {
 						String msg = scan.nextLine();
+						msg  = "message "+this.ClientID+":"+msg;
 						for (String client : Instances.get(num).getClients()) {
 							sendTo(client, msg);
 						}
