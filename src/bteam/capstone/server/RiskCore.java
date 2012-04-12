@@ -428,6 +428,7 @@ public class RiskCore extends Thread {
 						theServer.sendTo(p.getClientID(), "card r " + c1);
 						theServer.sendTo(p.getClientID(), "card r " + c2);
 						theServer.sendTo(p.getClientID(), "card r " + c3);
+						theServer.sendTo(p.getClientID(), "paint");
 					}
 				}
 			}

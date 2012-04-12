@@ -466,6 +466,7 @@ public class GUIGamePanel extends JPanel implements ClientUser, MouseListener,
 				if (country.equals("wild")) {
 					type = 3;
 					img = this.map.cards.get(42);
+					country = "wild";
 				} else {
 					int pos = this.map.countryNames.indexOf(country);
 					img = this.map.cards.get(pos);
