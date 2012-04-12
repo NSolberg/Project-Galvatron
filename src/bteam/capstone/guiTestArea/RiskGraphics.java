@@ -7,6 +7,7 @@ import javax.swing.ImageIcon;
 public class RiskGraphics {
 	public Image logOnPage;
 	public Image joinWar;
+	public Image startWar;
 	public Image phaseBegin;
 	public Image phaseCard;
 	public Image phaseTroops;
@@ -24,6 +25,7 @@ public class RiskGraphics {
 		logOnPage = loadImage("Icons For Risk/riskTitleScreen.png");
 		//used in serverBrowser
 		joinWar = loadImage("Icons For Risk/go.png");
+		startWar = loadImage("Icons For Risk/start.png");
 		//used in GamePanel
 		phaseBegin = loadImage("Icons For Risk/phaseBegin.png");
 		phaseCard = loadImage("Icons For Risk/card.png");

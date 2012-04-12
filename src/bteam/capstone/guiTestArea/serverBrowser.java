@@ -88,8 +88,12 @@ public class serverBrowser extends JPanel implements ClientUser {
 		buttonPanel.setLayout(new FlowLayout());
 		panel.add(buttonPanel, BorderLayout.EAST);		
 		
-		JButton CreateGameButton = new JButton("Create Game");
+		JButton CreateGameButton = new JButton("");
+		Image img2 = app.graphics.startWar;
+		img2 = img2.getScaledInstance(200, 70, java.awt.Image.SCALE_SMOOTH);
+		ImageIcon icon2 = new ImageIcon(img2);
 		Dimension cgs = new Dimension(200,82);
+		CreateGameButton.setIcon(icon2);
 		CreateGameButton.setPreferredSize(cgs);
 		CreateGameButton.addActionListener(new ActionListener(){
 

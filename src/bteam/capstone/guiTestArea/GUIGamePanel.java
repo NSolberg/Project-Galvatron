@@ -728,7 +728,7 @@ public class GUIGamePanel extends JPanel implements ClientUser, MouseListener,
 			int num = map.onCountry(e.getPoint());
 			if (num > -1) {
 				if (map.canSelect(num) && myTurn) {
-					if (Phase.isEnabledAt(3)) {
+					if (Phase.isEnabledAt(4)) {
 						String name = map.countryNames.get(num);
 						if (this.PlaceTroopNation1Disp.getText().length() == 0) {
 							this.PlaceTroopNation1Disp.setText(name);
