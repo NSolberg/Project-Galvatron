@@ -107,13 +107,6 @@ public class RiskCore extends Thread {
 		intialTurnRisk(numPlayers);
 		this.intialRandomRiskCardDeck();
 		informAll(this.toString());
-		/*player p = activePlayer.get(0);
-		giveCard(p);
-		giveCard(p);
-		giveCard(p);
-		giveCard(p);
-		giveCard(p);
-		theServer.sendTo(p.getClientID(), "paint");*/
 		while (!gameOver()) {
 			conq = false;
 			this.informAll("turn " + this.activePlayer.get(0).getClientID()); //
@@ -650,11 +643,18 @@ public class RiskCore extends Thread {
 			if (!inGame)
 				handleLeave(client);
 			else {
+				int num = 0;
 				for (player p : activePlayer) {
 					if (p.getClientID().equals(client)) {
 						p.connected = false;
 						break;
+					}else if(p.connected){
+						num++;
 					}
+				}
+				if(num == 0){
+					this.stop();
+					theServer.removeGame(worldID);
 				}
 			}
 		} else if (!this.inGame) {

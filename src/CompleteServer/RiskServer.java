@@ -173,6 +173,22 @@ public class RiskServer {
 		return -1;
 	}
 
+	public void removeGame(int id) {
+		int pos = InstanceID.indexOf(id);
+		InstanceID.set(pos, -1);
+		Instances.set(pos, null);
+	}
+
+	private int nextGamePos() {
+		if (Instances.size() < maxInstances)
+			return Instances.size();
+		for (int i = 0; i < Instances.size(); i++) {
+			if (Instances.get(i) == null)
+				return i;
+		}
+		return -1;
+	}
+
 	private int CreateGame(String ClientID, String Options) {
 		boolean reserve = false;
 		boolean legacy = false;
@@ -196,14 +212,20 @@ public class RiskServer {
 			}
 		}
 		if (InstanceID.size() < maxInstances) {
-			File file = new File("Maps/" + gameFile+".txt");
+			File file = new File("Maps/" + gameFile + ".txt");
 			if (file.exists() || gameFile.equals("Default")) {
 				RiskCore core = new RiskCore(this, ClientID, gameFile, legacy,
 						reserve, pass, name);
 				// core.start();
 				int num = core.getWorldID();
-				InstanceID.add(num);
-				Instances.add(core);
+				int pos = this.nextGamePos();
+				if (InstanceID.size() > pos) {
+					InstanceID.add(num);
+					Instances.add(core);
+				} else {
+					InstanceID.set(pos, num);
+					Instances.set(pos, core);
+				}
 				sendList();
 				return JoinGame(ClientID, num, pass);
 			} else {
@@ -336,10 +358,15 @@ public class RiskServer {
 				}
 			} else {
 				int num = InstanceID.indexOf(GameID);
+				if (cmd.equals("exit")) {
+					Instances.get(num).sendData("disconect");
+					GameID = -1;
+					this.goodBye();
+				}
 				if (cmd.equals("message")) {
 					if (scan.hasNext()) {
 						String msg = scan.nextLine();
-						msg  = "message "+this.ClientID+":"+msg;
+						msg = "message " + this.ClientID + ":" + msg;
 						for (String client : Instances.get(num).getClients()) {
 							sendTo(client, msg);
 						}

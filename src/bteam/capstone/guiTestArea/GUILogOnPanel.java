@@ -136,6 +136,7 @@ public class GUILogOnPanel extends JPanel implements ClientUser {
 	public void displayData(String string) {
 		// TODO Auto-generated method stub
 		if (string.equals("Connected")) {
+			app.logout.setEnabled(true);
 			app.switchView(1);
 		} else {
 			app.userName = "";

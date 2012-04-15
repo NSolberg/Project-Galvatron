@@ -1,4 +1,3 @@
-
 package bteam.capstone.guiTestArea;
 
 import java.applet.Applet;
@@ -23,7 +22,9 @@ import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JSeparator;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 
@@ -44,15 +45,18 @@ public class Application implements ActionListener {
 	public boolean fullscreen = false;
 	public RiskGraphics graphics;
 	public String gameFile = "";
+	public JMenuItem logout;
+	public boolean inGame = false;
+	private Application app;
 
 	public static void main(String[] args) {
-		//GuiMap m = new GuiMap("Maps/Earth",false,800,600);
 		new Application();
 	}
 
 	public Application() {
-			//line below opens web page
-			//java.awt.Desktop.getDesktop().browse(java.net.URI.create("http://www.google.com"));
+		// line below opens web page
+		// java.awt.Desktop.getDesktop().browse(java.net.URI.create("http://www.google.com"));
+		app = this;
 		try {
 			for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
 				if ("Nimbus".equals(info.getName())) {
@@ -90,7 +94,7 @@ public class Application implements ActionListener {
 		mainpanel.add(panels[4], "LoadMap");
 		CardLayout c1 = (CardLayout) mainpanel.getLayout();
 		c1.show(mainpanel, "LogOn");
-		this.client = new Client(lp);
+		this.client = new Client((ClientUser)panels[0],this);
 	}
 
 	private void createWindow(boolean Fullscrean) {
@@ -107,7 +111,7 @@ public class Application implements ActionListener {
 				.getLocalGraphicsEnvironment();
 		GraphicsDevice[] devices = g.getScreenDevices();
 		menubar = new JMenuBar();
-		JMenu view = new JMenu("View");
+		JMenu view = new JMenu("Options");
 		JMenu res = new JMenu("Resolution");
 		ArrayList<String> items = new ArrayList<String>();
 		for (DisplayMode mode : devices[0].getDisplayModes()) {
@@ -134,33 +138,33 @@ public class Application implements ActionListener {
 		full.addActionListener(this);
 		view.add(win);
 		view.add(full);
-		menubar.add(view);
-
-		game = new JMenu("Game");
-		game.setEnabled(false);
-		quit = new JMenuItem("Quit");
-		start = new JMenuItem("Start");
-		game.add(start);
-		game.add(quit);
-		start.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
-				client.sendData("start");
-			}
-
-		});
-		quit.addActionListener(new ActionListener() {
+		view.add(new JSeparator());
+		logout = new JMenuItem("Log Out");
+		logout.setEnabled(false);
+		logout.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				// TODO Auto-generated method stub
-				client.sendData("leave");
+				boolean cont = true;
+				if (inGame) {
+					int num= JOptionPane
+							.showConfirmDialog(
+									null,
+									"You are in a game if you logout you will be removed and will not be able to rejoin. Are you sure you want to log out?",
+								"Warning", JOptionPane.YES_NO_OPTION);
+					if(num==JOptionPane.NO_OPTION)
+						cont = false;
+				}
+				if(cont){
+					client.sendData("exit");
+					client = new Client((ClientUser)panels[0],app);
+				}
 			}
 
 		});
-		menubar.add(game);
+		view.add(logout);
+		menubar.add(view);
 	}
 
 	@Override
@@ -179,17 +183,17 @@ public class Application implements ActionListener {
 					this.createWindow(false);
 					fullscreen = false;
 				}
-				
+
 			} else {
 				this.selRes.setSelected(false);
 				this.selRes = (JCheckBoxMenuItem) e.getSource();
 				Scanner scan = new Scanner(selRes.getText());
 				int n1 = scan.nextInt();
-				int n2 = scan.nextInt(); 
+				int n2 = scan.nextInt();
 				this.size = new Dimension(n1, n2);
 				this.window.changeSize(this.size);
 			}
-			((GUIGamePanel)this.panels[2]).updateUiPos(fullscreen);
+			((GUIGamePanel) this.panels[2]).updateUiPos(fullscreen);
 		}
 	}
 
@@ -212,8 +216,8 @@ public class Application implements ActionListener {
 			break;
 		case 3:
 			c1.show(mainpanel, "Game");
-			//client.switchController((ClientUser) panels[2]);
-			//client.sendData("state");
+			// client.switchController((ClientUser) panels[2]);
+			// client.sendData("state");
 			break;
 		case 4:
 			c1.show(mainpanel, "LoadMap");

@@ -16,10 +16,12 @@ public class Client extends Thread {
 	private Scanner in;
 	private boolean linked;
 	private ClientUser control;
+	private Application app;
 
-	public Client(ClientUser controller) {
+	public Client(ClientUser controller,Application app) {
 		linked = false;
 		control = controller;
+		this.app = app;
 	}
 
 	public void switchController(ClientUser controller) {
@@ -53,6 +55,7 @@ public class Client extends Thread {
 			String data = in.nextLine();
 			if (data.equals("goodbye")) {
 				linked = false;
+				app.switchView(0);
 			}
 			if (data.length() > 0)
 				control.displayData(data);
