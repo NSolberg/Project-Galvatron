@@ -219,7 +219,7 @@ public class RiskServer {
 				// core.start();
 				int num = core.getWorldID();
 				int pos = this.nextGamePos();
-				if (InstanceID.size() > pos) {
+				if (InstanceID.size() <= pos) {
 					InstanceID.add(num);
 					Instances.add(core);
 				} else {
@@ -299,6 +299,7 @@ public class RiskServer {
 				e.printStackTrace();
 			}
 			cont = false;
+			RemoveClient(ClientID); 
 		}
 
 		public void sendData(String data) {

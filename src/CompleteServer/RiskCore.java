@@ -11,8 +11,6 @@ import java.util.Random;
 import java.util.Scanner;
 import java.util.Stack;
 
-
-
 public class RiskCore extends Thread {
 	// Server Data
 	private RiskServer theServer;
@@ -129,8 +127,7 @@ public class RiskCore extends Thread {
 	public void giveCard(player p) {
 		RiskCard card = cardDeck.pop();
 		p.addCard(card);
-		theServer.sendTo(p.getClientID(), "card a "
-				+ card.getName());
+		theServer.sendTo(p.getClientID(), "card a " + card.getName());
 	}
 
 	private boolean gameOver() {
@@ -620,7 +617,8 @@ public class RiskCore extends Thread {
 
 	private void informAll(String data) {
 		for (int j = 0; j < maxPlayers; j++) {
-			theServer.sendTo(pName[j], data);
+			if (pName[j] != null)
+				theServer.sendTo(pName[j], data);
 		}
 	}
 
@@ -648,11 +646,11 @@ public class RiskCore extends Thread {
 					if (p.getClientID().equals(client)) {
 						p.connected = false;
 						break;
-					}else if(p.connected){
+					} else if (p.connected) {
 						num++;
 					}
 				}
-				if(num == 0){
+				if (num == 0) {
 					this.stop();
 					theServer.removeGame(worldID);
 				}
@@ -684,8 +682,8 @@ public class RiskCore extends Thread {
 	ArrayList<Integer> colors;
 
 	private void handleStart(String client) {
-		if (worldCreator.equals(client) && numPlayers >= 3)
-			if (numPlayers > 2) {
+		if (worldCreator.equals(client) && numPlayers >= 2) {
+			if (numPlayers > 1) {
 				boolean canStart = true;
 				for (int i = 0; i < maxPlayers; i++) {
 					if (pName[i] != null && !pRdy[i]) {
@@ -698,10 +696,9 @@ public class RiskCore extends Thread {
 					inGame = true;
 					this.start();
 				}
-			} else
-				theServer.sendTo(client, "Alert no not enough players");
-		else
-			theServer.sendTo(client, "Alert no not creator");
+			}
+		} else
+			theServer.sendTo(client, "Alert not enouch players");
 	}
 
 	private void handleLeave(String client) {

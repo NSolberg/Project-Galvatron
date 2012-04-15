@@ -5,6 +5,8 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.Scanner;
 
+import javax.swing.JOptionPane;
+
 /**
  * 
  * @author Austin Langhorne
@@ -18,7 +20,7 @@ public class Client extends Thread {
 	private ClientUser control;
 	private Application app;
 
-	public Client(ClientUser controller,Application app) {
+	public Client(ClientUser controller, Application app) {
 		linked = false;
 		control = controller;
 		this.app = app;
@@ -38,8 +40,9 @@ public class Client extends Thread {
 			out = new PrintWriter(client.getOutputStream(), true);
 			in = new Scanner(client.getInputStream());
 			linked = true;
-			//control.displayData("Link to server established");
+			// control.displayData("Link to server established");
 		} catch (Exception e) {
+			JOptionPane.showMessageDialog(null, "Server not found");
 			control.displayData("Server not avaliable");
 		}
 	}
@@ -52,13 +55,23 @@ public class Client extends Thread {
 	public void run() {
 		super.run();
 		while (linked) {
-			String data = in.nextLine();
-			if (data.equals("goodbye")) {
+			try {
+				String data = in.nextLine();
+
+				if (data.equals("goodbye")) {
+					linked = false;
+					app.switchView(0);
+				}
+				if (data.contains("Alert")) {
+					JOptionPane.showMessageDialog(null, data);
+				} else if (data.length() > 0)
+					control.displayData(data);
+			} catch (Exception e) {
+				e.printStackTrace();
 				linked = false;
-				app.switchView(0);
+				JOptionPane
+						.showMessageDialog(null, "Connection to server lost");
 			}
-			if (data.length() > 0)
-				control.displayData(data);
 		}
 		control.displayData("Client disconnected from server");
 		in.close();
