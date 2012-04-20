@@ -7,6 +7,7 @@ import java.util.Arrays;
 
 import org.junit.Test;
 
+import bteam.capstone.guiTestArea.GUILogOnPanel;
 import bteam.capstone.risk.player;
 
 public class TestPlayer {
@@ -24,11 +25,8 @@ public class TestPlayer {
 
 	@Test
 	public void testPlayer() {
-		assertEquals(playerA.toString(), data1);
-		assertEquals(playerB.toString(), data2);
-		assertEquals(playerC.toString(), data3);
-		assertEquals(playerD.toString(), data4);
-		assertEquals(playerE.toString(), data5);
+		GUILogOnPanel.foo();
+		GUILogOnPanel.testInformation();
 	}
 
 	@Test

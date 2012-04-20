@@ -18,18 +18,51 @@ public class GUILogOnPanel extends JPanel implements ClientUser {
 	private Object dbms;
 	// JDBC driver name and database URL
 	static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
-	static final String DB_URL = "jdbc:mysql://lampd.vf.cnu.edu:3306/legacy";
+	static final String DB_URL = "jdbc:mysql://lampd.vf.cnu.edu:";
 
 	// Database credentials
-	static final String USER = "ns";
-	static final String PASS = "password";
+	static final String USER = "root";
+	static final String PASS = "498";
+	
 	private static boolean Val = true;
 	private static String users;
 	private static String passs;
 	private JButton btnLog;
 	private JTextField txtPass,txtUser;
 	private int prewid;	
+	
+	public static boolean foo(){
+		String dbtime;
+		String dbUrl = "jdbc:mysql://lampd.vf.cnu.eduy";
+		String dbClass = "com.mysql.jdbc.Driver";
+		String query = "Select * FROM users";
 
+		try {
+			System.out.println("Connecting!!");
+		Class.forName("com.mysql.jdbc.Driver");
+		Connection con = DriverManager.getConnection (dbUrl);
+		Statement stmt = con.createStatement();
+		ResultSet rs = stmt.executeQuery(query);
+		System.out.println("Connection ballssssss");
+
+		while (rs.next()) {
+		dbtime = rs.getString(1);
+		System.out.println(dbtime);
+		} //end while
+
+		con.close();
+		} //end try
+
+		catch(ClassNotFoundException e) {
+		e.printStackTrace();
+		}
+
+		catch(SQLException e) {
+		e.printStackTrace();
+		}
+		return false;
+	}
+	
  	public static boolean testInformation() {
 		Connection conn = null;
 		Statement stmt = null;
@@ -45,7 +78,7 @@ public class GUILogOnPanel extends JPanel implements ClientUser {
 			System.out.println("Creating statement...");
 			stmt = conn.createStatement();
 			String sql;
-			sql = "SELECT userName, password FROM Employees";
+			sql = "SELECT userName, password FROM users";
 			ResultSet rs = stmt.executeQuery(sql);
 
 			// STEP 5: Extract data from result set
@@ -63,9 +96,11 @@ public class GUILogOnPanel extends JPanel implements ClientUser {
 			conn.close();
 		} catch (SQLException se) {
 			// Handle errors for JDBC
+			System.out.println("JDBC ERROR");
 			se.printStackTrace();
 		} catch (Exception e) {
 			// Handle errors for Class.forName
+			System.out.println("Class.forName error");
 			e.printStackTrace();
 		} finally {
 			// finally block used to close resources
