@@ -512,7 +512,7 @@ public class RiskCore extends Thread {
 
 	private void initMap() {
 		try {
-			Scanner scan = new Scanner(new File("Earth.txt"));
+			Scanner scan = new Scanner(new File("Maps/"+this.worldFile+".txt"));
 			String out = "";
 			while (scan.hasNext())
 				out += scan.nextLine() + "\n";

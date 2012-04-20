@@ -5,7 +5,10 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.sql.*;
+import java.util.Scanner;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -45,7 +48,7 @@ public class GUILogOnPanel extends JPanel implements ClientUser {
 			System.out.println("Creating statement...");
 			stmt = conn.createStatement();
 			String sql;
-			sql = "SELECT userName, password FROM Employees";
+			sql = "SELECT userName, password FROM user";
 			ResultSet rs = stmt.executeQuery(sql);
 
 			// STEP 5: Extract data from result set
@@ -99,13 +102,24 @@ public class GUILogOnPanel extends JPanel implements ClientUser {
 			public void actionPerformed(ActionEvent e) {
 				String user = txtUser.getText();
 				app.userName = user;
+				File file = new File("config.txt");
 				if (!user.equals("")) {
-					app.client.connect("localhost", 1337);
+					String ip="";
+					if(file.exists()){
+						try {
+							Scanner temp = new Scanner(file);
+							ip = temp.nextLine();
+						} catch (FileNotFoundException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+					app.client.connect(ip, 1337);
 					if (app.client.isConnected()) {
 						app.client.start();
 						app.client.sendData(user);
 					} else {
 
+					}
 					}
 				}
 			}

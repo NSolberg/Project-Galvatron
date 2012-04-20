@@ -29,8 +29,11 @@ public class RiskServer {
 	// Server
 	private ServerSocket server;
 	private boolean serverClosing;
+	// Database
+	private RiskDatabase database;
 
 	public static void main(String[] args) {
+		System.out.println("Starting");
 		new RiskServer();
 	}
 
@@ -39,6 +42,7 @@ public class RiskServer {
 		try {
 			serverClosing = false;
 			server = new ServerSocket(1337);
+			database = new RiskDatabase();
 			Socket socket;
 			do {
 				socket = server.accept();
@@ -47,6 +51,7 @@ public class RiskServer {
 			} while (socket != null);
 		} catch (Exception e) {
 		}
+		database.close();
 	}
 
 	private void init() {
@@ -146,7 +151,7 @@ public class RiskServer {
 	}
 
 	private synchronized boolean Reserve(ClientHandler Client) {
-		if (ClientID.size() < maxClients
+		if (ClientID.size() < maxClients && database.exists(Client.getClientID())
 				&& !ClientID.contains(Client.getClientID())) {
 			String id = Client.getClientID();
 			ClientID.add(id);
